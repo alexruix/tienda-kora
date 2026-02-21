@@ -1,0 +1,169 @@
+---
+/**
+ * ProductGrid Organism
+ * BeautyHome · NODO Studio
+ */
+
+import ProductCard from '../molecules/ProductCard.astro';
+import Button from '../atoms/Button.astro';
+
+interface Product {
+  id:             string;
+  name:           string;
+  category:       string;
+  price:          number;
+  originalPrice?: number;
+  rating?:        number;
+  reviewCount?:   number;
+  badges?:        Array<'new' | 'sale' | 'limited' | 'featured'>;
+  image?:         string;
+}
+
+interface Props {
+  products:     Product[];
+  layout?:      'default' | 'featured' | 'dense';
+  title?:       string;
+  label?:       string;
+  subtitle?:    string;
+  showFilters?: boolean;
+  showSort?:    boolean;
+  ctaLabel?:    string;
+  ctaHref?:     string;
+}
+
+const {
+  products,
+  layout      = 'default',
+  title,
+  label,
+  subtitle,
+  showFilters = false,
+  showSort    = false,
+  ctaLabel,
+  ctaHref     = '#',
+} = Astro.props;
+
+const FILTERS = ['All', 'Under $500', 'Natural Materials', 'Japanese Design', 'New Arrivals'];
+const SORT_OPTIONS = [
+  { value: 'featured',   label: 'Sort: Featured'         },
+  { value: 'price-asc',  label: 'Price: Low to High'     },
+  { value: 'price-desc', label: 'Price: High to Low'     },
+  { value: 'newest',     label: 'Newest First'           },
+  { value: 'top-rated',  label: 'Top Rated'              },
+];
+---
+
+<section>
+  {(title || label) && (
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div>
+        {label && <p class="text-xs tracking-[0.2em] uppercase text-sand-900/50 mb-2">{label}</p>}
+        {title && <h2 class="font-sans text-4xl font-light text-petrol" set:html={title} />}
+        {subtitle && <p class="text-base text-sand-900/70 mt-3 max-w-2xl">{subtitle}</p>}
+      </div>
+      {ctaLabel && (
+        <div class="shrink-0">
+          <Button variant="secondary" href={ctaHref}>{ctaLabel}</Button>
+        </div>
+      )}
+    </div>
+  )}
+
+  {showFilters && (
+    <div class="flex items-center justify-between gap-4 py-4 border-b border-sand-200 mb-8 flex-wrap" role="toolbar" aria-label="Product filters">
+      
+      <div class="flex gap-2 sm:gap-1 flex-wrap" role="group" aria-label="Filter by">
+        {FILTERS.map((f, i) => (
+          <button
+            class={`filter-pill sm:text-[12px] sm:px-3 sm:py-[6px] ${i === 0 ? 'filter-pill--active' : ''}`}
+            data-filter={f}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
+      <div class="flex items-center gap-3">
+        {showSort && (
+          <div class="relative flex items-center">
+            <select class="sort-select" aria-label="Sort products">
+              {SORT_OPTIONS.map((opt) => (
+                <option value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <svg class="absolute right-[10px] pointer-events-none text-sand-900/40" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+        )}
+
+        <div class="flex gap-1" role="group" aria-label="View style">
+          <button class="view-btn view-btn--active" data-view="grid" aria-label="Grid view" aria-pressed="true">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+              <rect x="1" y="1" width="6" height="6" rx="1"/>
+              <rect x="9" y="1" width="6" height="6" rx="1"/>
+              <rect x="1" y="9" width="6" height="6" rx="1"/>
+              <rect x="9" y="9" width="6" height="6" rx="1"/>
+            </svg>
+          </button>
+          <button class="view-btn" data-view="list" aria-label="List view" aria-pressed="false">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+              <rect x="1" y="2" width="14" height="2.5" rx="1"/>
+              <rect x="1" y="6.75" width="14" height="2.5" rx="1"/>
+              <rect x="1" y="11.5" width="14" height="2.5" rx="1"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+
+  <div class={`product-grid product-grid--${layout}`} id="productGrid" role="list">
+    {products.map((product, index) => (
+      <div role="listitem">
+        <ProductCard
+          {...product}
+          featured={layout === 'featured' && index === 0}
+          aspectRatio={layout === 'featured' && index === 0 ? '4/5' : '4/5'}
+          animationDelay={index * 50}
+        />
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  // Filter pills
+  document.querySelectorAll('.filter-pill').forEach((pill) => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach((p) => {
+        p.classList.remove('filter-pill--active');
+        p.setAttribute('aria-pressed', 'false');
+      });
+      pill.classList.add('filter-pill--active');
+      pill.setAttribute('aria-pressed', 'true');
+
+      // TODO: Implement real filtering
+      console.log('Filter:', (pill as HTMLElement).dataset.filter);
+    });
+  });
+
+  // View toggle
+  document.querySelectorAll('.view-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-btn').forEach((b) => {
+        b.classList.remove('view-btn--active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('view-btn--active');
+      btn.setAttribute('aria-pressed', 'true');
+
+      const view = (btn as HTMLElement).dataset.view;
+      const grid = document.getElementById('productGrid');
+      if (grid && view) {
+        grid.dataset.viewMode = view;
+      }
+    });
+  });
+</script>

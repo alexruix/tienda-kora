@@ -1,0 +1,18 @@
+---
+/**
+ * Badge Atom — Fluent 2
+ * BeautyHome · NODO Studio
+ */
+
+interface Props {
+  variant:  'new' | 'sale' | 'limited' | 'featured';
+  label?:   string;
+  class?:   string;
+}
+
+const { variant, label, class: extraClass = '' } = Astro.props;
+---
+
+<span class={`badge badge-${variant} ${extraClass}`}>
+  {label ?? <slot />}
+</span>

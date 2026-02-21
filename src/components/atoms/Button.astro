@@ -1,0 +1,46 @@
+---
+/**
+ * Button Atom — Fluent 2
+ * BeautyHome · NODO Studio
+ */
+
+interface Props {
+  variant?:  'primary' | 'secondary' | 'ghost' | 'icon';
+  size?:     'sm' | 'md' | 'lg';
+  href?:     string;
+  type?:     'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  class?:    string;
+  [key: string]: any;
+}
+
+const {
+  variant  = 'primary',
+  size     = 'md',
+  href,
+  type     = 'button',
+  disabled = false,
+  class: extraClass = '',
+  ...rest
+} = Astro.props;
+
+const TAG = href ? 'a' : 'button';
+
+const baseClasses = [
+  'btn',
+  `btn-${variant}`,
+  `btn-${size}`,
+  disabled ? 'btn-disabled' : '',
+  extraClass,
+].filter(Boolean).join(' ');
+---
+
+{TAG === 'a' ? (
+  <a href={href} class={baseClasses} {...rest}>
+    <slot />
+  </a>
+) : (
+  <button type={type} class={baseClasses} disabled={disabled} {...rest}>
+    <slot />
+  </button>
+)}

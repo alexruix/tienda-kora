@@ -1,0 +1,92 @@
+---
+/**
+ * MainLayout Template
+ * BeautyHome · NODO Studio
+ *
+ * Base layout used by all pages.
+ * Slots: default (page content), head (extra meta)
+ */
+
+// 1. Importamos el CSS global de Tailwind v4 aquí directamente
+import '../styles/global.css';
+
+import Navbar      from '../components/organisms/Navbar.jsx';
+import CartDrawer  from '../components/organisms/CartDrawer.jsx';
+import Footer      from '../components/organisms/Footer.astro';
+
+interface Props {
+  title?:       string;
+  description?: string;
+  ogImage?:     string;
+  noIndex?:     boolean;
+  bodyClass?:   string;
+}
+
+const {
+  title       = 'BeautyHome — Curated Home Décor',
+  description = 'High-end home objects at the intersection of Scandinavian restraint and Japanese wabi-sabi. Curated by NODO Studio.',
+  ogImage     = '/og-default.jpg',
+  noIndex     = false,
+  bodyClass   = '',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyhome.nodo.studio');
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0B3948" />
+
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalURL} />
+  {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content={canonicalURL} />
+  <meta property="og:title"       content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image"       content={ogImage} />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image"       content={ogImage} />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
+    rel="stylesheet"
+  />
+
+  <slot name="head" />
+</head>
+<body class={`min-h-screen flex flex-col ${bodyClass}`}>
+
+  <Navbar client:load />
+
+  <main id="main-content" class="flex-grow focus:outline-none" tabindex="-1">
+    <slot />
+  </main>
+
+  <Footer />
+
+  <CartDrawer client:load />
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <a 
+    href="#main-content" 
+    class="fixed -top-full left-4 z-[9999] bg-petrol text-white px-5 py-3 rounded-f2-md text-[14px] no-underline transition-[top] duration-200 focus:top-4 focus:outline focus:outline-2 focus:outline-watermelon focus:outline-offset-2"
+  >
+    Skip to main content
+  </a>
+
+</body>
+</html>

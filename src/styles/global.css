@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+/* =========================================
+   1. DESIGN TOKENS (Tailwind v4 Way)
+   ========================================= */
+@theme {
+  /* Brand Identity Colors */
+  --color-watermelon: #ee4266;
+  --color-watermelon-hover: #d63b5b;
+  --color-watermelon-pressed: #bd3450;
+  --color-watermelon-light: #fcebec;
+
+  --color-petrol: #0b3948;
+  --color-petrol-dark: #051c24;
+
+  /* Gold / Premium Palette */
+  --color-gold-100: #f5f0e8;
+  --color-gold-400: #dcc87a;
+  --color-gold-700: #8b6914;
+
+  /* Japandi & Nordic Palette */
+  --color-sand-50: #f9f8f6;
+  --color-sand-100: #f2efe9;
+  --color-sand-200: #e5dfd3;
+  --color-sand-900: #2d2926;
+
+  /* Fluent 2: Depth & Elevation */
+  --shadow-f2-rest: 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 2px rgba(0, 0, 0, 0.06);
+  --shadow-f2-hover:
+    0 8px 16px rgba(0, 0, 0, 0.08), 0 0 2px rgba(0, 0, 0, 0.06);
+  --shadow-f2-pressed: 0 1px 2px rgba(0, 0, 0, 0.12);
+  --shadow-f2-acrylic: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+
+  /* Fluent 2: Border Radius */
+  --radius-f2-sm: 4px;
+  --radius-f2-md: 8px;
+  --radius-f2-lg: 12px;
+  --radius-f2-xl: 20px;
+
+  /* Typography */
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+
+  /* Animations */
+  --animate-acrylic-in: acrylic-in 0.2s ease-out forwards;
+
+  /* Curva de animación Fluent 2 */
+  --ease-fluent: cubic-bezier(0.33, 1, 0.68, 1);
+
+  /* Animaciones del Navbar */
+  --animate-slide-down: slideDown 0.5s var(--ease-fluent) both;
+  --animate-cart-pop: cartPop 0.3s var(--ease-fluent) both;
+  --animate-mega-in: megaIn 0.22s var(--ease-fluent) both;
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  @keyframes cartPop {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @keyframes megaIn {
+    from {
+      transform: scaleY(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+}
+
+/* Definición de Keyframes fuera del bloque @theme para mayor compatibilidad */
+@keyframes acrylic-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================================
+   2. BASE STYLES
+   ========================================= */
+@layer base {
+  html {
+    /* bg-sand-50 ya se genera desde el theme */
+    @apply bg-sand-50 text-sand-900 antialiased;
+  }
+
+  body {
+    /* La opacidad con '/' funciona perfecto en v4 */
+    @apply selection:bg-watermelon/30 selection:text-watermelon-pressed;
+  }
+}
+
+/* =========================================
+   3. COMPONENTS
+   ========================================= */
+@layer components {
+  /* Fluent 2 "Acrylic" - Efecto translúcido */
+  .fluent-acrylic {
+    @apply bg-white/60 backdrop-blur-xl border border-white/30 
+           shadow-f2-rest animate-acrylic-in;
+  }
+
+  /* Estilo base para inputs (Átomos) */
+  .f2-input {
+    @apply w-full px-3 py-2 rounded-f2-md border-b-2 border-transparent 
+           bg-white/50 shadow-sm transition-all duration-200
+           focus:border-watermelon focus:bg-white focus:outline-none
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Botón con estilo Fluent 2 (Añadido para completar el sistema) */
+  .f2-button-primary {
+    @apply bg-watermelon text-white px-4 py-2 rounded-f2-md font-medium
+           hover:bg-watermelon-hover active:scale-95 
+           shadow-f2-rest transition-all;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-sans tracking-[0.04em] uppercase rounded-f2-md relative overflow-hidden whitespace-nowrap transition-all duration-200 ease-in-out;
+  }
+
+  /* Efecto Ripple (Ondulación) en hover - Se mantiene en CSS puro para pseudo-elementos */
+  .btn::after {
+    content: "";
+    @apply absolute inset-0 rounded-inherit opacity-0 bg-white/12 transition-opacity duration-200;
+  }
+  .btn:hover::after {
+    @apply opacity-100;
+  }
+  .btn:active {
+    @apply scale-95; /* transform: scale(0.98) puede ser muy sutil, Tailwind usa scale-95 por defecto */
+  }
+
+  /* ── Sizes ────────────────────────────────────────────── */
+  .btn-sm {
+    @apply text-[11px] px-4 py-[7px];
+  }
+  .btn-md {
+    @apply text-[13px] px-5 py-[10px];
+  }
+  .btn-lg {
+    @apply text-[14px] px-6 py-[13px];
+  }
+
+  /* ── Variants ─────────────────────────────────────────── */
+
+  /* Primary — Watermelon */
+  .btn-primary {
+    @apply bg-watermelon text-white shadow-f2-rest;
+  }
+  .btn-primary:hover {
+    @apply bg-watermelon-hover shadow-f2-hover;
+  }
+  .btn-primary:active {
+    @apply bg-watermelon-pressed shadow-f2-pressed;
+  }
+
+  /* Secondary — Outlined */
+  .btn-secondary {
+    @apply bg-transparent text-sand-900 shadow-[inset_0_0_0_1.5px_var(--color-sand-200)];
+  }
+  .btn-secondary:hover {
+    @apply bg-sand-100 shadow-[inset_0_0_0_1.5px_var(--color-sand-900)];
+  }
+
+  /* Ghost — Minimal */
+  .btn-ghost {
+    @apply bg-transparent text-sand-900/70;
+  }
+  .btn-ghost:hover {
+    @apply bg-sand-100 text-sand-900;
+  }
+
+  /* Icon — Square, no padding */
+  .btn-icon {
+    @apply w-10 h-10 p-0 rounded-f2-md bg-transparent text-sand-900/70 normal-case tracking-normal;
+  }
+  .btn-icon:hover {
+    @apply bg-sand-100 text-sand-900;
+  }
+  .btn-icon:active {
+    @apply scale-90;
+  }
+
+  /* Disabled state */
+  .btn-disabled {
+    @apply opacity-40 cursor-not-allowed pointer-events-none;
+  }
+
+  .badge {
+    @apply inline-flex items-center font-sans text-[11px] font-medium tracking-[0.06em] uppercase px-[9px] py-[3px] rounded-full leading-none whitespace-nowrap;
+  }
+
+  /* ── Variants ─────────────────────────────────────────── */
+
+  /* New — Petrol */
+  .badge-new {
+    @apply bg-petrol text-white;
+  }
+
+  /* Sale — Watermelon Light */
+  .badge-sale {
+    @apply bg-watermelon-light text-watermelon-pressed;
+  }
+
+  /* Limited — Sand (Japandi) */
+  .badge-limited {
+    /* Usamos sand-900 con opacidad para simular el 'text-secondary' */
+    @apply bg-sand-200 text-sand-900/70;
+  }
+
+  /* Featured — Gold/Premium */
+  .badge-featured {
+    /* Valores arbitrarios JIT de Tailwind para colores fuera de la paleta base */
+    @apply bg-gold-100 text-gold-700 border border-gold-400;
+  }
+
+  /* ── Filter & Sort Elements ─────────────────────────────────────── */
+
+  /* Filter Pill (Botón de categoría) */
+  .filter-pill {
+    @apply inline-flex items-center font-sans text-[13px] text-sand-900/70 px-4 py-[7px] rounded-f2-md border-[1.5px] border-sand-200 bg-white cursor-pointer whitespace-nowrap transition-all duration-200 ease-in-out;
+  }
+  .filter-pill:hover {
+    @apply border-sand-300 text-sand-900;
+  }
+  .filter-pill.filter-pill--active {
+    @apply bg-petrol border-petrol text-white;
+  }
+
+  /* Sort Select (Desplegable) */
+  .sort-select {
+    @apply font-sans text-[13px] text-sand-900/70 bg-white border-[1.5px] border-sand-200 rounded-f2-md py-[7px] pl-4 pr-8 outline-none cursor-pointer appearance-none transition-colors duration-200;
+  }
+  .sort-select:hover {
+    @apply border-sand-300;
+  }
+  .sort-select:focus {
+    @apply border-petrol;
+  }
+
+  /* View Button (Grid/List toggle) */
+  .view-btn {
+    @apply w-[34px] h-[34px] rounded-f2-md flex items-center justify-center cursor-pointer bg-transparent border-none text-sand-900/50 transition-all duration-200;
+  }
+  .view-btn:hover {
+    @apply bg-sand-100 text-sand-900/70;
+  }
+  .view-btn.view-btn--active {
+    @apply bg-sand-100 text-sand-900;
+  }
+
+  /* ── Product Grid Layouts ─────────────────────────────────────── */
+
+  .product-grid {
+    @apply grid gap-6 sm:gap-4 lg:gap-6; /* Gap responsive estándar */
+  }
+
+  /* Default: auto-fill responsive */
+  .product-grid--default {
+    @apply grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(260px,1fr))];
+  }
+
+  /* Featured: Primer elemento ocupa más espacio */
+  .product-grid--featured {
+    @apply grid-cols-2 lg:grid-cols-[2fr_1fr_1fr];
+  }
+
+  /* Selectores complejos para el layout Featured y vista de Lista */
+  /* Nota: Usamos anidamiento nativo CSS que Tailwind v4 soporta por defecto */
+  .product-grid--featured > div:first-child {
+    @apply lg:row-span-2;
+  }
+
+  .product-grid--featured > div:first-child .pc-img-wrap {
+    @apply lg:min-h-[480px] lg:aspect-auto lg:h-full;
+  }
+
+  /* Dense: Más compacto */
+  .product-grid--dense {
+    @apply grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4;
+  }
+
+  /* List View Mode (Triggered by JS) */
+  .product-grid[data-view-mode="list"] {
+    @apply grid-cols-1;
+  }
+
+  .product-grid[data-view-mode="list"] .product-card {
+    @apply flex flex-row;
+  }
+
+  .product-grid[data-view-mode="list"] .pc-img-wrap {
+    @apply w-[160px] shrink-0 aspect-square;
+  }
+}
+
+/* =========================================
+   4. UTILITIES
+   ========================================= */
+@layer utilities {
+  .f2-transition {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Utilidad para forzar el renderizado de GPU en animaciones complejas */
+  .transform-gpu {
+    transform: translateZ(0);
+  }
+}
