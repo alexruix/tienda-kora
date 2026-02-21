@@ -80,6 +80,20 @@
       opacity: 1;
     }
   }
+
+  /* Animación CartItem */
+  --animate-slide-right: slideRight 0.3s var(--ease-fluent) both;
+
+  @keyframes slideRight {
+    from {
+      opacity: 0;
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 }
 
 /* Definición de Keyframes fuera del bloque @theme para mayor compatibilidad */
