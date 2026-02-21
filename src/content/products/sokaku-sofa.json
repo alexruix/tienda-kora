@@ -1,0 +1,13 @@
+{
+    "id": "sokaku-sofa",
+    "name": "Sōkaku Sofa",
+    "category": "Living · Seating",
+    "price": 2890,
+    "badges": [
+        "new",
+        "featured"
+    ],
+    "image": "/images/sokaku.webp",
+    "aspectRatio": "4/5",
+    "featured": true
+}

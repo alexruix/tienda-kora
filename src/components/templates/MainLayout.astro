@@ -88,5 +88,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyho
     Skip to main content
   </a>
 
+  <script>
+    // Importamos la acción directamente desde nuestro store
+    import { addCartItem } from '../../store/cart.ts';
+
+    // Escuchamos el evento global que disparan las ProductCards y el PDP
+    window.addEventListener('cart:add', (e: any) => {
+      const { id, name, price, variant, image } = e.detail;
+      
+      // Enviamos la data al "cerebro" de Nanostores
+      addCartItem({ 
+        id, 
+        name, 
+        price, 
+        variant: variant || 'Standard', 
+        image: image || '' 
+      });
+    });
+  </script>
 </body>
 </html>

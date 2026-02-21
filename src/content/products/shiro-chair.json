@@ -1,0 +1,15 @@
+{
+    "id": "shiro-chair",
+    "name": "Shiro Lounge Chair — Cashmere Bouclé",
+    "category": "Living · Seating",
+    "price": 1680,
+    "originalPrice": 1900,
+    "rating": 5.0,
+    "reviewCount": 33,
+    "badges": [
+        "sale", "featured"
+    ],
+    "image": "/images/sokaku.webp",
+    "aspectRatio": "4/5",
+    "featured": true
+}
