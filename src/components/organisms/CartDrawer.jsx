@@ -9,24 +9,22 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import CartItem from '../molecules/CartItem.jsx';
+import { formatPrice } from '../../utils/formatters.js'; 
 
 const INITIAL_ITEMS = [
-  { id: 'sokaku-sofa',  name: 'Sōkaku Sofa — 3-seater', variant: 'Oat Linen · Natural Oak Frame', price: 2890, quantity: 1 },
-  { id: 'hana-pendant', name: 'Hana Pendant Light',      variant: 'Washi Paper · Brass Hardware',  price: 580,  quantity: 1 },
+  { id: 'sokaku-sofa', name: 'Sōkaku Sofa — 3-seater', variant: 'Oat Linen · Natural Oak Frame', price: 2890, quantity: 1 },
+  { id: 'hana-pendant', name: 'Hana Pendant Light', variant: 'Washi Paper · Brass Hardware', price: 580, quantity: 1 },
 ];
 
-function formatCurrency(n) {
-  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
-}
 
 export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [items,  setItems]  = useState(INITIAL_ITEMS);
+  const [items, setItems] = useState(INITIAL_ITEMS);
 
   // Global event listeners
   useEffect(() => {
     const openHandler = () => setIsOpen(true);
-    const addHandler  = (e) => {
+    const addHandler = (e) => {
       const { id, name, price, variant = '' } = e.detail;
       setItems((prev) => {
         const existing = prev.find((i) => i.id === id);
@@ -39,10 +37,10 @@ export default function CartDrawer() {
     };
 
     window.addEventListener('cart:open', openHandler);
-    window.addEventListener('cart:add',  addHandler);
+    window.addEventListener('cart:add', addHandler);
     return () => {
       window.removeEventListener('cart:open', openHandler);
-      window.removeEventListener('cart:add',  addHandler);
+      window.removeEventListener('cart:add', addHandler);
     };
   }, []);
 
@@ -72,18 +70,16 @@ export default function CartDrawer() {
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-sand-900/40 z-[2000] backdrop-blur-[2px] transition-opacity duration-[380ms] ease-fluent ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 bg-sand-900/40 z-[2000] backdrop-blur-[2px] transition-opacity duration-[380ms] ease-fluent ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
         onClick={() => setIsOpen(false)}
         aria-hidden="true"
       />
 
       {/* Drawer */}
       <aside
-        className={`fixed top-0 right-0 w-full sm:w-[420px] h-[100dvh] bg-white z-[2001] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.08)] transition-transform duration-[380ms] ease-fluent ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed top-0 right-0 w-full sm:w-[420px] h-[100dvh] bg-white z-[2001] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.08)] transition-transform duration-[380ms] ease-fluent ${isOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
         role="dialog"
         aria-modal="true"
         aria-label="Shopping cart"
@@ -102,8 +98,8 @@ export default function CartDrawer() {
             aria-label="Close cart"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -114,9 +110,9 @@ export default function CartDrawer() {
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center p-8">
               <div className="w-20 h-20 rounded-full bg-sand-100 flex items-center justify-center text-sand-900/40">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                  <line x1="3" y1="6" x2="21" y2="6"/>
-                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
               </div>
               <p className="text-[18px] font-normal text-sand-900/70 font-display">Your bag is empty</p>
@@ -134,7 +130,7 @@ export default function CartDrawer() {
               {!freeShipping && (
                 <div className="bg-sand-100 rounded-f2-md py-3 px-4 my-3">
                   <p className="text-[12px] text-sand-900/70 mb-2">
-                    Add <strong>{formatCurrency(350 - subtotal)}</strong> more for free shipping
+                    Add <strong>{formatPrice(350 - subtotal)}</strong> more for free shipping
                   </p>
                   <div className="h-[3px] bg-sand-200 rounded-sm overflow-hidden">
                     <div className="h-full bg-petrol rounded-sm transition-[width] duration-[380ms] ease-fluent" style={{ width: `${Math.min((subtotal / 350) * 100, 100)}%` }} />
@@ -144,7 +140,7 @@ export default function CartDrawer() {
               {freeShipping && (
                 <div className="flex items-center gap-2 text-[12px] text-[#4CAF50] font-medium py-3 mb-2">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12"/>
+                    <polyline points="20 6 9 17 4 12" />
                   </svg>
                   You&rsquo;ve unlocked free shipping!
                 </div>
@@ -168,7 +164,7 @@ export default function CartDrawer() {
             <div className="mb-5">
               <div className="flex justify-between text-[14px] text-sand-900/70 py-1">
                 <span>Subtotal</span>
-                <span>{formatCurrency(subtotal)}</span>
+                <span>{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-[14px] text-sand-900/70 py-1">
                 <span>Shipping</span>
@@ -178,7 +174,7 @@ export default function CartDrawer() {
               </div>
               <div className="flex justify-between items-center pt-3 mt-3 border-t border-sand-200">
                 <span className="text-[15px] font-medium text-sand-900">Total</span>
-                <span className="font-display text-[28px] font-normal text-petrol">{formatCurrency(subtotal)}</span>
+                <span className="font-display text-[28px] font-normal text-petrol">{formatPrice(subtotal)}</span>
               </div>
             </div>
 
@@ -194,8 +190,8 @@ export default function CartDrawer() {
 
             <p className="flex items-center justify-center gap-2 text-[12px] text-sand-900/50 mt-4 tracking-[0.02em]">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
               Secure checkout · SSL encrypted
             </p>

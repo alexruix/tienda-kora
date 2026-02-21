@@ -1,0 +1,153 @@
+---
+/**
+ * ProductCard Molecule
+ * BeautyHome · NODO Studio
+ */
+
+import Badge from '../atoms/Badge.astro';
+
+interface Props {
+  id:             string;
+  name:           string;
+  category:       string;
+  price:          number;
+  originalPrice?: number;
+  rating?:        number;
+  reviewCount?:   number;
+  badges?:        Array<'new' | 'sale' | 'limited' | 'featured'>;
+  image?:         string;
+  aspectRatio?:   string;
+  featured?:      boolean;
+  animationDelay?: number;
+}
+
+const {
+  id,
+  name,
+  category,
+  price,
+  originalPrice,
+  rating         = 0,
+  reviewCount    = 0,
+  badges         = [],
+  image,
+  aspectRatio    = '4/5',
+  featured       = false,
+  animationDelay = 0,
+} = Astro.props;
+
+const discount = originalPrice
+  ? Math.round((1 - price / originalPrice) * 100)
+  : null;
+
+// Mantenemos el formato de moneda que definiste
+const formattedPrice    = price.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+---
+
+<article
+  class:list={[
+    "group relative bg-white rounded-f2-lg overflow-hidden shadow-f2-rest cursor-pointer animate-card-in f2-transition hover:-translate-y-1 hover:shadow-f2-hover",
+    featured ? "product-card--featured" : ""
+  ]}
+  style={`animation-delay: ${animationDelay}ms`}
+  data-product-id={id}
+>
+  <div class="relative overflow-hidden bg-sand-100" style={`aspect-ratio: ${aspectRatio}`}>
+    <div class="w-full h-full flex items-center justify-center transition-transform duration-[600ms] ease-fluent group-hover:scale-105">
+      {image ? (
+        <img src={image} alt={name} loading="lazy" width="400" height="500" class="w-full h-full object-cover" />
+      ) : (
+        <slot name="image" />
+      )}
+    </div>
+
+    {badges.length > 0 && (
+      <div class="absolute top-3 left-3 flex flex-col gap-2 z-10">
+        {badges.map((b) => (
+          <Badge variant={b} label={
+            b === 'sale' && discount ? `-${discount}%` :
+            b === 'new'  ? 'New'     :
+            b === 'limited' ? 'Limited' : 'Best Seller'
+          } />
+        ))}
+      </div>
+    )}
+
+    <button
+      class="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center z-10 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 fluent-acrylic border-none text-sand-900/50 f2-transition hover:scale-110 hover:!bg-white hover:text-watermelon [&.is-active]:text-watermelon"
+      aria-label={`Add ${name} to wishlist`}
+      data-wishlist={id}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" class="transition-colors">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </button>
+
+    <div class="absolute bottom-0 left-0 right-0 p-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-fluent z-10">
+      <button
+        class="w-full h-10 bg-petrol/90 backdrop-blur-md text-white rounded-f2-md font-sans text-[12px] tracking-[0.08em] uppercase font-medium flex items-center justify-center gap-2 cursor-pointer border-none transition-colors duration-150 hover:bg-petrol"
+        data-add-to-cart={id}
+        data-product-name={name}
+        data-product-price={price}
+        aria-label={`Add ${name} to cart`}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add to Cart
+      </button>
+    </div>
+  </div>
+
+  <div class="p-4 pt-5 pb-5">
+    <a href={`/product/${id}`} class="block no-underline text-inherit mb-3 group/link" aria-label={`View ${name}`}>
+      <p class="text-[11px] tracking-[0.1em] uppercase text-sand-900/50 mb-2 font-sans">{category}</p>
+      <h3 class="text-[15px] font-display font-medium text-sand-900 leading-snug transition-colors duration-150 group-hover/link:text-petrol">{name}</h3>
+    </a>
+
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-baseline gap-2">
+        <span class="text-[17px] font-medium text-petrol font-sans">{formattedPrice}</span>
+        {formattedOriginal && (
+          <span class="text-[13px] text-sand-900/40 line-through">{formattedOriginal}</span>
+        )}
+      </div>
+
+      {rating > 0 && (
+        <div class="flex items-center gap-[3px] text-[12px] text-sand-900/50 shrink-0" aria-label={`Rated ${rating} out of 5, ${reviewCount} reviews`}>
+          <span class="text-gold-400" aria-hidden="true">★</span>
+          <span>{rating}</span>
+          <span class="text-sand-900/40">· {reviewCount}</span>
+        </div>
+      )}
+    </div>
+  </div>
+</article>
+
+<script>
+  // Wishlist toggle
+  document.querySelectorAll('[data-wishlist]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      btn.classList.toggle('is-active');
+      
+      // Lógica visual extra para rellenar el SVG al hacer clic
+      const svg = btn.querySelector('svg');
+      if (svg) svg.setAttribute('fill', btn.classList.contains('is-active') ? 'currentColor' : 'none');
+    });
+  });
+
+  // Quick Add — fires a custom event picked up by CartDrawer
+  document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id    = btn.dataset.addToCart    ?? '';
+      const name  = btn.dataset.productName  ?? '';
+      const price = Number(btn.dataset.productPrice ?? 0);
+      window.dispatchEvent(new CustomEvent('cart:add', { detail: { id, name, price } }));
+    });
+  });
+</script>
