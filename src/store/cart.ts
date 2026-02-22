@@ -6,70 +6,85 @@
 import { atom, computed } from 'nanostores';
 import { persistentAtom } from '@nanostores/persistent';
 
-// ── Types ──────────────────────────────────────────────────
+/* ── Types ───────────────────────────────────────────────── */
 export type CartItem = {
   id: string;
   name: string;
   price: number;
   quantity: number;
   image?: string;
-  variant?: string; // Para el color (ej: "Oat Linen")
+  variant?: string;
 };
 
-// ── Atoms ──────────────────────────────────────────────────
+export type CartMap = Record<string, CartItem>;
 
-// 1. Cambio CLAVE: Usamos persistentAtom para que el carrito sobreviva a recargas.
-// Lo guardamos bajo la llave 'beautyhome_cart' en el localStorage.
-export const cartItems = persistentAtom<Record<string, CartItem>>(
-  'beautyhome_cart',
+/* ── Atoms ───────────────────────────────────────────────── */
+
+// 1. Guardamos el try/catch de Claude para máxima seguridad
+export const cartItems = persistentAtom<CartMap>(
+  'beautyhome_cart', // Mantenemos nuestra llave original
   {},
   {
     encode: JSON.stringify,
-    decode: JSON.parse,
+    decode: (raw: string): CartMap => {
+      try {
+        return JSON.parse(raw) as CartMap;
+      } catch {
+        return {};
+      }
+    },
   }
 );
 
-/** Controls cart drawer visibility */
-export const isCartOpen = atom(false);
+export const isCartOpen = atom<boolean>(false);
 
-// ── Derived / Computed ─────────────────────────────────────
+/* ── Derived / Computed ──────────────────────────────────── */
 
-/** Total number of items (sum of quantities) */
 export const cartCount = computed(cartItems, (items) =>
   Object.values(items).reduce((sum, item) => sum + item.quantity, 0)
 );
 
-/** Cart subtotal */
 export const cartTotal = computed(cartItems, (items) =>
   Object.values(items).reduce((sum, item) => sum + (item.price * item.quantity), 0)
 );
 
-// ── Actions ────────────────────────────────────────────────
+// NUEVO: Lógica de negocio extraída al Store (Genialidad de Claude)
+export const hasFreeShipping = computed(cartTotal, (total) => total >= 350);
+export const freeShippingRemaining = computed(cartTotal, (total) => Math.max(0, 350 - total));
 
-/** Add or increment a product in the cart */
-export function addCartItem(product: Omit<CartItem, 'quantity'>) {
+// NUEVO: Formateador global
+export const cartTotalFormatted = computed(cartTotal, (total) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+  }).format(total)
+);
+
+/* ── Actions ─────────────────────────────────────────────── */
+
+// Mantenemos nuestros nombres de funciones para no romper la app
+export function addCartItem(product: Omit<CartItem, 'quantity'> & { quantity?: number }) {
   const current = cartItems.get();
   const existing = current[product.id];
-  
+
   cartItems.set({
     ...current,
     [product.id]: existing
-      ? { ...existing, quantity: existing.quantity + 1 }
-      : { ...product, quantity: 1 },
+      ? { ...existing, quantity: existing.quantity + (product.quantity ?? 1) }
+      : { ...product, quantity: product.quantity ?? 1 },
   });
 
-  // UX Fix: Abrimos el carrito automáticamente al añadir un producto
-  isCartOpen.set(true); 
+  // MANTENEMOS ESTO: La mejora de UX de NODO
+  isCartOpen.set(true);
 }
 
-/** Remove an item from the cart entirely */
 export function removeCartItem(id: string) {
   const current = { ...cartItems.get() };
   delete current[id];
   cartItems.set(current);
 }
 
-/** Update quantity — removes item if qty drops to 0 */
 export function setCartQuantity(id: string, quantity: number) {
   if (quantity <= 0) {
     removeCartItem(id);
@@ -78,6 +93,11 @@ export function setCartQuantity(id: string, quantity: number) {
   const current = cartItems.get();
   if (!current[id]) return;
   cartItems.set({ ...current, [id]: { ...current[id], quantity } });
+}
+
+// NUEVO: Función útil para cuando se implemente el Checkout
+export function clearCart() {
+  cartItems.set({});
 }
 
 export function toggleCart() {

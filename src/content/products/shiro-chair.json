@@ -1,15 +1,37 @@
 {
-    "id": "shiro-chair",
-    "name": "Shiro Lounge Chair — Cashmere Bouclé",
-    "category": "Living · Seating",
-    "price": 1680,
-    "originalPrice": 1900,
-    "rating": 5.0,
-    "reviewCount": 33,
-    "badges": [
-        "sale", "featured"
-    ],
-    "image": "/images/sokaku.webp",
-    "aspectRatio": "4/5",
-    "featured": true
+  "name": "Shiro Lounge Chair",
+  "subtitle": "Cashmere Bouclé",
+  "slug": "shiro-chair",
+  "category": "living",
+  "subcategory": "Seating",
+  "price": 1680,
+  "originalPrice": 1900,
+  "inStock": true,
+  "leadTime": "10–14 weeks",
+  "rating": 5.0,
+  "reviewCount": 33,
+  "badges": ["sale"],
+  "featured": false,
+  "newArrival": false,
+  "description": "Named for the Japanese word for 'white,' the Shiro chair carries a softness that is almost visual. The cashmere bouclé upholstery is sourced from a single family mill in the Scottish Borders, woven with a deliberately loose loop that creates depth and texture. The organic silhouette is sculpted from bent beech laminate with exposed joinery.",
+  "details": [
+    { "label": "Dimensions",  "value": "W76 × D82 × H78 cm" },
+    { "label": "Seat Height", "value": "40 cm" },
+    { "label": "Frame",       "value": "Bent Beech Laminate" },
+    { "label": "Upholstery",  "value": "Cashmere Bouclé (Scottish Mills)" },
+    { "label": "Legs",        "value": "Solid Ash, Lacquered" },
+    { "label": "Weight",      "value": "18 kg" },
+    { "label": "Origin",      "value": "Japan × Scotland" }
+  ],
+  "variants": [
+    { "label": "Ivory Bouclé", "value": "ivory", "color": "#F0EDE7", "available": true  },
+    { "label": "Sand Bouclé",  "value": "sand",  "color": "#C8B89A", "available": true  },
+    { "label": "Stone Bouclé", "value": "stone", "color": "#8E9094", "available": true  },
+    { "label": "Onyx Bouclé",  "value": "onyx",  "color": "#3A3530", "available": false }
+  ],
+  "care": "Brush gently with a soft garment brush in the direction of the loop. Dry clean only. Rotate and fluff regularly. Keep away from direct heat sources.",
+  "shipping": "White-glove delivery included. 2-person crew, room of choice.",
+  "metaDescription": "Shiro Lounge Chair in cashmere bouclé. Bent beech laminate frame. Save 12% — Now $1,680. BeautyHome by NODO Studio.",
+  "altText": "Shiro lounge chair in ivory cashmere bouclé with organic sculptural silhouette on lacquered ash legs",
+  "relatedProducts": ["sokaku-sofa", "kuro-table", "nori-desk"]
 }

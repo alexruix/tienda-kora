@@ -1,0 +1,33 @@
+{
+  "name": "Kuro Coffee Table",
+  "subtitle": "Solid Black Walnut",
+  "slug": "kuro-table",
+  "category": "living",
+  "subcategory": "Tables",
+  "price": 1240,
+  "inStock": true,
+  "leadTime": "6–10 weeks",
+  "rating": 4.9,
+  "reviewCount": 45,
+  "badges": ["new"],
+  "featured": false,
+  "newArrival": true,
+  "description": "A study in negative space. The Kuro table's elliptical top appears to float above its hand-forged steel base. The black walnut surface is finished with a single coat of Danish hardwax oil, revealing the wood's natural figure without sealing out the character that develops over years of daily life.",
+  "details": [
+    { "label": "Dimensions", "value": "W120 × D60 × H38 cm" },
+    { "label": "Top",        "value": "Solid Black Walnut" },
+    { "label": "Finish",     "value": "Danish Hardwax Oil" },
+    { "label": "Base",       "value": "Hand-forged Blackened Steel" },
+    { "label": "Weight",     "value": "22 kg" },
+    { "label": "Origin",     "value": "Crafted in Portugal" }
+  ],
+  "variants": [
+    { "label": "Black Walnut", "value": "walnut", "color": "#3D2B1F", "available": true },
+    { "label": "White Oak",    "value": "oak",    "color": "#C8B89A", "available": true }
+  ],
+  "care": "Wipe with a slightly damp cloth, then immediately dry. Apply hardwax oil annually to maintain the finish. Avoid prolonged exposure to direct sunlight and liquids.",
+  "shipping": "White-glove delivery with assembly included. Protective wrapping and custom crating.",
+  "metaDescription": "Kuro Coffee Table in solid black walnut on a hand-forged steel base. Crafted in Portugal. From $1,240 — BeautyHome by NODO Studio.",
+  "altText": "Kuro coffee table with floating elliptical black walnut top on a minimal blackened steel base",
+  "relatedProducts": ["sokaku-sofa", "shiro-chair", "hana-pendant"]
+}

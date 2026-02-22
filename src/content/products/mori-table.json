@@ -1,0 +1,35 @@
+{
+  "name": "Mori Dining Table",
+  "subtitle": "Solid Walnut, Oval Top",
+  "slug": "mori-table",
+  "category": "dining",
+  "subcategory": "Tables",
+  "price": 3400,
+  "inStock": true,
+  "leadTime": "10–14 weeks",
+  "rating": 4.9,
+  "reviewCount": 31,
+  "badges": ["new", "featured"],
+  "featured": true,
+  "newArrival": true,
+  "description": "Mori (森, 'forest') is a dining table that earns its place at the centre of family life. The oval top in solid black walnut is jointed from full-width planks — no veneers, no shortcuts. The chamfered solid steel legs are welded at a precise 8° splay, creating a base with visual lightness despite its considerable physical weight.",
+  "details": [
+    { "label": "Dimensions",  "value": "W200 × D100 × H75 cm" },
+    { "label": "Top",         "value": "Solid Black Walnut (full planks)" },
+    { "label": "Finish",      "value": "Danish Hardwax Oil" },
+    { "label": "Legs",        "value": "Chamfered Blackened Steel, 8° splay" },
+    { "label": "Seats",       "value": "6–8 people" },
+    { "label": "Weight",      "value": "62 kg" },
+    { "label": "Origin",      "value": "Crafted in Denmark" }
+  ],
+  "variants": [
+    { "label": "Black Walnut + Black",  "value": "wal-black", "color": "#3D2B1F", "available": true  },
+    { "label": "White Oak + Natural",   "value": "oak-nat",   "color": "#C8B89A", "available": true  },
+    { "label": "Smoked Oak + Black",    "value": "smk-black", "color": "#706860", "available": false }
+  ],
+  "care": "Wipe spills immediately with a dry cloth. Apply hardwax oil twice annually. Use felt pads under all objects placed on the surface. Avoid tablecloths that trap moisture.",
+  "shipping": "White-glove delivery. 2-person crew. Assembly and feet installation included.",
+  "metaDescription": "Mori Dining Table — oval solid walnut top on blackened steel legs. Seats 6–8. Crafted in Denmark. From $3,400 — BeautyHome.",
+  "altText": "Mori dining table with oval solid walnut top and chamfered blackened steel legs, styled with linen chairs",
+  "relatedProducts": ["shiro-chair", "hana-pendant", "hoshi-lamp"]
+}

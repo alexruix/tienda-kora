@@ -1,13 +1,38 @@
 {
-    "id": "sokaku-sofa",
-    "name": "Sōkaku Sofa",
-    "category": "Living · Seating",
-    "price": 2890,
-    "badges": [
-        "new",
-        "featured"
-    ],
-    "image": "/images/sokaku.webp",
-    "aspectRatio": "4/5",
-    "featured": true
+  "name": "Sōkaku Sofa",
+  "subtitle": "3-seater in Natural Oat Linen",
+  "slug": "sokaku-sofa",
+  "category": "living",
+  "subcategory": "Seating",
+  "price": 2890,
+  "originalPrice": 3200,
+  "inStock": true,
+  "leadTime": "8–12 weeks",
+  "rating": 4.9,
+  "reviewCount": 128,
+  "badges": ["new", "featured"],
+  "featured": true,
+  "newArrival": true,
+  "description": "The Sōkaku (巣格) Sofa takes its name from the Japanese word for 'nested structure.' Each cushion is independently filled with ethically sourced down and natural latex for a sink-in comfort that never loses its form. The frame is solid white oak with hand-applied Danish oil finish — a piece built to outlast trends by decades.",
+  "details": [
+    { "label": "Dimensions",  "value": "W220 × D90 × H78 cm" },
+    { "label": "Seat Height", "value": "44 cm" },
+    { "label": "Frame",       "value": "Solid White Oak" },
+    { "label": "Upholstery",  "value": "Natural Oat Linen (Grade A)" },
+    { "label": "Fill",        "value": "Ethically Sourced Down + Natural Latex" },
+    { "label": "Legs",        "value": "Turned White Oak, Hand-oiled" },
+    { "label": "Weight",      "value": "68 kg" },
+    { "label": "Origin",      "value": "Crafted in Denmark" }
+  ],
+  "variants": [
+    { "label": "Oat Linen",   "value": "oat",   "color": "#C8B89A", "available": true  },
+    { "label": "Slate Grey",  "value": "slate", "color": "#8E9094", "available": true  },
+    { "label": "Sage Green",  "value": "sage",  "color": "#8EA086", "available": false },
+    { "label": "Ivory White", "value": "ivory", "color": "#F0EDE7", "available": true  }
+  ],
+  "care": "Vacuum regularly with soft brush attachment. Spot clean with mild detergent and cool water. Cushion covers are removable and dry-clean only. Professional upholstery cleaning recommended annually.",
+  "shipping": "White-glove delivery included. 2-person crew deliver to room of choice, assemble, and remove all packaging.",
+  "metaDescription": "Sōkaku Sofa — 3-seater in Natural Oat Linen. Solid white oak frame, down fill. Crafted in Denmark. From $2,890 — BeautyHome by NODO Studio.",
+  "altText": "Sōkaku Sofa in natural oat linen with turned oak legs, photographed in a Japandi living room",
+  "relatedProducts": ["hana-pendant", "kuro-table", "shiro-chair"]
 }

@@ -1,0 +1,35 @@
+{
+  "name": "Hana Pendant Light",
+  "subtitle": "Washi Paper & Brass Hardware",
+  "slug": "hana-pendant",
+  "category": "living",
+  "subcategory": "Lighting",
+  "price": 580,
+  "inStock": true,
+  "leadTime": "4–6 weeks",
+  "rating": 4.8,
+  "reviewCount": 67,
+  "badges": ["limited"],
+  "featured": false,
+  "newArrival": false,
+  "description": "Hand-formed from a single sheet of Mino washi paper sourced from a centuries-old papermaking family in Gifu, Japan. The brass fitting is cast and hand-polished in our Copenhagen workshop. Each pendant is entirely unique — slight variations in the paper's translucency and the light it casts are features, not flaws.",
+  "details": [
+    { "label": "Diameter",    "value": "42 cm" },
+    { "label": "Height",      "value": "38 cm (adjustable)" },
+    { "label": "Cord Length", "value": "Up to 200 cm" },
+    { "label": "Shade",       "value": "Mino Washi Paper, Gifu Japan" },
+    { "label": "Fitting",     "value": "Hand-polished Solid Brass" },
+    { "label": "Bulb",        "value": "E27, max 40W" },
+    { "label": "LED Ready",   "value": "Yes" },
+    { "label": "Origin",      "value": "Japan × Denmark" }
+  ],
+  "variants": [
+    { "label": "Natural Washi", "value": "natural",  "color": "#E5DFD3", "available": true },
+    { "label": "Charcoal",      "value": "charcoal", "color": "#5C5550", "available": true }
+  ],
+  "care": "Dust gently with a dry, soft cloth. Never use water or cleaning products directly on the washi shade. Store away from humidity.",
+  "shipping": "Shipped in custom-formed protective packaging. Carefully packed to prevent deformation of the washi shade. Standard delivery 5–7 business days.",
+  "metaDescription": "Hana Pendant Light — Mino washi paper and brass. Hand-formed in Japan, finished in Denmark. Limited edition. From $580 — BeautyHome.",
+  "altText": "Hana pendant light with translucent washi paper shade and brass hardware, emitting warm ambient light",
+  "relatedProducts": ["sokaku-sofa", "hoshi-lamp", "kuro-table"]
+}

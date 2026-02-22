@@ -1,0 +1,34 @@
+{
+  "name": "Suna Dining Chair",
+  "subtitle": "Woven Rush Seat, Oak Frame",
+  "slug": "suna-chair",
+  "category": "dining",
+  "subcategory": "Chairs",
+  "price": 420,
+  "inStock": true,
+  "leadTime": "6–8 weeks",
+  "rating": 4.8,
+  "reviewCount": 74,
+  "badges": [],
+  "featured": false,
+  "newArrival": false,
+  "description": "Suna (砂, 'sand') takes a Shaker simplicity and softens it with a hand-woven rush seat from the Loire Valley. Each seat is unique — the rush pattern tightened by a single craftsperson over two hours. The solid white oak frame is steam-bent to allow a subtle backward lean that makes long dinners comfortable.",
+  "details": [
+    { "label": "Dimensions",  "value": "W46 × D50 × H82 cm" },
+    { "label": "Seat Height", "value": "45 cm" },
+    { "label": "Frame",       "value": "Steam-bent Solid White Oak" },
+    { "label": "Seat",        "value": "Hand-woven Loire Rush" },
+    { "label": "Weight",      "value": "4.2 kg" },
+    { "label": "Sold as",     "value": "Single chair or set of 2 / 4 / 6" },
+    { "label": "Origin",      "value": "Frame: Denmark · Seat: France" }
+  ],
+  "variants": [
+    { "label": "White Oak + Natural Rush", "value": "oak-rush",   "color": "#C8B89A", "available": true  },
+    { "label": "Black Oak + Black Rush",   "value": "black-rush", "color": "#2D2926", "available": true  }
+  ],
+  "care": "Dust with a dry cloth. Occasional light oiling of the rush seat helps maintain flexibility. Keep away from prolonged moisture exposure.",
+  "shipping": "Shipped flat-pack. Minimal assembly (legs attach in under 10 minutes). Pair or set options at checkout.",
+  "metaDescription": "Suna Dining Chair — hand-woven rush seat on steam-bent white oak frame. Crafted in Denmark and France. From $420 — BeautyHome.",
+  "altText": "Suna dining chair with hand-woven rush seat and steam-bent white oak frame, shown at a walnut dining table",
+  "relatedProducts": ["mori-table", "hana-pendant", "shiro-chair"]
+}
