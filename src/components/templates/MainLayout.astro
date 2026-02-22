@@ -10,9 +10,14 @@
 // 1. Importamos el CSS global de Tailwind v4 aquí directamente
 import '../../styles/global.css';
 
+import { ClientRouter } from 'astro:transitions';
 import Navbar      from '../organisms/Navbar.jsx';
 import CartDrawer  from '../organisms/CartDrawer.jsx';
 import Footer      from '../organisms/Footer.astro';
+
+import { getCollection } from 'astro:content';
+import Navbar from '../organisms/Navbar.jsx';
+
 
 interface Props {
   title?:       string;
@@ -30,9 +35,11 @@ const {
   bodyClass   = '',
 } = Astro.props;
 
+const productsData = await getCollection('products');
+const allProducts = productsData.map(p => p.data);
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyhome.nodo.studio');
 ---
-
+<ClientRouter />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +76,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyho
 </head>
 <body class={`min-h-screen flex flex-col ${bodyClass}`}>
 
-  <Navbar client:load />
+  <Navbar client:load products={allProducts} />
 
   <main id="main-content" class="flex-grow focus:outline-none" tabindex="-1">
     <slot />

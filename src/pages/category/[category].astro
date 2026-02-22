@@ -1,0 +1,76 @@
+---
+/**
+ * category/[category].astro — Dynamic Category Page
+ * BeautyHome · NODO Studio
+ */
+
+import MainLayout from '../../components/templates/MainLayout.astro';
+import ProductGrid from '../../components/organisms/ProductGrid.astro';
+import { getCollection } from 'astro:content';
+
+// 1. Definimos las rutas estáticas basadas en las categorías existentes en los JSON
+export async function getStaticPaths() {
+  const allProducts = await getCollection('products');
+  
+  // Extraemos las categorías base (ej: de "Living · Seating" tomamos "Living")
+  const uniqueCategories = [
+    ...new Set(
+      allProducts.map((p) => p.data.category.split(' ·')[0].toLowerCase())
+    ),
+  ];
+
+  return uniqueCategories.map((category) => {
+    // Filtramos los productos que pertenecen a esta categoría específica
+    const filteredProducts = allProducts
+      .filter((p) => p.data.category.toLowerCase().startsWith(category))
+      .map((p) => p.data);
+
+    return {
+      params: { category },
+      props: { 
+        categoryName: category.charAt(0).toUpperCase() + category.slice(1),
+        products: filteredProducts 
+      },
+    };
+  });
+}
+
+const { category } = Astro.params;
+const { categoryName, products } = Astro.props;
+
+// Descripciones dinámicas (Podrías mover esto a un nuevo content collection de "categories" luego)
+const categoryDescriptions: Record<string, string> = {
+  living: "Sofas, lighting, tables, and objects for a living room with a quiet, confident character.",
+  dining: "Tables and seating designed for the ritual of shared meals and conversation.",
+  workspace: "Objects chosen for focus, clarity, and the feeling of a mind at ease.",
+};
+
+const description = categoryDescriptions[category] || `Curated ${categoryName} pieces by NODO Studio.`;
+---
+
+<MainLayout
+  title={`${categoryName} Collection — BeautyHome`}
+  description={description}
+>
+  {/* ─── Category Header ─── */}
+  <header class="max-w-[1320px] mx-auto px-5 md:px-8 pt-16 pb-8 animate-fade-in-up">
+    <div class="border-b border-sand-200 pb-8">
+       <p class="font-sans text-[11px] tracking-[0.22em] uppercase text-watermelon mb-4">Collection</p>
+       <h1 class="font-display text-5xl lg:text-6xl font-light text-petrol mb-4">{categoryName}</h1>
+       <p class="font-sans text-base text-sand-900/60 max-w-xl leading-relaxed">
+         {description}
+       </p>
+       <p class="font-sans text-[13px] text-sand-900/40 mt-8">
+         Showing {products.length} pieces
+       </p>
+    </div>
+  </header>
+
+  {/* ─── Product Grid Section ─── */}
+  <section class="max-w-[1320px] mx-auto px-5 md:px-8 pb-24">
+    <ProductGrid
+      products={products}
+      layout="default"
+    />
+  </section>
+</MainLayout>

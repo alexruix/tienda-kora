@@ -1,0 +1,124 @@
+---
+/**
+ * CategoryLayout Template — BeautyHome
+ * BeautyHome · NODO Studio
+ */
+
+import MainLayout from './MainLayout.astro';
+import { ClientRouter } from 'astro:transitions'; // Opcional pero recomendado
+
+interface Props {
+  category:      'living' | 'dining' | 'workspace';
+  title?:         string;
+  description?:   string;
+  productCount?:  number;
+}
+
+const {
+  category,
+  title         = category.charAt(0).toUpperCase() + category.slice(1),
+  description   = '',
+  productCount  = 0,
+} = Astro.props;
+
+// (Mantenemos los objetos SIDEBAR_FILTERS y CATEGORY_HERO que generó Claude)
+const SIDEBAR_FILTERS = { /* ... igual al original ... */ };
+const CATEGORY_HERO = { /* ... igual al original ... */ };
+
+const hero = CATEGORY_HERO[category];
+const filters = SIDEBAR_FILTERS[category] ?? [];
+---
+
+<MainLayout
+  title={`${title} — BeautyHome`}
+  description={description || hero.sub}
+>
+  {/* ─── Category Hero ─── */}
+  <header class="bg-sand-100 border-b border-sand-200 pt-16 lg:pt-24 pb-12">
+    <div class="max-w-[1320px] mx-auto px-5 md:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+        <div class="max-w-2xl animate-fade-in-up">
+          <p class="font-sans text-[11px] tracking-[0.22em] uppercase text-watermelon mb-4 flex items-center gap-3 before:content-[''] before:w-6 before:h-px before:bg-watermelon">
+            {hero.eyebrow}
+          </p>
+          <h1 class="font-display text-5xl lg:text-7xl font-light text-petrol leading-[1.1] mb-6" set:html={hero.headline} />
+          <p class="font-sans text-base lg:text-lg text-sand-900/60 leading-relaxed">
+            {hero.sub}
+          </p>
+        </div>
+        <div class="shrink-0 pb-2">
+          <span class="font-sans text-[13px] tracking-wider text-sand-900/40 uppercase">
+            {productCount} piezas seleccionadas
+          </span>
+        </div>
+      </div>
+
+      {/* Breadcrumb */}
+      <nav class="mt-12 flex items-center gap-2 text-[12px] text-sand-900/40 font-sans" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-petrol f2-transition">Home</a>
+        <span aria-hidden="true">›</span>
+        <span class="text-sand-900 font-medium" aria-current="page">{title}</span>
+      </nav>
+    </div>
+  </header>
+
+  {/* ─── Main Content: Sidebar + Grid ─── */}
+  <div class="max-w-[1320px] mx-auto px-5 md:px-8 py-12 lg:py-20 grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-12 lg:gap-16 items-start">
+    
+    {/* Sidebar Filters */}
+    <aside class="lg:sticky lg:top-24 space-y-8" aria-label="Filtros de productos">
+      <div class="flex items-center justify-between border-b border-sand-200 pb-4">
+        <h2 class="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-sand-900/40">Filtrar por</h2>
+        <button class="text-[11px] font-medium text-watermelon hover:underline underline-offset-4 cursor-pointer">Limpiar</button>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        {filters.map((group) => (
+          <details class="group border-b border-sand-200/60" open>
+            <summary class="flex items-center justify-between py-4 font-sans text-[13px] font-medium text-sand-900 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              {group.label}
+              <svg class="w-3 h-3 transition-transform duration-300 group-open:rotate-180 text-sand-900/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="pb-6 flex flex-col gap-2.5 animate-fade-in">
+              {group.options.map((opt) => (
+                <label class="flex items-center gap-3 cursor-pointer group/label">
+                  <div class="relative flex items-center justify-center w-4 h-4 rounded-f2-sm border-[1.5px] border-sand-300 bg-white group-hover/label:border-sand-400 f2-transition">
+                    <input type="checkbox" class="peer absolute inset-0 opacity-0 cursor-pointer" />
+                    <div class="w-full h-full bg-petrol rounded-f2-sm scale-0 peer-checked:scale-100 transition-transform duration-200 flex items-center justify-center">
+                      <svg class="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <span class="font-sans text-[13px] text-sand-900/70 group-hover/label:text-sand-900 f2-transition">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </details>
+        ))}
+
+        {/* Price Slider (Custom NODO Style) */}
+        <div class="py-6 border-b border-sand-200/60">
+          <h3 class="font-sans text-[13px] font-medium text-sand-900 mb-6">Rango de Precio</h3>
+          <input 
+            type="range" 
+            class="w-full h-1 bg-sand-200 rounded-lg appearance-none cursor-pointer accent-petrol" 
+            min="0" max="5000" 
+          />
+          <div class="flex justify-between mt-3 font-sans text-[11px] text-sand-900/40">
+            <span>$0</span>
+            <span>$5,000+</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    {/* Product Area */}
+    <div class="min-w-0">
+      <slot />
+    </div>
+
+  </div>
+</MainLayout>
