@@ -11,6 +11,3 @@ export function formatPrice(amount, currency = 'ARS', locale = 'en-US') {
     maximumFractionDigits: 2 // Añadido para manejar centavos si es necesario en el futuro
   }).format(amount);
 }
-
-// Ejemplo si luego necesitas usar pesos argentinos localmente:
-// formatPrice(2890, 'ARS', 'es-AR')

@@ -19,24 +19,16 @@ const products = defineCollection({
     newArrival: z.boolean().optional(),
     image: z.string().optional(),
     description: z.string().optional(),
-    details: z
-      .array(
-        z.object({
-          label: z.string(),
-          value: z.string(),
-        }),
-      )
-      .optional(),
-    variants: z
-      .array(
-        z.object({
-          label: z.string(),
-          value: z.string(),
-          color: z.string(),
-          available: z.boolean(),
-        }),
-      )
-      .optional(),
+    details: z.array(z.object({
+      label: z.string(),     
+      value: z.string()      
+    })).optional(),
+    variants: z.array(z.object({
+      label: z.string(),
+      value: z.string(),
+      color: z.string(),
+      available: z.boolean() // Control de stock por variante
+    })).optional(),
     care: z.string().optional(),
     shipping: z.string().optional(),
     metaDescription: z.string().optional(),

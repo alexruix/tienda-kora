@@ -1,0 +1,67 @@
+---
+/**
+ * /checkout — Checkout Page
+ * BeautyHome · NODO Studio
+ *
+ * Step 1: Datos del comprador + resumen del pedido.
+ * CheckoutForm (React island) maneja el estado del carrito y el POST a la API.
+ */
+import MainLayout from "../../components/templates/MainLayout.astro";
+import CheckoutForm from "../../components/organisms/CheckoutForm.jsx";
+
+export const prerender = false;
+---
+
+<MainLayout
+    title="Checkout — BeautyHome"
+    description="Complete your order."
+    noIndex={true}
+>
+    <!-- Breadcrumb -->
+    <nav
+        class="bg-sand-50 border-b border-sand-200 py-4"
+        aria-label="Breadcrumb"
+    >
+        <div class="max-w-[1100px] mx-auto px-5 md:px-8">
+            <ol
+                class="flex items-center gap-2 text-[13px] text-sand-900/50 flex-wrap"
+            >
+                <li>
+                    <a href="/" class="hover:text-sand-900 f2-transition"
+                        >Home</a>
+                </li>
+                <li aria-hidden="true">›</li>
+                <li aria-current="page" class="text-sand-900 font-medium">
+                    Checkout
+                </li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Step indicator -->
+    <div class="border-b border-sand-200 bg-white">
+        <div class="max-w-[1100px] mx-auto px-5 md:px-8 py-4">
+            <div
+                class="flex items-center gap-3 text-[12px] font-sans tracking-[0.06em] uppercase"
+            >
+                <span class="flex items-center gap-1.5 text-petrol font-medium">
+                    <span
+                        class="w-5 h-5 rounded-full bg-petrol text-white flex items-center justify-center text-[10px] font-bold"
+                        >1</span
+                    >
+                    Details
+                </span>
+                <span class="text-sand-200">——</span>
+                <span class="flex items-center gap-1.5 text-sand-900/30">
+                    <span
+                        class="w-5 h-5 rounded-full bg-sand-100 text-sand-900/30 flex items-center justify-center text-[10px]"
+                        >2</span
+                    >
+                    Payment
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <CheckoutForm client:only="react" />
+</MainLayout>

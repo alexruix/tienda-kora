@@ -1,0 +1,96 @@
+---
+/**
+ * /checkout/pending — Payment Pending
+ * BeautyHome · NODO Studio
+ */
+import MainLayout from "../../components/templates/MainLayout.astro";
+
+export const prerender = false;
+
+const paymentId = Astro.url.searchParams.get("payment_id");
+---
+
+<MainLayout title="Order Pending — BeautyHome" noIndex={true}>
+    <div
+        class="max-w-[600px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center"
+    >
+        <div
+            class="w-20 h-20 rounded-full bg-gold-100 border-2 border-gold-400/30 flex items-center justify-center mb-8"
+        >
+            <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                class="text-gold-700"
+            >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+        </div>
+        <p
+            class="font-sans text-[11px] tracking-[0.18em] uppercase text-gold-700/70 mb-3"
+        >
+            Payment Pending
+        </p>
+        <h1
+            class="font-display text-[clamp(32px,4vw,46px)] font-light text-petrol leading-[1.1] mb-4"
+        >
+            Almost there
+        </h1>
+        <p
+            class="font-sans text-[15px] text-sand-900/60 leading-relaxed mb-3 max-w-[420px]"
+        >
+            Your order is reserved. Once we confirm your payment, we'll prepare
+            and ship your pieces.
+        </p>
+        {
+            paymentId && (
+                <p class="font-mono text-[12px] text-sand-900/30 mb-8">
+                    Reference: {paymentId}
+                </p>
+            )
+        }
+        <div
+            class="w-full bg-gold-100 border border-gold-400/30 rounded-f2-lg p-5 mb-10 text-left"
+        >
+            <p class="font-sans text-[13px] font-medium text-gold-700 mb-2">
+                What happens next?
+            </p>
+            <ul class="space-y-2 font-sans text-[13px] text-sand-900/60">
+                <li class="flex items-start gap-2">
+                    <span class="text-gold-400 mt-0.5">✦</span>You'll receive
+                    payment instructions by email.
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-gold-400 mt-0.5">✦</span>Once confirmed
+                    (up to 2 business days), your order will be processed.
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-gold-400 mt-0.5">✦</span>If payment isn't
+                    received within 3 days, the order will be automatically
+                    cancelled.
+                </li>
+            </ul>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 w-full max-w-[340px]">
+            <a
+                href="/collections"
+                class="f2-button-primary flex-1 flex items-center justify-center h-12 text-[12px] tracking-[0.07em] uppercase no-underline"
+                >Keep Shopping</a
+            >
+            <a
+                href="/account"
+                class="flex-1 h-12 flex items-center justify-center font-sans text-[12px] tracking-[0.07em] uppercase text-sand-900/60 border border-sand-200 rounded-f2-md bg-white hover:border-sand-900/30 hover:text-sand-900 f2-transition no-underline"
+                >My Orders</a
+            >
+        </div>
+    </div>
+</MainLayout>
+
+<script>
+    import { cartItems } from "../../store/cart.ts";
+    cartItems.set({});
+</script>

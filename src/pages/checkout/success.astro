@@ -1,0 +1,84 @@
+---
+/**
+ * /checkout/success — Payment Success
+ * BeautyHome · NODO Studio
+ *
+ * MP redirige aquí con: ?payment_id=...&status=approved&collection_id=...
+ * Limpiamos el carrito y mostramos la confirmación.
+ */
+import MainLayout from "../../components/templates/MainLayout.astro";
+
+export const prerender = false;
+
+const paymentId = Astro.url.searchParams.get("payment_id");
+const collectionId = Astro.url.searchParams.get("collection_id");
+---
+
+<MainLayout
+  title="Order Confirmed — BeautyHome"
+  description="Your order has been confirmed."
+  noIndex={true}
+>
+  <div class="max-w-[600px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center">
+
+    <!-- Icon -->
+    <div class="relative mb-8 animate-[scaleIn_0.5s_cubic-bezier(0.33,1,0.68,1)_both]">
+      <div class="w-20 h-20 rounded-full bg-green-50 border-2 border-green-100 flex items-center justify-center">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-green-600">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <span class="absolute -top-2 -right-2 text-[20px]">✦</span>
+    </div>
+
+    <!-- Copy -->
+    <p class="font-sans text-[11px] tracking-[0.18em] uppercase text-sand-900/40 mb-3">
+      Order Confirmed
+    </p>
+    <h1 class="font-display text-[clamp(34px,5vw,52px)] font-light text-petrol leading-[1.1] mb-4">
+      Thank you for your purchase
+    </h1>
+    <p class="font-sans text-[15px] text-sand-900/60 leading-relaxed mb-3 max-w-[420px]">
+      We've received your payment and your order is being prepared. You'll receive a confirmation email shortly.
+    </p>
+
+    {paymentId && (
+      <p class="font-mono text-[12px] text-sand-900/30 mb-10">
+        Payment ID: {paymentId}
+      </p>
+    )}
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row gap-3 w-full max-w-[340px]">
+      <a
+        href="/collections"
+        class="f2-button-primary flex-1 flex items-center justify-center gap-2 h-12 text-[12px] tracking-[0.07em] uppercase no-underline"
+      >
+        Continue Shopping
+      </a>
+      <a
+        href="/account"
+        class="flex-1 h-12 flex items-center justify-center gap-2 font-sans text-[12px] tracking-[0.07em] uppercase text-sand-900/60 border border-sand-200 rounded-f2-md bg-white hover:border-sand-900/30 hover:text-sand-900 f2-transition no-underline"
+      >
+        My Orders
+      </a>
+    </div>
+  </div>
+</MainLayout>
+
+<!-- Limpiar el carrito después del pago exitoso -->
+<script>
+  import { cartItems } from '../../store/cart.ts';
+  import { clearCustomerInfo } from '../../store/customer.ts';
+  // Pago exitoso: limpiar carrito Y datos del comprador
+  cartItems.set({});
+  clearCustomerInfo();
+</script>
+
+<style>
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+</style>
