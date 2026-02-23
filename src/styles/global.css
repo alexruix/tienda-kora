@@ -51,6 +51,30 @@
   --animate-slide-down: slideDown 0.5s var(--ease-fluent) both;
   --animate-cart-pop: cartPop 0.3s var(--ease-fluent) both;
   --animate-mega-in: megaIn 0.22s var(--ease-fluent) both;
+  --animate-fade-in-up: fadeInUp 0.6s var(--ease-fluent) both;
+  --animate-slide-up: slideUp 0.5s var(--ease-fluent) both;
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   @keyframes slideDown {
     from {
@@ -137,14 +161,12 @@
     --space-4: 16px;
     --space-5: 20px;
     --space-6: 24px;
-
   }
 
   /* =========================================
    3. COMPONENTS
    ========================================= */
   @layer components {
-
     /* Fluent 2 "Acrylic" - Efecto translúcido */
     .fluent-acrylic {
       @apply bg-white/60 backdrop-blur-xl border border-white/30 shadow-f2-rest animate-acrylic-in;
@@ -321,8 +343,7 @@
 
     /* Default: auto-fill responsive */
     .product-grid--default {
-      @apply grid-cols-2 ;
-
+      @apply grid-cols-2;
     }
 
     /* Featured: Primer elemento ocupa más espacio */
@@ -332,11 +353,11 @@
 
     /* Selectores complejos para el layout Featured y vista de Lista */
     /* Nota: Usamos anidamiento nativo CSS que Tailwind v4 soporta por defecto */
-    .product-grid--featured>div:first-child {
+    .product-grid--featured > div:first-child {
       @apply lg:row-span-2;
     }
 
-    .product-grid--featured>div:first-child .pc-img-wrap {
+    .product-grid--featured > div:first-child .pc-img-wrap {
       @apply lg:min-h-[480px] lg:aspect-auto lg:h-full;
     }
 
@@ -357,19 +378,59 @@
     .product-grid[data-view-mode="list"] .pc-img-wrap {
       @apply w-[160px] shrink-0 aspect-square;
     }
+
+    .swatch-btn {
+      @apply w-8 h-8 rounded-full border-[1.5px] border-transparent shadow-[inset_0_0_0_2px_rgba(0,0,0,0.08)] 
+           f2-transition hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed outline-none;
+    }
+
+    .swatch-btn[aria-pressed="true"] {
+      @apply ring-2 ring-offset-2 ring-petrol;
+    }
+
+    /* ── PDP Gallery Thumbnails ── */
+    .gt-thumb {
+      @apply w-20 h-20 rounded-f2-md bg-sand-100 border-[1.5px] border-transparent shrink-0 
+           f2-transition  focus-visible:border-petrol outline-none;
+    }
+
+    .gt-thumb.is-active {
+      @apply border-petrol bg-white;
+    }
+
+    /* ── Wishlist State (Global para Cards y PDP) ── */
+    .wish-btn {
+      @apply f2-transition hover:scale-110 active:scale-90;
+    }
+
+    .wish-btn.is-active {
+      @apply text-watermelon border-watermelon;
+    }
+
+    .wish-btn.is-active svg {
+      @apply fill-watermelon;
+    }
+
+    /* ── Details Accordion (PDP) ── */
+    .pdp-details summary {
+      @apply flex items-center justify-between font-sans text-[14px] font-medium text-sand-900 
+           py-4 cursor-pointer list-none transition-colors duration-200 hover:text-petrol;
+    }
+
+    .pdp-details summary::-webkit-details-marker {
+      display: none;
+    }
   }
 
   /* =========================================
    4. UTILITIES
    ========================================= */
-  @layer utilities {
-    .f2-transition {
-      @apply transition-all duration-200 ease-in-out;
-    }
+}
 
-    /* Utilidad para forzar el renderizado de GPU en animaciones complejas */
-    .transform-gpu {
-      transform: translateZ(0);
-    }
-  }
+@utility f2-transition {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+@utility transform-gpu {
+  transform: translateZ(0);
 }

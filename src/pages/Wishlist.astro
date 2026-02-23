@@ -15,7 +15,10 @@ import WishlistGrid from "../components/organisms/WishlistGrid";
 import { getCollection } from "astro:content";
 
 const productsData = await getCollection("products");
-const allProducts = productsData.map((p) => p.data);
+const allProducts = productsData.map((p) => ({
+  ...p.data,
+  id: p.id // Vital para que coincida con el store
+}));
 ---
 
 <MainLayout
@@ -36,7 +39,7 @@ const allProducts = productsData.map((p) => p.data);
   </nav>
 
   <!-- React island: filtra productos por wishlist store -->
-  <WishlistGrid products={allProducts} client:only="react" />
+<WishlistGrid products={allProducts as any} client:only="react" />
 </MainLayout>
 
 <!--

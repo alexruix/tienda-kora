@@ -40,14 +40,14 @@ export const wishlistItems = persistentAtom<WishlistMap>(
         return {};
       }
     },
-  }
+  },
 );
 
 // ── Computed ─────────────────────────────────────────────────────────────────
 
 export const wishlistCount = computed(
   wishlistItems,
-  (items) => Object.keys(items).length
+  (items) => Object.keys(items).length,
 );
 
 // ── Actions ──────────────────────────────────────────────────────────────────

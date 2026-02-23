@@ -8,22 +8,26 @@ import MainLayout from '../../components/templates/MainLayout.astro';
 import ProductGrid from '../../components/organisms/ProductGrid.astro';
 import { getCollection } from 'astro:content';
 
-// 1. Definimos las rutas estáticas basadas en las categorías existentes en los JSON
 export async function getStaticPaths() {
   const allProducts = await getCollection('products');
   
-  // Extraemos las categorías base (ej: de "Living · Seating" tomamos "Living")
+  // 1. Normalizamos las categorías para las rutas
   const uniqueCategories = [
     ...new Set(
-      allProducts.map((p) => p.data.category.split(' ·')[0].toLowerCase())
+      allProducts
+        .filter(p => p.data.category)
+        .map((p) => p.data.category.split(' ·')[0].toLowerCase())
     ),
   ];
 
   return uniqueCategories.map((category) => {
-    // Filtramos los productos que pertenecen a esta categoría específica
+    // 2. IMPORTANTE: Incluimos el ID en el mapeo para el Carrito/Wishlist
     const filteredProducts = allProducts
       .filter((p) => p.data.category.toLowerCase().startsWith(category))
-      .map((p) => p.data);
+      .map((p) => ({
+        ...p.data,
+        id: p.id // Conservamos el identificador único del archivo
+      }));
 
     return {
       params: { category },
@@ -38,7 +42,6 @@ export async function getStaticPaths() {
 const { category } = Astro.params;
 const { categoryName, products } = Astro.props;
 
-// Descripciones dinámicas (Podrías mover esto a un nuevo content collection de "categories" luego)
 const categoryDescriptions: Record<string, string> = {
   living: "Sofas, lighting, tables, and objects for a living room with a quiet, confident character.",
   dining: "Tables and seating designed for the ritual of shared meals and conversation.",
@@ -61,7 +64,7 @@ const description = categoryDescriptions[category] || `Curated ${categoryName} p
          {description}
        </p>
        <p class="font-sans text-[13px] text-sand-900/40 mt-8">
-         Showing {products.length} pieces
+         Showing <strong>{products.length}</strong> pieces
        </p>
     </div>
   </header>
@@ -69,7 +72,7 @@ const description = categoryDescriptions[category] || `Curated ${categoryName} p
   {/* ─── Product Grid Section ─── */}
   <section class="max-w-[1320px] mx-auto px-5 md:px-8 pb-24">
     <ProductGrid
-      products={products}
+      products={products as any} 
       layout="default"
     />
   </section>

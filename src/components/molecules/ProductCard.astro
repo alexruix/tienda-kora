@@ -6,18 +6,19 @@
 
 import Badge from '../atoms/Badge.astro';
 
+// ... Props y lógica de moneda (se mantiene igual) ...
 interface Props {
-  id:             string;
-  name:           string;
-  category:       string;
-  price:          number;
-  originalPrice?: number;
-  rating?:        number;
-  reviewCount?:   number;
-  badges?:        Array<'new' | 'sale' | 'limited' | 'featured'>;
-  image?:         string;
-  aspectRatio?:   string;
-  featured?:      boolean;
+  id:              string;
+  name:            string;
+  category:        string;
+  price:           number;
+  originalPrice?:  number;
+  rating?:         number;
+  reviewCount?:    number;
+  badges?:         Array<'new' | 'sale' | 'limited' | 'featured'>;
+  image?:          string;
+  aspectRatio?:    string;
+  featured?:       boolean;
   animationDelay?: number;
 }
 
@@ -36,12 +37,8 @@ const {
   animationDelay = 0,
 } = Astro.props;
 
-const discount = originalPrice
-  ? Math.round((1 - price / originalPrice) * 100)
-  : null;
-
-// Mantenemos el formato de moneda que definiste
-const formattedPrice    = price.toLocaleString('en-US', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+const discount = originalPrice ? Math.round((1 - price / originalPrice) * 100) : null;
+const formattedPrice = price.toLocaleString('en-US', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
 const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
 ---
 
@@ -62,6 +59,7 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
       )}
     </div>
 
+    {/* Badges */}
     {badges.length > 0 && (
       <div class="absolute top-3 left-3 flex flex-col gap-2 z-10">
         {badges.map((b) => (
@@ -74,21 +72,22 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
       </div>
     )}
 
+    {/* Wishlist Button - Conexión al Store */}
     <button
       class="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center z-10 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 fluent-acrylic border-none text-sand-900/50 f2-transition hover:scale-110 hover:!bg-white hover:text-watermelon [&.is-active]:text-watermelon"
       aria-label={`Add ${name} to wishlist`}
-      data-wishlist={id}
+      data-wishlist-btn={id} 
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" class="transition-colors">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
       </svg>
     </button>
 
+    {/* Add to Cart Button */}
     <div class="absolute bottom-0 left-0 right-0 p-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-fluent z-10">
       <button
         class="w-full h-10 bg-petrol/90 backdrop-blur-md text-white rounded-f2-md font-sans text-[12px] tracking-[0.08em] uppercase font-medium flex items-center justify-center gap-2 cursor-pointer border-none transition-colors duration-150 hover:bg-petrol"
         data-add-to-cart={id}
-        
         aria-label={`Add ${name} to cart`}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -101,54 +100,84 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
   </div>
 
   <div class="p-4 pt-5 pb-5">
-    <a href={`/product/${id}`} class="block no-underline text-inherit mb-3 group/link" aria-label={`View ${name}`}>
+    <a href={`/product/${id}`} class="block no-underline text-inherit mb-3 group/link">
       <p class="text-[11px] tracking-[0.1em] uppercase text-sand-900/50 mb-2 font-sans">{category}</p>
       <h3 class="text-[15px] font-display font-medium text-sand-900 leading-snug transition-colors duration-150 group-hover/link:text-petrol">{name}</h3>
     </a>
-
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-baseline gap-2">
         <span class="text-[17px] font-medium text-petrol font-sans">{formattedPrice}</span>
-        {formattedOriginal && (
-          <span class="text-[13px] text-sand-900/40 line-through">{formattedOriginal}</span>
-        )}
+        {formattedOriginal && <span class="text-[13px] text-sand-900/40 line-through">{formattedOriginal}</span>}
       </div>
-
-      {rating > 0 && (
-        <div class="flex items-center gap-[3px] text-[12px] text-sand-900/50 shrink-0" aria-label={`Rated ${rating} out of 5, ${reviewCount} reviews`}>
-          <span class="text-gold-400" aria-hidden="true">★</span>
-          <span>{rating}</span>
-          <span class="text-sand-900/40">· {reviewCount}</span>
-        </div>
-      )}
     </div>
   </div>
 </article>
 
 <script>
-  // 1. Wishlist toggle (Se mantiene igual, funciona perfecto)
-  document.querySelectorAll('[data-wishlist]').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation(); // Evita que al hacer clic en el corazón se navegue al producto
-      btn.classList.toggle('is-active');
-      const svg = btn.querySelector('svg');
-      if (svg) svg.setAttribute('fill', btn.classList.contains('is-active') ? 'currentColor' : 'none');
+  import { wishlistItems, toggleWishlistItem } from '../../store/wishlist';
+
+  /**
+   * 1. Sincronización Visual (UI)
+   * Buscamos los botones en el DOM ACTUAL y los pintamos según el Store.
+   */
+  const syncWishlistUI = () => {
+    const items = wishlistItems.get();
+    // QuerySelector vivo: siempre busca lo que hay en pantalla AHORA.
+    document.querySelectorAll('[data-wishlist-btn]').forEach((btn) => {
+      const id = (btn as HTMLElement).dataset.wishlistBtn;
+      if (id) {
+        const isActive = !!items[id];
+        const svg = btn.querySelector('svg');
+        if (isActive) {
+          btn.classList.add('is-active');
+          svg?.setAttribute('fill', 'currentColor');
+        } else {
+          btn.classList.remove('is-active');
+          svg?.setAttribute('fill', 'none');
+        }
+      }
     });
-  });
+  };
 
-  // 2. 🛡️ Quick Add SEGURO: Solo enviamos el ID.
-  // El componente CartDrawer se encargará de buscar el precio, nombre e imagen en el servidor.
-  document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
-  btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const id = (btn as HTMLElement).dataset.addToCart ?? '';
-    if (!id) return;
+  /**
+   * 2. Suscripción Reactiva
+   * Si el store cambia (desde la Navbar, por ejemplo), actualizamos la UI.
+   */
+  wishlistItems.subscribe(() => syncWishlistUI());
 
-    window.dispatchEvent(new CustomEvent('cart:add', {
-      detail: { id }  
-    }));
-  });
-});
+  /**
+   * 3. Ciclo de Vida de Astro (ClientRouter compatible)
+   */
+  document.addEventListener('astro:page-load', () => {
+    // Sincronizamos apenas carga la página o volvemos a ella
+    syncWishlistUI();
+
+    // DELEGACIÓN DE EVENTOS: Un solo listener en el document para todo.
+    // Es más eficiente y no se rompe al navegar.
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+
+      // --- Lógica de Wishlist ---
+      const wishlistBtn = target.closest('[data-wishlist-btn]');
+      if (wishlistBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = (wishlistBtn as HTMLElement).dataset.wishlistBtn;
+        if (id) toggleWishlistItem(id);
+        return; // Detenemos aquí si ya encontramos el botón
+      }
+
+      // --- Lógica de Carrito ---
+      const cartBtn = target.closest('[data-add-to-cart]');
+      if (cartBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = (cartBtn as HTMLElement).dataset.addToCart;
+        if (id) {
+          // Mantenemos tu CustomEvent exactamente igual
+          window.dispatchEvent(new CustomEvent('cart:add', { detail: { id } }));
+        }
+      }
+    }, { once: false }); // Se mantiene activo durante la sesión
+  }, { once: false });
 </script>

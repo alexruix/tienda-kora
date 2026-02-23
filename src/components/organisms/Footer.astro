@@ -23,7 +23,7 @@ const uniqueCategories = [
 // 3. Construimos los enlaces dinámicos para la columna "Shop"
 const shopLinks = uniqueCategories.map(cat => ({
   label: cat,
-  href: `/category/${cat?.toLowerCase()}`
+  href: `/category/${cat.toLowerCase()}`
 }));
 shopLinks.push({ label: 'Collections', href: '/collections' });
 shopLinks.push({ label: 'Sale', href: '/sale' });
@@ -149,13 +149,21 @@ const NAV_COLUMNS = [
 </footer>
 
 <script>
-  // Prevención temporal de comportamiento por defecto para que no lance 404
-  const form = document.getElementById('newsletter-form');
-  if(form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Newsletter integration pending!');
-      form.reset();
-    });
-  }
+  // Usamos astro:page-load para que el script se reinicie tras navegar (View Transitions)
+  document.addEventListener('astro:page-load', () => {
+    // Castings: Forzamos el tipo HTMLFormElement
+    const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Aquí podrías disparar un CustomEvent si quieres un Toast de éxito
+        alert('Newsletter integration pending!');
+        
+        // Ahora TypeScript no se queja porque sabe que 'form' es un HTMLFormElement
+        form.reset();
+      });
+    }
+  });
 </script>

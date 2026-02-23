@@ -11,6 +11,7 @@ import {
   FREE_SHIPPING_THRESHOLD,
   PROMO_CODE,
 } from "../../store/cart.ts";
+import { wishlistCount } from "../../store/wishlist.ts";
 import SearchBar from "../molecules/SearchBar.jsx";
 
 export default function Navbar({ products = [] }) {
@@ -21,6 +22,7 @@ export default function Navbar({ products = [] }) {
 
   // Nos suscribimos al contador global de Nanostores
   const currentCartCount = useStore(cartCount);
+  const currentWishlistCount = useStore(wishlistCount);
   const navRef = useRef(null);
 
   // Evitar problemas de hidratación en SSR
@@ -204,10 +206,15 @@ export default function Navbar({ products = [] }) {
               <SearchBar products={products} />
             </div>
 
+            {/* 3. BOTÓN DE WISHLIST CON BADGE */}
             <a
               href="/wishlist"
-              className="hidden sm:flex w-10 h-10 rounded-f2-md items-center justify-center text-sand-900/70 bg-transparent hover:bg-sand-100 hover:text-sand-900 transition-colors duration-150 active:scale-95 no-underline"
-              aria-label="Wishlist"
+              className="relative hidden sm:flex w-10 h-10 rounded-f2-md items-center justify-center text-sand-900/70 bg-transparent hover:bg-sand-100 hover:text-sand-900 transition-colors duration-150 active:scale-95 no-underline"
+              aria-label={
+                isMounted
+                  ? `Wishlist, ${currentWishlistCount} items`
+                  : "Wishlist"
+              }
             >
               <svg
                 width="18"
@@ -219,6 +226,16 @@ export default function Navbar({ products = [] }) {
               >
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
+
+              {/* INSIGNIA DE WISHLIST */}
+              {isMounted && currentWishlistCount > 0 && (
+                <span
+                  className="absolute -top-[2px] -right-[2px] min-w-[16px] h-[16px] px-1 bg-watermelon text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-sand-50 animate-cart-pop"
+                  aria-hidden="true"
+                >
+                  {currentWishlistCount}
+                </span>
+              )}
             </a>
 
             <a
