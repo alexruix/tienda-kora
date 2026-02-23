@@ -147,7 +147,7 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
     if (!id) return;
 
     window.dispatchEvent(new CustomEvent('cart:add', {
-      detail: { id }  // CartDrawer hace fetch('/api/product/${id}.json')
+      detail: { id }  
     }));
   });
 });

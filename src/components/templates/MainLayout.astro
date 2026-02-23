@@ -27,7 +27,11 @@ const {
 } = Astro.props;
 
 const productsData = await getCollection('products');
-const allProducts  = productsData.map((p) => p.data);
+// Aseguramos que el mapeo incluya el ID, que es vital para tu lógica de "solo ID"
+const allProducts = productsData.map((p) => ({
+  ...p.data,
+  id: p.id
+}));
 
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyhome.nodo.studio');
@@ -68,9 +72,14 @@ const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://beautyhome.nodo.stu
 </head>
 
 <body class={`min-h-screen flex flex-col ${bodyClass}`}>
+<Navbar products={allProducts as any} client:only="react" />
+  
+  <CartDrawer 
+    products={allProducts as any} 
+    client:only="react" 
+  />
 
-<Navbar products={allProducts} client:only="react" />
-<CartDrawer client:only="react" products={allProducts} />
+
   <main id="main-content" class="flex-grow focus:outline-none" tabindex="-1">
     <slot />
   </main>

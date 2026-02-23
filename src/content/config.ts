@@ -14,7 +14,7 @@ const products = defineCollection({
     leadTime: z.string().optional(),
     rating: z.number().min(0).max(5).optional(),
     reviewCount: z.number().int().optional(),
-    badges: z.array(z.string()).optional(),
+    badges: z.array(z.enum(["featured", "new", "sale", "limited"])).optional(),
     featured: z.boolean().optional(),
     newArrival: z.boolean().optional(),
     image: z.string().optional(),

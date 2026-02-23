@@ -2,33 +2,39 @@
 /**
  * index.astro — Homepage
  * BeautyHome · NODO Studio
+ * * Arquitectura:
+ * - Data fetching validado por Astro Content Collections (Zod).
+ * - Event-Driven Architecture para el flujo del carrito (Solo se envía el ID).
  */
 
 import MainLayout from "../components/templates/MainLayout.astro";
 import ProductGrid from "../components/organisms/ProductGrid.astro";
 import Button from "../components/atoms/Button.astro";
-
-// 1. Importamos la colección real de Astro
 import { getCollection } from "astro:content";
 
-// 2. Traemos todos los productos y extraemos la data limpia
+// 1. Extraemos la colección validada y aseguramos el ID
 const productsCollection = await getCollection("products");
-const allProducts = productsCollection.map((item) => item.data);
+const allProducts = productsCollection.map((item) => ({
+  ...item.data,
+  id: item.id // Vital para el lookup en el CartDrawer
+}));
 
-// 3. Filtramos los destacados para la grilla
+// 2. Filtramos destacados para la grilla
 const featuredProducts = allProducts.filter((product) => product.featured);
 
-// Categorías estáticas (Esto está bien mantenerlo hardcodeado por ahora)
+// 3. Obtenemos el producto del Hero dinámicamente para evitar desajustes de precios
+const heroProduct = allProducts.find((p) => p.id === "sokaku-sofa") || allProducts[0];
+const heroFormattedPrice = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "ARS",
+  minimumFractionDigits: 0,
+}).format(heroProduct.price);
+
+// Categorías estáticas
 const CATEGORY_CARDS = [
   { id: "living", label: "Space", name: "Living", count: 142, href: "/living" },
   { id: "dining", label: "Space", name: "Dining", count: 88, href: "/dining" },
-  {
-    id: "workspace",
-    label: "Space",
-    name: "Workspace",
-    count: 64,
-    href: "/workspace",
-  },
+  { id: "workspace", label: "Space", name: "Workspace", count: 64, href: "/workspace" },
 ];
 
 const CATEGORY_PILLS = [
@@ -49,47 +55,26 @@ const CATEGORY_PILLS = [
   description="Objects at the intersection of Scandinavian restraint and Japanese wabi-sabi. Shop 340+ curated pieces from 28 artisan studios."
 >
   {/* ─── HERO SECTION ─── */}
-  <section
-    class="min-h-screen grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden"
-    aria-labelledby="hero-headline"
-  >
-    <div
-      class="flex flex-col justify-center px-5 md:px-8 lg:px-16 pt-[100px] lg:pt-[120px] pb-20 relative z-10 animate-fade-in-up"
-    >
-      <p
-        class="text-[11px] tracking-[0.22em] uppercase text-watermelon mb-6 flex items-center gap-3 before:content-[''] before:w-8 before:h-px before:bg-watermelon before:shrink-0"
-      >
+  <section class="min-h-screen grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden" aria-labelledby="hero-headline">
+    <div class="flex flex-col justify-center px-5 md:px-8 lg:px-16 pt-[100px] lg:pt-[120px] pb-20 relative z-10 animate-fade-in-up">
+      <p class="text-[11px] tracking-[0.22em] uppercase text-watermelon mb-6 flex items-center gap-3 before:content-[''] before:w-8 before:h-px before:bg-watermelon before:shrink-0">
         New Collection 2026
       </p>
 
-      {/* Cambio CLAVE: font-display para usar Cormorant Garamond */}
-      <h1
-        class="font-display text-[clamp(52px,6vw,88px)] font-light leading-[1.05] text-petrol mb-6 tracking-[-0.01em]"
-        id="hero-headline"
-      >
+      <h1 class="font-display text-[clamp(52px,6vw,88px)] font-light leading-[1.05] text-petrol mb-6 tracking-[-0.01em]" id="hero-headline">
         Spaces that<br />
         <em class="italic text-sand-900/70">breathe</em><br />
         with you.
       </h1>
 
-      <p
-        class="font-sans text-base text-sand-900/70 leading-[1.7] max-w-[420px] mb-10"
-      >
+      <p class="font-sans text-base text-sand-900/70 leading-[1.7] max-w-[420px] mb-10">
         Curated home objects at the intersection of Scandinavian restraint and
         Japanese wabi-sabi — for homes that tell stories.
       </p>
 
       <div class="flex items-center gap-4 flex-wrap">
         <Button variant="primary" href="/new-arrivals" size="lg">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            aria-hidden="true"
-          >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
@@ -100,94 +85,55 @@ const CATEGORY_PILLS = [
         </Button>
       </div>
 
-      <div
-        class="flex gap-6 md:gap-10 mt-16 pt-8 border-t border-sand-200"
-        aria-label="Store highlights"
-      >
+      <div class="flex gap-6 md:gap-10 mt-16 pt-8 border-t border-sand-200" aria-label="Store highlights">
         <div>
-          <span class="block font-sans text-4xl font-light text-petrol"
-            >340+</span
-          >
-          <span
-            class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1"
-            >Curated pieces</span
-          >
+          <span class="block font-sans text-4xl font-light text-petrol">340+</span>
+          <span class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1">Curated pieces</span>
         </div>
         <div>
-          <span class="block font-sans text-4xl font-light text-petrol">28</span
-          >
-          <span
-            class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1"
-            >Artisan studios</span
-          >
+          <span class="block font-sans text-4xl font-light text-petrol">28</span>
+          <span class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1">Artisan studios</span>
         </div>
         <div>
-          <span class="block font-sans text-4xl font-light text-petrol"
-            >4.9★</span
-          >
-          <span
-            class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1"
-            >Customer rating</span
-          >
+          <span class="block font-sans text-4xl font-light text-petrol">4.9★</span>
+          <span class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1">Customer rating</span>
         </div>
       </div>
     </div>
 
-    <div
-      class="relative overflow-hidden bg-sand-100 h-[60vw] min-h-[320px] lg:h-auto animate-fade-in"
-      aria-hidden="true"
-    >
+    <div class="relative overflow-hidden bg-sand-100 h-[60vw] min-h-[320px] lg:h-auto animate-fade-in" aria-hidden="true">
       {/* Placeholder del Hero Image */}
-      <svg
-        class="absolute inset-0 w-full h-full"
-        viewBox="0 0 700 800"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="xMidYMax slice"
-        aria-hidden="true"
-      >
+      <svg class="absolute inset-0 w-full h-full" viewBox="0 0 700 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
         <rect width="700" height="800" fill="#F2EFE9"></rect>
         <path d="M0 620 L700 550 L700 800 L0 800 Z" fill="#E5DFD3"></path>
       </svg>
 
-      {/* Cambio CLAVE: Uso de fluent-acrylic en lugar de reescribirlo */}
-      <div
-        class="absolute bottom-8 left-6 fluent-acrylic rounded-f2-lg px-5 py-4 flex items-center gap-4 min-w-[240px]"
-      >
-        <div
-          class="w-[52px] h-[52px] rounded-f2-md bg-sand-200 overflow-hidden shrink-0"
-          aria-hidden="true"
-        >
-          <svg viewBox="0 0 52 58" fill="none" width="100%" height="100%">
-            <rect width="52" height="58" fill="#E5DFD3"></rect>
-            <rect x="6" y="28" width="40" height="18" rx="4" fill="#CEC5B5"
-            ></rect>
-          </svg>
+      {/* Hero Product - Dynamic Acrylic Card */}
+      <div class="absolute bottom-8 left-6 fluent-acrylic rounded-f2-lg px-5 py-4 flex items-center gap-4 min-w-[240px]">
+        <div class="w-[52px] h-[52px] rounded-f2-md bg-sand-200 overflow-hidden shrink-0" aria-hidden="true">
+          {heroProduct.image ? (
+            <img src={heroProduct.image} alt="" class="w-full h-full object-cover" />
+          ) : (
+            <svg viewBox="0 0 52 58" fill="none" width="100%" height="100%">
+              <rect width="52" height="58" fill="#E5DFD3"></rect>
+              <rect x="6" y="28" width="40" height="18" rx="4" fill="#CEC5B5"></rect>
+            </svg>
+          )}
         </div>
         <div>
           <p class="font-sans text-[13px] font-medium text-sand-900">
-            Sōkaku Sofa · Oat
+            {heroProduct.name} · Oat
           </p>
           <p class="font-sans text-[15px] font-medium text-petrol mt-0.5">
-            $2,890
+            {heroFormattedPrice}
           </p>
         </div>
         <button
           class="ml-auto w-8 h-8 rounded-f2-md bg-watermelon flex items-center justify-center cursor-pointer border-none f2-transition hover:bg-watermelon-hover hover:scale-110 active:scale-95 shrink-0"
-          data-add-to-cart="sokaku-sofa"
-          data-product-name="Sōkaku Sofa"
-          data-product-price="2890"
-          aria-label="Add Sōkaku Sofa to cart"
+          data-hero-add-to-cart={heroProduct.id}
+          aria-label={`Add ${heroProduct.name} to cart`}
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            stroke-width="2.5"
-            aria-hidden="true"
-          >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" aria-hidden="true">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
@@ -197,76 +143,46 @@ const CATEGORY_PILLS = [
   </section>
 
   {/* ─── TRUST BAND ─── */}
-  <div
-    class="bg-sand-100 border-y border-sand-200 py-8"
-    role="list"
-    aria-label="Our promises"
-  >
-    <div
-      class="max-w-[1320px] mx-auto px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-    >
-      {
-        [
-          { emoji: "🚚", title: "Free Shipping", sub: "On orders over $350" },
-          { emoji: "🔄", title: "60-Day Returns", sub: "No questions asked" },
-          {
-            emoji: "🤝",
-            title: "Artisan Sourced",
-            sub: "Direct from craftspeople",
-          },
-          {
-            emoji: "🌿",
-            title: "Sustainably Made",
-            sub: "Certified materials only",
-          },
-        ].map((item) => (
-          <div class="flex items-center gap-4" role="listitem">
-            <div
-              class="w-11 h-11 rounded-f2-md bg-white shadow-f2-rest flex items-center justify-center text-xl shrink-0"
-              aria-hidden="true"
-            >
-              {item.emoji}
-            </div>
-            <div class="font-sans">
-              <p class="text-[13px] font-medium text-sand-900">{item.title}</p>
-              <p class="text-[12px] text-sand-900/60 mt-0.5">{item.sub}</p>
-            </div>
+  <div class="bg-sand-100 border-y border-sand-200 py-8" role="list" aria-label="Our promises">
+    <div class="max-w-[1320px] mx-auto px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[
+        { emoji: "🚚", title: "Free Shipping", sub: "On orders over $5,000" },
+        { emoji: "🔄", title: "60-Day Returns", sub: "No questions asked" },
+        { emoji: "🤝", title: "Artisan Sourced", sub: "Direct from craftspeople" },
+        { emoji: "🌿", title: "Sustainably Made", sub: "Certified materials only" },
+      ].map((item) => (
+        <div class="flex items-center gap-4" role="listitem">
+          <div class="w-11 h-11 rounded-f2-md bg-white shadow-f2-rest flex items-center justify-center text-xl shrink-0" aria-hidden="true">
+            {item.emoji}
           </div>
-        ))
-      }
+          <div class="font-sans">
+            <p class="text-[13px] font-medium text-sand-900">{item.title}</p>
+            <p class="text-[12px] text-sand-900/60 mt-0.5">{item.sub}</p>
+          </div>
+        </div>
+      ))}
     </div>
   </div>
 
   {/* ─── CATEGORY PILLS ─── */}
-  <nav
-    class="max-w-[1320px] mx-auto px-8 flex gap-3 overflow-x-auto py-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-    aria-label="Browse by type"
-  >
-    {
-      CATEGORY_PILLS.map((pill) => (
-        <a
-          href={`/?category=${pill.value}`}
-          class:list={[
-            "filter-pill", // Cambio CLAVE: Usamos tu token de global.css
-            pill.active ? "filter-pill--active" : "",
-          ]}
-          aria-current={pill.active ? "true" : undefined}
-        >
-          <span class="text-[15px]" aria-hidden="true">
-            {pill.emoji}
-          </span>
-          {pill.label}
-        </a>
-      ))
-    }
+  <nav class="max-w-[1320px] mx-auto px-8 flex gap-3 overflow-x-auto py-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Browse by type">
+    {CATEGORY_PILLS.map((pill) => (
+      <a
+        href={`/?category=${pill.value}`}
+        class:list={["filter-pill", pill.active ? "filter-pill--active" : ""]}
+        aria-current={pill.active ? "true" : undefined}
+      >
+        <span class="text-[15px]" aria-hidden="true">{pill.emoji}</span>
+        {pill.label}
+      </a>
+    ))}
   </nav>
 
   {/* ─── PRODUCT GRID ─── */}
   <section class="py-16" aria-labelledby="featured-heading">
     <div class="max-w-330 mx-auto px-8">
       <ProductGrid
-        products={featuredProducts}
-        {/* Cambio CLAVE: Ahora sí pasamos la data real */}
+        products={featuredProducts as any} 
         layout="featured"
         label="Featured Picks"
         title="New <em>arrivals</em>"
@@ -281,39 +197,23 @@ const CATEGORY_PILLS = [
 
   {/* ─── BRAND STRIP ─── */}
   <div class="bg-petrol py-16 lg:py-32 relative overflow-hidden">
-    <div
-      class="absolute -top-[100px] -right-[100px] w-[400px] h-[400px] bg-white/5 rounded-full pointer-events-none"
-    >
-    </div>
-    <div
-      class="absolute -bottom-[80px] -left-[80px] w-[300px] h-[300px] bg-watermelon/10 rounded-full pointer-events-none"
-    >
-    </div>
+    <div class="absolute -top-[100px] -right-[100px] w-[400px] h-[400px] bg-white/5 rounded-full pointer-events-none"></div>
+    <div class="absolute -bottom-[80px] -left-[80px] w-[300px] h-[300px] bg-watermelon/10 rounded-full pointer-events-none"></div>
 
-    <div
-      class="max-w-[1320px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-8 relative z-10 text-center lg:text-left"
-    >
-      <p
-        class="font-sans text-white/50 text-sm tracking-[0.02em] leading-[1.8] max-w-md mx-auto lg:mx-0"
-      >
+    <div class="max-w-[1320px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-8 relative z-10 text-center lg:text-left">
+      <p class="font-sans text-white/50 text-sm tracking-[0.02em] leading-[1.8] max-w-md mx-auto lg:mx-0">
         Each piece in our collection passes through a rigorous curation process
         — we work directly with artisan studios in Japan, Denmark, and Portugal.
       </p>
 
-      <h2
-        class="font-display text-[clamp(32px,4vw,56px)] font-light text-white leading-[1.2]"
-      >
+      <h2 class="font-display text-[clamp(32px,4vw,56px)] font-light text-white leading-[1.2]">
         Objects made<br />
         to be <span class="text-watermelon">loved</span><br />
         for decades.
       </h2>
 
       <div class="flex justify-center lg:justify-end">
-        <Button
-          variant="ghost"
-          href="/about"
-          class="!bg-white/10 !text-white/80 !border-white/20 hover:!bg-white/20"
-        >
+        <Button variant="ghost" href="/about" class="!bg-white/10 !text-white/80 !border-white/20 hover:!bg-white/20">
           Our Philosophy →
         </Button>
       </div>
@@ -324,70 +224,57 @@ const CATEGORY_PILLS = [
   <section class="py-16" aria-labelledby="categories-heading">
     <div class="max-w-[1320px] mx-auto px-8">
       <div class="mb-10">
-        <p
-          class="font-sans text-xs tracking-[0.2em] uppercase text-sand-900/50 mb-2"
-        >
-          Shop by Space
-        </p>
-        <h2
-          class="font-display text-4xl font-light text-petrol"
-          id="categories-heading"
-        >
+        <p class="font-sans text-xs tracking-[0.2em] uppercase text-sand-900/50 mb-2">Shop by Space</p>
+        <h2 class="font-display text-4xl font-light text-petrol" id="categories-heading">
           Find your<br /><em class="italic text-sand-900/70">sanctuary</em>
         </h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {
-          CATEGORY_CARDS.map((cat) => (
-            <a
-              href={cat.href}
-              class="group relative aspect-[3/4] rounded-f2-lg overflow-hidden cursor-pointer bg-sand-200 block no-underline md:last:col-span-2 lg:last:col-span-1 shadow-f2-rest hover:shadow-f2-hover f2-transition"
-              aria-label={`Shop ${cat.name} — ${cat.count} pieces available`}
-            >
-              <div
-                class="absolute inset-0 bg-sand-300 transition-transform duration-[800ms] ease-fluent group-hover:scale-105"
-                aria-hidden="true"
-              />
+        {CATEGORY_CARDS.map((cat) => (
+          <a
+            href={cat.href}
+            class="group relative aspect-[3/4] rounded-f2-lg overflow-hidden cursor-pointer bg-sand-200 block no-underline md:last:col-span-2 lg:last:col-span-1 shadow-f2-rest hover:shadow-f2-hover f2-transition"
+            aria-label={`Shop ${cat.name} — ${cat.count} pieces available`}
+          >
+            <div class="absolute inset-0 bg-sand-300 transition-transform duration-[800ms] ease-fluent group-hover:scale-105" aria-hidden="true" />
+            <div class="absolute inset-0 bg-gradient-to-t from-petrol/90 via-petrol/20 to-transparent" aria-hidden="true" />
 
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-petrol/90 via-petrol/20 to-transparent"
-                aria-hidden="true"
-              />
+            <div class="absolute top-5 right-5 w-10 h-10 rounded-full fluent-acrylic flex items-center justify-center z-10 f2-transition group-hover:rotate-45" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-petrol" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </div>
 
-              <div
-                class="absolute top-5 right-5 w-10 h-10 rounded-full fluent-acrylic flex items-center justify-center z-10 f2-transition group-hover:rotate-45"
-                aria-hidden="true"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  class="text-petrol"
-                  stroke-width="2"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </div>
-
-              <div class="absolute bottom-0 left-0 right-0 p-6 z-10 font-sans">
-                <p class="text-[11px] tracking-[0.2em] uppercase text-white/60 mb-2">
-                  {cat.label}
-                </p>
-                <p class="font-display text-4xl font-light text-white leading-[1.1]">
-                  {cat.name}
-                </p>
-                <p class="text-[13px] text-white/60 mt-2">
-                  {cat.count} pieces available
-                </p>
-              </div>
-            </a>
-          ))
-        }
+            <div class="absolute bottom-0 left-0 right-0 p-6 z-10 font-sans">
+              <p class="text-[11px] tracking-[0.2em] uppercase text-white/60 mb-2">{cat.label}</p>
+              <p class="font-display text-4xl font-light text-white leading-[1.1]">{cat.name}</p>
+              <p class="text-[13px] text-white/60 mt-2">{cat.count} pieces available</p>
+            </div>
+          </a>
+        ))}
       </div>
     </div>
   </section>
 </MainLayout>
+
+<script>
+  // Script exclusivo para el Hero Button, conectándolo a la arquitectura de eventos
+  // Los botones de la ProductGrid ya tienen su script en ProductCard.astro
+  const heroCartBtn = document.querySelector('[data-hero-add-to-cart]');
+
+  if (heroCartBtn) {
+    heroCartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = (e.currentTarget as HTMLElement).dataset.heroAddToCart;
+      
+      if (id) {
+        // Disparamos el evento para que CartDrawer.jsx haga el lookup seguro
+        window.dispatchEvent(new CustomEvent('cart:add', {
+          detail: { id, variant: 'Oat' } // La variante 'Oat' es específica del Hero
+        }));
+      }
+    });
+  }
+</script>

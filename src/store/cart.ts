@@ -18,8 +18,8 @@ export type CartItem = {
 
 export type CartMap = Record<string, CartItem>;
 
-export const FREE_SHIPPING_THRESHOLD = 5000;
-export const PROMO_CODE = "NODO26";
+export const FREE_SHIPPING_THRESHOLD = 5000; // Umbral unificado
+export const PROMO_CODE = "NODO26"
 
 /* ── Atoms ───────────────────────────────────────────────── */
 

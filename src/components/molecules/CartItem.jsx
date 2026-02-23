@@ -1,9 +1,9 @@
 /**
  * CartItem Molecule — React
  * BeautyHome · NODO Studio
- *
- * Used inside CartDrawer organism.
  */
+
+import { formatPrice } from "../../utils/formatters.js";
 
 export default function CartItem({
   id,
@@ -15,82 +15,75 @@ export default function CartItem({
   onRemove,
   onQtyChange,
 }) {
-  // Guard: si price o quantity son undefined, no renderizar
-  if (price == null || quantity == null) {
-    console.warn(`[CartItem] item ${id} tiene datos incompletos — ignorado`, {
-      price,
-      quantity,
-    });
+  // 🛡️ Guard mejorada: Solo fallamos si realmente no hay ID o nombre.
+  // Si el precio es 0, sigue siendo un producto válido (ej. regalo).
+  if (!id || !name) {
+    console.error(`[CartItem] Datos críticos faltantes para el item: ${id}`);
     return null;
   }
 
-  
-  const formattedPrice = price.toLocaleString("en-US", {
-  style: "currency",
-  currency: "ARS",
-  minimumFractionDigits: 0,
-});
-
-  const lineTotal = (price * quantity).toLocaleString("en-US", {
-    style: "currency",
-    currency: "ARS",
-    minimumFractionDigits: 0,
-  });
+  // Calculamos el subtotal de la línea
+  const itemPrice = price || 0;
+  const itemQuantity = quantity || 1;
+  const lineTotalValue = itemPrice * itemQuantity;
 
   return (
     <div className="flex gap-4 py-4 border-b border-sand-200 animate-slide-right">
       {/* Product Image */}
       <div
-        className="w-[72px] h-[80px] rounded-f2-md bg-sand-100 overflow-hidden shrink-0"
+        className="w-[72px] h-[80px] rounded-f2-md bg-sand-100 overflow-hidden shrink-0 shadow-sm"
         aria-hidden="true"
       >
-        {image ? ( // ✅ ternario explícito
-          <img src={image} alt={name} className="w-full h-full object-cover" />
+        {image ? (
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+          />
         ) : (
-          <svg
-            viewBox="0 0 72 80"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            width="72"
-            height="80"
-          >
-            <rect width="72" height="80" fill="#E5DFD3" />
-            <rect x="8" y="40" width="56" height="24" rx="5" fill="#CEC5B5" />
-            <rect x="10" y="34" width="52" height="12" rx="4" fill="#B5A896" />
-            <rect x="6" y="36" width="60" height="8" rx="3" fill="#CEC5B5" />
-            <rect x="16" y="64" width="8" height="10" rx="2" fill="#B5A896" />
-            <rect x="48" y="64" width="8" height="10" rx="2" fill="#B5A896" />
-          </svg>
+          <div className="w-full h-full flex items-center justify-center bg-sand-200 text-sand-400">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1"
+            >
+              <path d="M20 9l-8-7-8 7v10a2 2 0 002 2h12a2 2 0 002-2V9z" />
+            </svg>
+          </div>
         )}
       </div>
 
       {/* Product Info */}
-      <div className="flex-1 min-w-0 flex flex-col gap-1">
-        <a
-          href={`/product/${id}`}
-          className="text-[14px] font-normal text-sand-900 leading-[1.4] no-underline transition-colors duration-150 hover:text-petrol"
-        >
-          {name}
-        </a>
+      <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+        <div>
+          <a
+            href={`/product/${id}`}
+            className="text-[14px] font-medium text-sand-900 leading-tight no-underline transition-colors duration-150 hover:text-petrol block truncate"
+          >
+            {name}
+          </a>
+          {variant && (
+            <p className="text-[11px] uppercase tracking-wider text-sand-900/40 mt-1">
+              {variant}
+            </p>
+          )}
+        </div>
 
-        {variant && (
-          <p className="text-[12px] text-sand-900/50 leading-[1.4]">
-            {variant}
-          </p>
-        )}
-
-        <div className="flex items-center gap-4 mt-3">
+        <div className="flex items-center justify-between mt-3">
           {/* Quantity Stepper */}
           <div
-            className="flex items-center gap-2 bg-sand-100 rounded-f2-md p-1"
+            className="flex items-center bg-sand-100 rounded-f2-md p-0.5 border border-sand-200/50"
             role="group"
             aria-label="Quantity"
           >
             <button
-              className="w-[26px] h-[26px] rounded-f2-sm bg-transparent flex items-center justify-center cursor-pointer text-sand-900/70 border-none transition-colors duration-150 hover:enabled:bg-sand-200 disabled:opacity-30 disabled:cursor-not-allowed"
-              onClick={() => onQtyChange?.(quantity - 1)}
-              aria-label="Decrease quantity"
-              disabled={quantity <= 1}
+              className="w-7 h-7 flex items-center justify-center cursor-pointer text-sand-900/70 border-none bg-transparent hover:bg-white rounded-f2-sm f2-transition disabled:opacity-20"
+              onClick={() => onQtyChange?.(itemQuantity - 1)}
+              disabled={itemQuantity <= 1}
+              type="button"
             >
               <svg
                 width="10"
@@ -98,22 +91,20 @@ export default function CartItem({
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2.5"
+                strokeWidth="3"
               >
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
             </button>
-            <span
-              className="text-[13px] font-medium min-w-[20px] text-center text-sand-900"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {quantity}
+
+            <span className="text-[12px] font-sans font-semibold min-w-[24px] text-center text-petrol">
+              {itemQuantity}
             </span>
+
             <button
-              className="w-[26px] h-[26px] rounded-f2-sm bg-transparent flex items-center justify-center cursor-pointer text-sand-900/70 border-none transition-colors duration-150 hover:enabled:bg-sand-200 disabled:opacity-30 disabled:cursor-not-allowed"
-              onClick={() => onQtyChange?.(quantity + 1)}
-              aria-label="Increase quantity"
+              className="w-7 h-7 flex items-center justify-center cursor-pointer text-sand-900/70 border-none bg-transparent hover:bg-white rounded-f2-sm f2-transition"
+              onClick={() => onQtyChange?.(itemQuantity + 1)}
+              type="button"
             >
               <svg
                 width="10"
@@ -121,7 +112,7 @@ export default function CartItem({
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2.5"
+                strokeWidth="3"
               >
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
@@ -129,11 +120,9 @@ export default function CartItem({
             </button>
           </div>
 
-          {/* Remove */}
           <button
-            className="text-[11px] tracking-[0.06em] uppercase text-sand-900/50 cursor-pointer bg-none border-none p-0 transition-colors duration-150 font-sans hover:text-watermelon"
+            className="text-[10px] tracking-widest uppercase text-sand-900/30 cursor-pointer bg-none border-none p-0 transition-colors duration-150 font-sans hover:text-watermelon font-bold"
             onClick={() => onRemove?.()}
-            aria-label={`Remove ${name} from cart`}
           >
             Remove
           </button>
@@ -141,11 +130,15 @@ export default function CartItem({
       </div>
 
       {/* Line Price */}
-      <div
-        className="text-[15px] font-medium text-petrol shrink-0 whitespace-nowrap"
-        aria-label={`${quantity} × ${formattedPrice} = ${lineTotal}`}
-      >
-        {lineTotal}
+      <div className="text-right flex flex-col justify-between py-0.5">
+        <div className="text-[15px] font-medium text-petrol font-sans">
+          {formatPrice(lineTotalValue)}
+        </div>
+        {itemQuantity > 1 && (
+          <div className="text-[10px] text-sand-900/40">
+            {formatPrice(itemPrice)} ea.
+          </div>
+        )}
       </div>
     </div>
   );

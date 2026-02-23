@@ -31,12 +31,8 @@ const related = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
-const discountPct = product.originalPrice
-    ? Math.round((1 - product.price / product.originalPrice) * 100)
-    : null;
 
 const formattedPrice = formatPrice(product.price);
-const formattedOriginal = product.originalPrice ? formatPrice(product.originalPrice) : null;
 
 // Mock de datos extendidos
 const productVariants = product.variants || [
@@ -84,22 +80,7 @@ const seoDescription = product.description && product.description.length > 160
         {/* ─── Gallery (Sticky on Desktop) ─── */}
         <div class="lg:sticky lg:top-24 flex flex-col gap-4">
             <div class="relative aspect-[4/5] rounded-f2-lg overflow-hidden bg-sand-100 group">
-                <div class="absolute top-4 left-4 flex flex-col gap-2 z-10">
-                    {product.badges?.map((b) => (
-                        <Badge
-                            variant={b as any}
-                            label={
-                                b === "sale" && discountPct
-                                    ? `-${discountPct}%`
-                                    : b === "new"
-                                        ? "New"
-                                        : b === "limited"
-                                            ? "Limited"
-                                            : "Best Seller"
-                            }
-                        />
-                    ))}
-                </div>
+                
 
                 {product.image ? (
                     <img
@@ -161,11 +142,6 @@ const seoDescription = product.description && product.description.length > 160
                 <span class="font-display text-4xl font-light text-petrol">
                     {formattedPrice}
                 </span>
-                {formattedOriginal && (
-                    <span class="text-lg text-sand-900/40 line-through">
-                        {formattedOriginal}
-                    </span>
-                )}
             </div>
 
             <p class="font-sans text-[15px] text-sand-900/80 leading-[1.8] mb-10">
