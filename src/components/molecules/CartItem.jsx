@@ -15,6 +15,16 @@ export default function CartItem({
   onRemove,
   onQtyChange,
 }) {
+  // Guard: si price o quantity son undefined, no renderizar
+  if (price == null || quantity == null) {
+    console.warn(`[CartItem] item ${id} tiene datos incompletos — ignorado`, {
+      price,
+      quantity,
+    });
+    return null;
+  }
+
+  
   const formattedPrice = price.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
@@ -23,7 +33,7 @@ export default function CartItem({
 
   const lineTotal = (price * quantity).toLocaleString("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: "ARS",
     minimumFractionDigits: 0,
   });
 
@@ -34,7 +44,9 @@ export default function CartItem({
         className="w-[72px] h-[80px] rounded-f2-md bg-sand-100 overflow-hidden shrink-0"
         aria-hidden="true"
       >
-        {image || (
+        {image ? ( // ✅ ternario explícito
+          <img src={image} alt={name} className="w-full h-full object-cover" />
+        ) : (
           <svg
             viewBox="0 0 72 80"
             fill="none"
@@ -75,8 +87,8 @@ export default function CartItem({
             aria-label="Quantity"
           >
             <button
-              className="w-[26px] h-[26px] rounded-f2-sm bg-transparent flex items-center justify-center cursor-pointer text-sand-900/70 border-none transition-colors duration-150 hover:not:disabled:bg-sand-200 disabled:opacity-30 disabled:cursor-not-allowed"
-              onClick={() => onQtyChange?.(id, quantity - 1)}
+              className="w-[26px] h-[26px] rounded-f2-sm bg-transparent flex items-center justify-center cursor-pointer text-sand-900/70 border-none transition-colors duration-150 hover:enabled:bg-sand-200 disabled:opacity-30 disabled:cursor-not-allowed"
+              onClick={() => onQtyChange?.(quantity - 1)}
               aria-label="Decrease quantity"
               disabled={quantity <= 1}
             >
@@ -99,8 +111,8 @@ export default function CartItem({
               {quantity}
             </span>
             <button
-              className="w-[26px] h-[26px] rounded-f2-sm bg-transparent flex items-center justify-center cursor-pointer text-sand-900/70 border-none transition-colors duration-150 hover:not:disabled:bg-sand-200 disabled:opacity-30 disabled:cursor-not-allowed"
-              onClick={() => onQtyChange?.(id, quantity + 1)}
+              className="w-[26px] h-[26px] rounded-f2-sm bg-transparent flex items-center justify-center cursor-pointer text-sand-900/70 border-none transition-colors duration-150 hover:enabled:bg-sand-200 disabled:opacity-30 disabled:cursor-not-allowed"
+              onClick={() => onQtyChange?.(quantity + 1)}
               aria-label="Increase quantity"
             >
               <svg
@@ -120,7 +132,7 @@ export default function CartItem({
           {/* Remove */}
           <button
             className="text-[11px] tracking-[0.06em] uppercase text-sand-900/50 cursor-pointer bg-none border-none p-0 transition-colors duration-150 font-sans hover:text-watermelon"
-            onClick={() => onRemove?.(id)}
+            onClick={() => onRemove?.()}
             aria-label={`Remove ${name} from cart`}
           >
             Remove

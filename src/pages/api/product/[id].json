@@ -1,0 +1,42 @@
+// src/pages/api/product/[id].json.ts
+
+import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
+
+// NECESARIO: permite que este endpoint sea dinámico en modo hybrid/server
+export const prerender = false;
+
+export const GET: APIRoute = async ({ params }) => {
+  const { id } = params;
+
+  if (!id) {
+    return new Response(JSON.stringify({ error: 'Missing id' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const allProducts = await getCollection('products');
+  // Con type:'data': p.id = nombre del archivo sin extensión = "nori-desk"
+  const entry = allProducts.find((p) => p.id === id);
+
+  if (!entry) {
+    return new Response(
+      JSON.stringify({ error: `Product "${id}" not found` }),
+      { status: 404, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  const { name, price, image } = entry.data;
+
+  return new Response(
+    JSON.stringify({ id: entry.id, name, price, image: image ?? '' }),
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+      },
+    }
+  );
+};

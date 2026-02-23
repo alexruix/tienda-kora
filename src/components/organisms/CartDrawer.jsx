@@ -10,6 +10,8 @@ import {
   cartItems,
   isCartOpen,
   cartCount,
+  addCartItem, // ← faltaba
+  FREE_SHIPPING_THRESHOLD,
   hasFreeShipping,
   freeShippingRemaining,
   cartTotalFormatted,
@@ -24,6 +26,7 @@ export default function CartDrawer() {
   const [isMounted, setIsMounted] = useState(false);
 
   // 2. Suscripción a los átomos (Single Source of Truth)
+
   const itemsMap = useStore(cartItems);
   const isOpen = useStore(isCartOpen);
   const itemCount = useStore(cartCount);
@@ -36,15 +39,49 @@ export default function CartDrawer() {
 
   useEffect(() => {
     setIsMounted(true);
-    // 3. Bloqueo de scroll nativo
+
+    const handleAddToCart = async (e) => {
+      const { id, variant } = e.detail; // solo leemos id y variant (opcional)
+
+      if (!id) {
+        console.warn("[CartDrawer] cart:add sin id", e.detail);
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/product/${encodeURIComponent(id)}.json`);
+
+        if (!res.ok) {
+          console.error(`[CartDrawer] Producto no encontrado: ${id}`);
+          return;
+        }
+
+        const product = await res.json();
+
+        // precio viene del servidor validado por Zod — nunca del DOM
+        addCartItem({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image ?? "",
+          variant: variant || "Standard",
+        });
+      } catch (err) {
+        console.error("[CartDrawer] Error al obtener producto:", err);
+      }
+    };
+
+    window.addEventListener("cart:add", handleAddToCart);
+    return () => window.removeEventListener("cart:add", handleAddToCart);
+  }, []);
+
+  useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
 
-  // Si no se ha montado en el cliente, no renderizamos el contenido dinámico
-  // para evitar el Hydration Mismatch de React 19.
   if (!isMounted) return null;
 
   return (
@@ -115,7 +152,7 @@ export default function CartDrawer() {
                     <strong className="text-petrol">
                       {new Intl.NumberFormat("en-US", {
                         style: "currency",
-                        currency: "USD",
+                        currency: "ARS",
                         minimumFractionDigits: 0,
                       }).format(remainingForFree)}
                     </strong>{" "}
@@ -125,8 +162,8 @@ export default function CartDrawer() {
                     <div
                       className="h-full bg-watermelon transition-[width] duration-[800ms] ease-fluent"
                       style={{
-                        width: `${Math.min((subtotal / 350) * 100, 100)}%`,
-                      }}
+                        width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%`,
+                      }} // ✅
                     />
                   </div>
                 </div>

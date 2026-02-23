@@ -3,8 +3,8 @@
  * BeautyHome · NODO Studio
  */
 
-import { atom, computed } from 'nanostores';
-import { persistentAtom } from '@nanostores/persistent';
+import { atom, computed } from "nanostores";
+import { persistentAtom } from "@nanostores/persistent";
 
 /* ── Types ───────────────────────────────────────────────── */
 export type CartItem = {
@@ -18,11 +18,14 @@ export type CartItem = {
 
 export type CartMap = Record<string, CartItem>;
 
+export const FREE_SHIPPING_THRESHOLD = 5000;
+export const PROMO_CODE = "NODO26";
+
 /* ── Atoms ───────────────────────────────────────────────── */
 
 // 1. Guardamos el try/catch de Claude para máxima seguridad
 export const cartItems = persistentAtom<CartMap>(
-  'beautyhome_cart', // Mantenemos nuestra llave original
+  "beautyhome_cart", // Mantenemos nuestra llave original
   {},
   {
     encode: JSON.stringify,
@@ -33,7 +36,7 @@ export const cartItems = persistentAtom<CartMap>(
         return {};
       }
     },
-  }
+  },
 );
 
 export const isCartOpen = atom<boolean>(false);
@@ -41,30 +44,37 @@ export const isCartOpen = atom<boolean>(false);
 /* ── Derived / Computed ──────────────────────────────────── */
 
 export const cartCount = computed(cartItems, (items) =>
-  Object.values(items).reduce((sum, item) => sum + item.quantity, 0)
+  Object.values(items).reduce((sum, item) => sum + item.quantity, 0),
 );
 
 export const cartTotal = computed(cartItems, (items) =>
-  Object.values(items).reduce((sum, item) => sum + (item.price * item.quantity), 0)
+  Object.values(items).reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  ),
 );
 
 // NUEVO: Lógica de negocio extraída al Store (Genialidad de Claude)
 export const hasFreeShipping = computed(cartTotal, (total) => total >= 350);
-export const freeShippingRemaining = computed(cartTotal, (total) => Math.max(0, 350 - total));
+export const freeShippingRemaining = computed(cartTotal, (total) =>
+  Math.max(0, FREE_SHIPPING_THRESHOLD - total),
+);
 
 // NUEVO: Formateador global
 export const cartTotalFormatted = computed(cartTotal, (total) =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "ARS",
     minimumFractionDigits: 0,
-  }).format(total)
+  }).format(total),
 );
 
 /* ── Actions ─────────────────────────────────────────────── */
 
 // Mantenemos nuestros nombres de funciones para no romper la app
-export function addCartItem(product: Omit<CartItem, 'quantity'> & { quantity?: number }) {
+export function addCartItem(
+  product: Omit<CartItem, "quantity"> & { quantity?: number },
+) {
   const current = cartItems.get();
   const existing = current[product.id];
 

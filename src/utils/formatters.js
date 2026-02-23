@@ -3,7 +3,7 @@
  * BeautyHome · NODO Studio
  */
 
-export function formatPrice(amount, currency = 'USD', locale = 'en-US') {
+export function formatPrice(amount, currency = 'ARS', locale = 'en-US') {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,

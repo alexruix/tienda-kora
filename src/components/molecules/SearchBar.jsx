@@ -7,13 +7,8 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 
 // Formateador de moneda (puedes ajustarlo a ARS si prefieres)
-function formatPrice(n) {
-    return new Intl.NumberFormat('en-US', { 
-        style: 'currency', 
-        currency: 'USD', 
-        minimumFractionDigits: 0 
-    }).format(n);
-}
+import { formatPrice } from '../../utils/formatters.js';
+
 
 export default function SearchBar({ 
     products = [], 
@@ -101,7 +96,7 @@ export default function SearchBar({
                     aria-activedescendant={activeIdx >= 0 ? `search-result-${activeIdx}` : undefined}
                     autoComplete="off"
                     // Eliminamos el bezier hardcodeado y usamos ease-fluent
-                    className="w-[240px] focus:w-[280px] h-10 pl-10 pr-9 font-sans text-[13px] bg-sand-100/80 border-[1.5px] border-transparent rounded-full text-sand-900 outline-none placeholder:text-sand-900/50 focus:bg-white focus:border-sand-200 focus:shadow-f2-hover transition-all duration-300 ease-fluent appearance-none [&::-webkit-search-cancel-button]:hidden"
+                    className="w-60 focus:w-[280px] h-10 pl-10 pr-9 font-sans text-[13px] bg-sand-100/80 border-[1.5px] border-transparent rounded-full text-sand-900 outline-none placeholder:text-sand-900/50 focus:bg-white focus:border-sand-200 focus:shadow-f2-hover transition-all duration-300 ease-fluent appearance-none [&::-webkit-search-cancel-button]:hidden"
                 />
 
                 {/* Botón de limpiar (Solo aparece si hay texto) */}

@@ -41,8 +41,8 @@ const discount = originalPrice
   : null;
 
 // Mantenemos el formato de moneda que definiste
-const formattedPrice    = price.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
-const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+const formattedPrice    = price.toLocaleString('en-US', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
 ---
 
 <article
@@ -88,8 +88,7 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
       <button
         class="w-full h-10 bg-petrol/90 backdrop-blur-md text-white rounded-f2-md font-sans text-[12px] tracking-[0.08em] uppercase font-medium flex items-center justify-center gap-2 cursor-pointer border-none transition-colors duration-150 hover:bg-petrol"
         data-add-to-cart={id}
-        data-product-name={name}
-        data-product-price={price}
+        
         aria-label={`Add ${name} to cart`}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -127,32 +126,29 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
 </article>
 
 <script>
-  // Wishlist toggle (Se mantiene igual, funciona bien)
+  // 1. Wishlist toggle (Se mantiene igual, funciona perfecto)
   document.querySelectorAll('[data-wishlist]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      e.stopPropagation();
+      e.stopPropagation(); // Evita que al hacer clic en el corazón se navegue al producto
       btn.classList.toggle('is-active');
       const svg = btn.querySelector('svg');
       if (svg) svg.setAttribute('fill', btn.classList.contains('is-active') ? 'currentColor' : 'none');
     });
   });
 
-  // Quick Add — ACTUALIZADO para enviar la imagen
+  // 2. 🛡️ Quick Add SEGURO: Solo enviamos el ID.
+  // El componente CartDrawer se encargará de buscar el precio, nombre e imagen en el servidor.
   document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const id    = btn.dataset.addToCart    ?? '';
-      const name  = btn.dataset.productName  ?? '';
-      const price = Number(btn.dataset.productPrice ?? 0);
-      
-      // BUSCAMOS LA IMAGEN: Obtenemos la URL de la imagen de esta tarjeta específica
-      // Buscamos el elemento <img> dentro del <article> más cercano
-      const image = btn.closest('article').querySelector('img')?.src ?? '';
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const id = (btn as HTMLElement).dataset.addToCart ?? '';
+    if (!id) return;
 
-      window.dispatchEvent(new CustomEvent('cart:add', { 
-        detail: { id, name, price, image } 
-      }));
-    });
+    window.dispatchEvent(new CustomEvent('cart:add', {
+      detail: { id }  // CartDrawer hace fetch('/api/product/${id}.json')
+    }));
   });
+});
 </script>

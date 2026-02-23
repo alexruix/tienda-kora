@@ -278,21 +278,42 @@ const seoDescription = product.description && product.description.length > 160
 </MainLayout>
 
 <script>
-    // Variant selection (Refactorizado para Tailwind)
-    document.querySelectorAll(".swatch-btn").forEach((s) => {
-        if ((s as HTMLButtonElement).disabled) return;
-        s.addEventListener("click", () => {
-            document.querySelectorAll(".swatch-btn").forEach((x) => {
-                x.classList.remove("ring-2", "ring-offset-2", "ring-petrol");
-                x.setAttribute("aria-pressed", "false");
-            });
-            s.classList.add("ring-2", "ring-offset-2", "ring-petrol");
-            s.setAttribute("aria-pressed", "true");
-         
-            const el = document.getElementById("selected-variant");
-            if (el) el.textContent = (s as HTMLElement).dataset.label ?? "";
-        });
+    let selectedVariant = '';  // ✅ #2: Guardamos la variante activa en JS
+
+document.querySelectorAll('.swatch-btn').forEach((s) => {
+  if ((s as HTMLButtonElement).disabled) return;
+  s.addEventListener('click', () => {
+    document.querySelectorAll('.swatch-btn').forEach((x) => {
+      x.classList.remove('ring-2', 'ring-offset-2', 'ring-petrol');
+      x.setAttribute('aria-pressed', 'false');
     });
+    s.classList.add('ring-2', 'ring-offset-2', 'ring-petrol');
+    s.setAttribute('aria-pressed', 'true');
+    const label = (s as HTMLElement).dataset.label ?? '';
+    const el = document.getElementById('selected-variant');
+    if (el) el.textContent = label;
+    selectedVariant = label;  // ✅ #2: actualizar la variable al cambiar swatch
+  });
+});
+
+// Inicializamos selectedVariant con el primer swatch activo
+const firstSwatch = document.querySelector('.swatch-btn:not(:disabled)') as HTMLElement | null;
+selectedVariant = firstSwatch?.dataset.label ?? '';
+
+// ✅ Fix #1: Handler del botón "Add to Bag" — emite cart:add con variant
+document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const id = (btn as HTMLElement).dataset.addToCart ?? '';
+    if (!id) return;
+
+    window.dispatchEvent(new CustomEvent('cart:add', {
+      detail: {
+        id,
+        variant: selectedVariant,  // ✅ #2: variante activa
+      }
+    }));
+  });
+});
 
     // Wishlist
     const wb = document.querySelector(".wish-btn");

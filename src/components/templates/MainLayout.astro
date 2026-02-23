@@ -2,22 +2,13 @@
 /**
  * MainLayout Template
  * BeautyHome · NODO Studio
- *
- * Base layout used by all pages.
- * Slots: default (page content), head (extra meta)
  */
-
-// 1. Importamos el CSS global de Tailwind v4 aquí directamente
 import '../../styles/global.css';
-
 import { ClientRouter } from 'astro:transitions';
-import Navbar      from '../organisms/Navbar.jsx';
-import CartDrawer  from '../organisms/CartDrawer.jsx';
-import Footer      from '../organisms/Footer.astro';
-
+import Navbar     from '../organisms/Navbar.jsx';
+import CartDrawer from '../organisms/CartDrawer.jsx';
+import Footer     from '../organisms/Footer.astro';
 import { getCollection } from 'astro:content';
-import Navbar from '../organisms/Navbar.jsx';
-
 
 interface Props {
   title?:       string;
@@ -29,23 +20,26 @@ interface Props {
 
 const {
   title       = 'BeautyHome — Curated Home Décor',
-  description = 'High-end home objects at the intersection of Scandinavian restraint and Japanese wabi-sabi. Curated by NODO Studio.',
+  description = 'High-end home objects...',
   ogImage     = '/og-default.jpg',
   noIndex     = false,
   bodyClass   = '',
 } = Astro.props;
 
 const productsData = await getCollection('products');
-const allProducts = productsData.map(p => p.data);
+const allProducts  = productsData.map((p) => p.data);
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyhome.nodo.studio');
+const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://beautyhome.nodo.studio'); // ✅ Fix #5: OG image absoluta
 ---
-<ClientRouter />
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0B3948" />
+
+  <ClientRouter />  <!-- ✅ Fix #1: ClientRouter dentro de <head> -->
 
   <title>{title}</title>
   <meta name="description" content={description} />
@@ -56,27 +50,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyho
   <meta property="og:url"         content={canonicalURL} />
   <meta property="og:title"       content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:image"       content={ogImage} />
+  <meta property="og:image"       content={ogImageURL} />  <!-- ✅ Fix #5: URL absoluta -->
 
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:title"       content={title} />
   <meta name="twitter:description" content={description} />
-  <meta name="twitter:image"       content={ogImage} />
+  <meta name="twitter:image"       content={ogImageURL} />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond..." rel="stylesheet" />
 
   <slot name="head" />
 </head>
+
 <body class={`min-h-screen flex flex-col ${bodyClass}`}>
 
-  <Navbar client:load products={allProducts} />
+  <Navbar products={allProducts} client:only="react" />  <!-- ✅ Fix #3: allProducts en lugar de products -->
+  <CartDrawer client:only="react" />                       <!-- ✅ Fix #4: solo una instancia, client:only -->
 
   <main id="main-content" class="flex-grow focus:outline-none" tabindex="-1">
     <slot />
@@ -84,34 +76,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyho
 
   <Footer />
 
-  <CartDrawer client:load />
-
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-  <a 
-    href="#main-content" 
+  <a
+    href="#main-content"
     class="fixed -top-full left-4 z-[9999] bg-petrol text-white px-5 py-3 rounded-f2-md text-[14px] no-underline transition-[top] duration-200 focus:top-4 focus:outline focus:outline-2 focus:outline-watermelon focus:outline-offset-2"
   >
     Skip to main content
   </a>
 
-  <script>
-    // Importamos la acción directamente desde nuestro store
-    import { addCartItem } from '../../store/cart.ts';
-
-    // Escuchamos el evento global que disparan las ProductCards y el PDP
-    window.addEventListener('cart:add', (e: any) => {
-      const { id, name, price, variant, image } = e.detail;
-      
-      // Enviamos la data al "cerebro" de Nanostores
-      addCartItem({ 
-        id, 
-        name, 
-        price, 
-        variant: variant || 'Standard', 
-        image: image || '' 
-      });
-    });
-  </script>
 </body>
 </html>
