@@ -127,27 +127,32 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
 </article>
 
 <script>
-  // Wishlist toggle
+  // Wishlist toggle (Se mantiene igual, funciona bien)
   document.querySelectorAll('[data-wishlist]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       btn.classList.toggle('is-active');
-      
-      // Lógica visual extra para rellenar el SVG al hacer clic
       const svg = btn.querySelector('svg');
       if (svg) svg.setAttribute('fill', btn.classList.contains('is-active') ? 'currentColor' : 'none');
     });
   });
 
-  // Quick Add — fires a custom event picked up by CartDrawer
+  // Quick Add — ACTUALIZADO para enviar la imagen
   document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const id    = btn.dataset.addToCart    ?? '';
       const name  = btn.dataset.productName  ?? '';
       const price = Number(btn.dataset.productPrice ?? 0);
-      window.dispatchEvent(new CustomEvent('cart:add', { detail: { id, name, price } }));
+      
+      // BUSCAMOS LA IMAGEN: Obtenemos la URL de la imagen de esta tarjeta específica
+      // Buscamos el elemento <img> dentro del <article> más cercano
+      const image = btn.closest('article').querySelector('img')?.src ?? '';
+
+      window.dispatchEvent(new CustomEvent('cart:add', { 
+        detail: { id, name, price, image } 
+      }));
     });
   });
 </script>

@@ -1,4 +1,5 @@
 {
+  "id": "yuki-shelf",
   "name": "Yuki Shelving Unit",
   "subtitle": "Solid Ash, Open Frame",
   "slug": "yuki-shelf",
@@ -14,19 +15,34 @@
   "newArrival": false,
   "description": "Yuki (雪, 'snow') is an open shelving system with the unhurried proportions of Japanese tansu craft. Four shelves at generous intervals allow objects to breathe — books beside ceramics beside nothing at all. The solid ash frame is jointed without visible hardware, held together by the precision of the fit itself.",
   "details": [
-    { "label": "Dimensions",  "value": "W90 × D28 × H180 cm" },
-    { "label": "Shelves",     "value": "4 fixed shelves" },
-    { "label": "Spacing",     "value": "36 cm between shelves" },
-    { "label": "Material",    "value": "Solid European Ash" },
-    { "label": "Finish",      "value": "White Pigment Oil" },
-    { "label": "Weight",      "value": "28 kg" },
-    { "label": "Load",        "value": "Max 20 kg per shelf" },
-    { "label": "Origin",      "value": "Crafted in Lithuania" }
+    { "label": "Dimensions", "value": "W90 × D28 × H180 cm" },
+    { "label": "Shelves", "value": "4 fixed shelves" },
+    { "label": "Spacing", "value": "36 cm between shelves" },
+    { "label": "Material", "value": "Solid European Ash" },
+    { "label": "Finish", "value": "White Pigment Oil" },
+    { "label": "Weight", "value": "28 kg" },
+    { "label": "Load", "value": "Max 20 kg per shelf" },
+    { "label": "Origin", "value": "Crafted in Lithuania" }
   ],
   "variants": [
-    { "label": "White Ash",  "value": "white-ash",  "color": "#F0EDE7", "available": true  },
-    { "label": "Natural Ash","value": "natural-ash","color": "#C8B89A", "available": true  },
-    { "label": "Black Ash",  "value": "black-ash",  "color": "#2D2926", "available": false }
+    {
+      "label": "White Ash",
+      "value": "white-ash",
+      "color": "#F0EDE7",
+      "available": true
+    },
+    {
+      "label": "Natural Ash",
+      "value": "natural-ash",
+      "color": "#C8B89A",
+      "available": true
+    },
+    {
+      "label": "Black Ash",
+      "value": "black-ash",
+      "color": "#2D2926",
+      "available": false
+    }
   ],
   "care": "Dust with a dry cloth. Clean with a lightly damp cloth if needed. Avoid placing objects that may leave moisture marks directly on shelves.",
   "shipping": "Flat-pack delivery. All hardware included. Assembly approximately 30 minutes with two people.",
