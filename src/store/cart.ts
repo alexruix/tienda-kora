@@ -55,7 +55,11 @@ export const cartTotal = computed(cartItems, (items) =>
 );
 
 // NUEVO: Lógica de negocio extraída al Store (Genialidad de Claude)
-export const hasFreeShipping = computed(cartTotal, (total) => total >= 350);
+export const hasFreeShipping = computed(
+  cartTotal,
+  (total) => total >= FREE_SHIPPING_THRESHOLD,
+);
+
 export const freeShippingRemaining = computed(cartTotal, (total) =>
   Math.max(0, FREE_SHIPPING_THRESHOLD - total),
 );

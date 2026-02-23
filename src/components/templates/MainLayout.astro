@@ -28,6 +28,8 @@ const {
 
 const productsData = await getCollection('products');
 const allProducts  = productsData.map((p) => p.data);
+
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyhome.nodo.studio');
 const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://beautyhome.nodo.studio'); // ✅ Fix #5: OG image absoluta
 ---
@@ -67,9 +69,8 @@ const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://beautyhome.nodo.stu
 
 <body class={`min-h-screen flex flex-col ${bodyClass}`}>
 
-  <Navbar products={allProducts} client:only="react" />  <!-- ✅ Fix #3: allProducts en lugar de products -->
-  <CartDrawer client:only="react" />                       <!-- ✅ Fix #4: solo una instancia, client:only -->
-
+<Navbar products={allProducts} client:only="react" />
+<CartDrawer client:only="react" products={allProducts} />
   <main id="main-content" class="flex-grow focus:outline-none" tabindex="-1">
     <slot />
   </main>

@@ -26,10 +26,10 @@ export default function CartItem({
 
   
   const formattedPrice = price.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-  });
+  style: "currency",
+  currency: "ARS",
+  minimumFractionDigits: 0,
+});
 
   const lineTotal = (price * quantity).toLocaleString("en-US", {
     style: "currency",

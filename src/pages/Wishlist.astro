@@ -1,0 +1,68 @@
+---
+/**
+ * /wishlist — Wishlist Page
+ * BeautyHome · NODO Studio
+ *
+ * Arquitectura:
+ * - Astro fetch todos los productos desde Content Collections en build time (SSG).
+ * - WishlistGrid (React island, client:only) lee los IDs del persistentAtom
+ *   y filtra los productos recibidos como props.
+ * - Nunca exponemos precios en el DOM — los datos vienen del servidor validados por Zod.
+ */
+
+import MainLayout from "../components/templates/MainLayout.astro";
+import WishlistGrid from "../components/organisms/WishlistGrid";
+import { getCollection } from "astro:content";
+
+const productsData = await getCollection("products");
+const allProducts = productsData.map((p) => p.data);
+---
+
+<MainLayout
+  title="Wishlist — BeautyHome"
+  description="Your curated selection of BeautyHome pieces. Save the objects you love and add them to your bag when you're ready."
+>
+  <!-- Breadcrumb -->
+  <nav class="bg-sand-50 border-b border-sand-200 py-4" aria-label="Breadcrumb">
+    <div class="max-w-[1320px] mx-auto px-5 md:px-8">
+      <ol class="flex items-center gap-2 text-[13px] text-sand-900/50 flex-wrap">
+        <li>
+          <a href="/" class="hover:text-sand-900 f2-transition">Home</a>
+        </li>
+        <li aria-hidden="true">›</li>
+        <li aria-current="page" class="text-sand-900 font-medium">Wishlist</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- React island: filtra productos por wishlist store -->
+  <WishlistGrid products={allProducts} client:only="react" />
+</MainLayout>
+
+<!--
+  Animaciones de entrada para las cards — definidas aquí en el scope de la página
+  para no contaminar el global.css con keyframes muy específicos.
+-->
+<style>
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

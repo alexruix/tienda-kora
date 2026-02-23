@@ -2,7 +2,6 @@
  * CartDrawer Organism — React Island
  * BeautyHome · NODO Studio
  */
-
 import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
 import CartItem from "../molecules/CartItem.jsx";
@@ -10,22 +9,20 @@ import {
   cartItems,
   isCartOpen,
   cartCount,
-  addCartItem, // ← faltaba
+  addCartItem,
   FREE_SHIPPING_THRESHOLD,
   hasFreeShipping,
   freeShippingRemaining,
   cartTotalFormatted,
-  cartTotal, // Lo traemos para la barra de progreso
+  cartTotal,
   removeCartItem,
   setCartQuantity,
   toggleCart,
 } from "../../store/cart.ts";
 
-export default function CartDrawer() {
-  // 1. Estado de hidratación para evitar errores SSR
+// ✅ RECIBIMOS 'products' como prop
+export default function CartDrawer({ products = [] }) {
   const [isMounted, setIsMounted] = useState(false);
-
-  // 2. Suscripción a los átomos (Single Source of Truth)
 
   const itemsMap = useStore(cartItems);
   const isOpen = useStore(isCartOpen);
@@ -40,40 +37,31 @@ export default function CartDrawer() {
   useEffect(() => {
     setIsMounted(true);
 
-    const handleAddToCart = async (e) => {
-      const { id, variant } = e.detail; // solo leemos id y variant (opcional)
+    const handleAddToCart = (e) => {
+      const { id, variant } = e.detail;
 
-      if (!id) {
-        console.warn("[CartDrawer] cart:add sin id", e.detail);
-        return;
-      }
+      if (!id) return;
 
-      try {
-        const res = await fetch(`/api/product/${encodeURIComponent(id)}.json`);
+      // 🛡️ Búsqueda local SEGURA (Sin fetch redundante)
+      // Usamos la prop 'products' que viene de Astro
+      const productData = products.find((p) => p.id === id);
 
-        if (!res.ok) {
-          console.error(`[CartDrawer] Producto no encontrado: ${id}`);
-          return;
-        }
-
-        const product = await res.json();
-
-        // precio viene del servidor validado por Zod — nunca del DOM
+      if (productData) {
         addCartItem({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image ?? "",
+          id: productData.id,
+          name: productData.name,
+          price: productData.price,
+          image: productData.image ?? "",
           variant: variant || "Standard",
         });
-      } catch (err) {
-        console.error("[CartDrawer] Error al obtener producto:", err);
+      } else {
+        console.error(`[CartDrawer] Producto no encontrado: ${id}`);
       }
     };
 
     window.addEventListener("cart:add", handleAddToCart);
     return () => window.removeEventListener("cart:add", handleAddToCart);
-  }, []);
+  }, [products]); // Añadimos products como dependencia
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -83,7 +71,6 @@ export default function CartDrawer() {
   }, [isOpen]);
 
   if (!isMounted) return null;
-
   return (
     <>
       {/* Overlay - Fluent Backdrop */}
