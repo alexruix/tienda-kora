@@ -9,8 +9,9 @@
  * - SSG: generado en build time, sin SSR necesario.
  */
 
-import MainLayout from "../components/templates/MainLayout.astro";
-import ProductGrid from "../components/organisms/ProductGrid.astro";
+import MainLayout     from "../components/templates/MainLayout.astro";
+import ProductGrid    from "../components/organisms/ProductGrid.astro";
+import SectionHeader  from "../components/molecules/SectionHeader.astro";
 import { getCollection } from "astro:content";
 
 const productsData = await getCollection("products");
@@ -52,7 +53,7 @@ const totalCount = allProducts.length;
       <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-watermelon/10 rounded-full -translate-x-1/2 translate-y-1/2" />
     </div>
 
-    <div class="max-w-[1320px] mx-auto px-5 md:px-8 py-20 lg:py-28 relative z-10 animate-fade-in-up">
+    <div class="ds-container py-20 lg:py-28 relative z-10 animate-fade-in-up">
       <p class="font-sans text-[11px] tracking-[0.3em] uppercase text-watermelon mb-4 flex items-center gap-3 before:content-[''] before:w-8 before:h-px before:bg-watermelon before:shrink-0">
         Curated Catalog
       </p>
@@ -86,25 +87,15 @@ const totalCount = allProducts.length;
       class="py-16 lg:py-24 border-b border-sand-200 last:border-none scroll-mt-[88px]"
       aria-labelledby={`heading-${cat.id}`}
     >
-      <div class="max-w-[1320px] mx-auto px-5 md:px-8">
+      <div class="ds-container">
         {/* Section Header */}
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-8 border-b border-sand-200">
-          <div class="animate-fade-in-up">
-            <p class="font-sans text-[11px] tracking-[0.22em] uppercase text-watermelon mb-3">
-              Collection · {cat.products.length} pieces
-            </p>
-            <h2
+            <SectionHeader
+              eyebrow={`Collection · ${cat.products.length} pieces`}
+              title={cat.label}
+              subtitle={CATEGORY_DESCRIPTIONS[cat.id]}
               id={`heading-${cat.id}`}
-              class="font-display text-[clamp(36px,4vw,52px)] font-light text-petrol leading-[1.1]"
-            >
-              {cat.label}
-            </h2>
-            {CATEGORY_DESCRIPTIONS[cat.id] && (
-              <p class="font-sans text-[14px] text-sand-900/60 mt-3 max-w-xl leading-relaxed">
-                {CATEGORY_DESCRIPTIONS[cat.id]}
-              </p>
-            )}
-          </div>
+            />
           <a
             href={`/category/${cat.id}`}
             class="btn btn-secondary btn-md shrink-0 no-underline"
@@ -126,22 +117,16 @@ const totalCount = allProducts.length;
   {/* ─── BOTTOM CTA ─── */}
   <div class="bg-sand-100 border-t border-sand-200 py-20 text-center">
     <div class="max-w-[600px] mx-auto px-8 animate-fade-in-up">
-      <p class="font-sans text-[11px] tracking-[0.22em] uppercase text-sand-900/40 mb-4">
-        Looking for something specific?
-      </p>
-      <h2 class="font-display text-[clamp(28px,3vw,40px)] font-light text-petrol mb-6">
-        Our concierge is here to help
-      </h2>
-      <p class="font-sans text-[14px] text-sand-900/60 leading-relaxed mb-8">
-        Can't find what you're looking for? Our team of interior specialists can
-        source any piece and advise on curation for your space.
-      </p>
-      <a
-        href="mailto:concierge@beautyhome.com"
-        class="btn btn-primary btn-lg no-underline"
-      >
-        Contact Concierge
-      </a>
+      <SectionHeader
+        eyebrow="Looking for something specific?"
+        eyebrowColor="sand"
+        title="Our concierge is here"
+        subtitle="Can't find what you're looking for? Our team of interior specialists can source any piece and advise on curation for your space."
+        align="center"
+      />
+      <div class="mt-8">
+        <a href="mailto:concierge@beautyhome.com" class="btn btn-primary btn-lg no-underline">Contact Concierge</a>
+      </div>
     </div>
   </div>
 </MainLayout>

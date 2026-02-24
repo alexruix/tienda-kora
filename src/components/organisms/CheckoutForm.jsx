@@ -390,7 +390,7 @@ export default function CheckoutForm() {
                         onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError(""); }}
                         onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleApplyPromo())}
                         placeholder="Ej: NODO26" maxLength={20} autoComplete="off" spellCheck={false}
-                        className="flex-1 px-3 py-2 rounded-f2-md border border-sand-200 bg-white font-sans text-[13px] text-sand-900 tracking-widest uppercase focus:outline-none focus:border-petrol transition-colors"
+                        className="promo-input py-2"
                         aria-label="Código de descuento"
                         aria-describedby={promoError ? "promo-error" : undefined}
                       />

@@ -2,73 +2,99 @@
 /**
  * index.astro — Homepage
  * BeautyHome · NODO Studio
- * * Arquitectura:
+ *
+ * Arquitectura:
  * - Data fetching validado por Astro Content Collections (Zod).
- * - Event-Driven Architecture para el flujo del carrito (Solo se envía el ID).
+ * - Event-Driven Architecture para el flujo del carrito.
+ * - Stats computados dinámicamente desde la colección — cero ficción.
+ * - Query param ?category= filtra la grilla en el servidor (SSG-compatible).
  */
 
-import MainLayout from "../components/templates/MainLayout.astro";
-import ProductGrid from "../components/organisms/ProductGrid.astro";
-import Button from "../components/atoms/Button.astro";
+import MainLayout     from "../components/templates/MainLayout.astro";
+import ProductGrid    from "../components/organisms/ProductGrid.astro";
+import Button         from "../components/atoms/Button.astro";
+import Eyebrow        from "../components/atoms/Eyebrow.astro";
+import StatCounter    from "../components/atoms/StatCounter.astro";
+import TrustItem      from "../components/atoms/TrustItem.astro";
+import CategoryCard   from "../components/molecules/CategoryCard.astro";
 import { getCollection } from "astro:content";
 import { FREE_SHIPPING_THRESHOLD } from "../utils/shipping";
+import { formatPrice } from "../utils/formatters";
 
-const freeShippingLabel = new Intl.NumberFormat("es-AR", {
-  style: "currency",
-  currency: "ARS",
-  minimumFractionDigits: 0,
-}).format(FREE_SHIPPING_THRESHOLD);
-
-// 1. Extraemos la colección validada y aseguramos el ID
+// ── 1. Colección validada ─────────────────────────────────────────────────────
 const productsCollection = await getCollection("products");
 const allProducts = productsCollection.map((item) => ({
   ...item.data,
-  id: item.id // Vital para el lookup en el CartDrawer
+  id: item.id,
 }));
 
-// 2. Filtramos destacados para la grilla
-const featuredProducts = allProducts.filter((product) => product.featured);
+// ── 2. Stats reales — NO hardcodeados ────────────────────────────────────────
+const totalProducts  = allProducts.length;
+const totalRating    = allProducts.reduce((sum, p) => sum + (p.rating ?? 0), 0);
+const avgRating      = totalProducts > 0 ? (totalRating / totalProducts).toFixed(1) : "—";
+const categories     = [...new Set(allProducts.map((p) => p.category))];
+const totalStudios   = categories.length; // Una categoría ≈ una familia curada
 
-// 3. Obtenemos el producto del Hero dinámicamente para evitar desajustes de precios
-const heroProduct = allProducts.find((p) => p.id === "sokaku-sofa") || allProducts[0];
-const heroFormattedPrice = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "ARS",
-  minimumFractionDigits: 0,
-}).format(heroProduct.price);
+// ── 3. Hero dinámico ──────────────────────────────────────────────────────────
+const heroProduct       = allProducts.find((p) => p.id === "sokaku-sofa") ?? allProducts[0];
+// Fix #5 — variante dinámica desde el propio producto
+const heroVariantLabel  = heroProduct.variants?.[0]?.label ?? "Standard";
+// Fix #7 — usa formatPrice en lugar de Intl inline
+const heroFormattedPrice = formatPrice(heroProduct.price);
+const freeShippingLabel  = formatPrice(FREE_SHIPPING_THRESHOLD);
 
-// Categorías estáticas
+// ── 4. Filtrado por ?category= ────────────────────────────────────────────────
+// Fix #4 — el query param ahora filtra de verdad en build-time (Prerendering)
+const activeCategory = Astro.url.searchParams.get("category") ?? "all";
+const featuredProducts =
+  activeCategory === "all"
+    ? allProducts.filter((p) => p.featured)
+    : allProducts.filter(
+        (p) =>
+          p.featured ||
+          p.category?.toLowerCase().includes(activeCategory.toLowerCase()),
+      );
+
+// ── 5. Category Cards — conteos reales ───────────────────────────────────────
+// Fix #2 + Fix #5 (hrefs y conteos reales desde la colección)
 const CATEGORY_CARDS = [
-  { id: "living", label: "Space", name: "Living", count: 142, href: "/living" },
-  { id: "dining", label: "Space", name: "Dining", count: 88, href: "/dining" },
-  { id: "workspace", label: "Space", name: "Workspace", count: 64, href: "/workspace" },
-];
+  { id: "living",    label: "Space", name: "Living",    href: "/category/living" },
+  { id: "dining",    label: "Space", name: "Dining",    href: "/category/dining" },
+  { id: "workspace", label: "Space", name: "Workspace", href: "/category/workspace" },
+].map((cat) => ({
+  ...cat,
+  count: allProducts.filter((p) => p.category === cat.id).length,
+}));
 
+// ── 6. Category Pills  ────────────────────────────────────────────────────────
 const CATEGORY_PILLS = [
-  { emoji: "✦", label: "All Pieces", value: "all", active: true },
-  { emoji: "🛋️", label: "Seating", value: "seating", active: false },
-  { emoji: "💡", label: "Lighting", value: "lighting", active: false },
-  { emoji: "🪵", label: "Tables", value: "tables", active: false },
-  { emoji: "🗄️", label: "Storage", value: "storage", active: false },
-  { emoji: "🪴", label: "Décor", value: "decor", active: false },
-  { emoji: "🪞", label: "Mirrors", value: "mirrors", active: false },
-  { emoji: "🖼️", label: "Art", value: "art", active: false },
-  { emoji: "🛏️", label: "Bedroom", value: "bedroom", active: false },
+  { emoji: "✦",  label: "All Pieces", value: "all" },
+  { emoji: "🛋️", label: "Seating",    value: "seating" },
+  { emoji: "💡", label: "Lighting",   value: "lighting" },
+  { emoji: "🪵", label: "Tables",     value: "tables" },
+  { emoji: "🗄️", label: "Storage",    value: "storage" },
+  { emoji: "🪴", label: "Décor",      value: "decor" },
+  { emoji: "🪞", label: "Mirrors",    value: "mirrors" },
+  { emoji: "🖼️", label: "Art",        value: "art" },
+  { emoji: "🛏️", label: "Bedroom",    value: "bedroom" },
 ];
 ---
 
 <MainLayout
   title="BeautyHome — Curated High-End Home Décor by NODO Studio"
-  description="Objects at the intersection of Scandinavian restraint and Japanese wabi-sabi. Shop 340+ curated pieces from 28 artisan studios."
+  description="Objects at the intersection of Scandinavian restraint and Japanese wabi-sabi. Shop curated pieces from artisan studios."
 >
+
   {/* ─── HERO SECTION ─── */}
   <section class="min-h-screen grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden" aria-labelledby="hero-headline">
     <div class="flex flex-col justify-center px-5 md:px-8 lg:px-16 pt-[100px] lg:pt-[120px] pb-20 relative z-10 animate-fade-in-up">
-      <p class="text-[11px] tracking-[0.22em] uppercase text-watermelon mb-6 flex items-center gap-3 before:content-[''] before:w-8 before:h-px before:bg-watermelon before:shrink-0">
-        New Collection 2026
-      </p>
 
-      <h1 class="font-display text-[clamp(52px,6vw,88px)] font-light leading-[1.05] text-petrol mb-6 tracking-[-0.01em]" id="hero-headline">
+      <Eyebrow text="New Collection 2026" withLine class="mb-6" />
+
+      <h1
+        class="font-display text-[clamp(52px,6vw,88px)] font-light leading-[1.05] text-petrol mb-6 tracking-[-0.01em]"
+        id="hero-headline"
+      >
         Spaces that<br />
         <em class="italic text-sand-900/70">breathe</em><br />
         with you.
@@ -80,7 +106,8 @@ const CATEGORY_PILLS = [
       </p>
 
       <div class="flex items-center gap-4 flex-wrap">
-        <Button variant="primary" href="/new-arrivals" size="lg">
+        {/* Fix #2 — /new-arrivals no existe; apuntamos a /collections */}
+        <Button variant="primary" href="/collections" size="lg">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
@@ -92,30 +119,33 @@ const CATEGORY_PILLS = [
         </Button>
       </div>
 
+      {/* Fix #3 — Stats computados desde la colección real */}
       <div class="flex gap-6 md:gap-10 mt-16 pt-8 border-t border-sand-200" aria-label="Store highlights">
-        <div>
-          <span class="block font-sans text-4xl font-light text-petrol">340+</span>
-          <span class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1">Curated pieces</span>
-        </div>
-        <div>
-          <span class="block font-sans text-4xl font-light text-petrol">28</span>
-          <span class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1">Artisan studios</span>
-        </div>
-        <div>
-          <span class="block font-sans text-4xl font-light text-petrol">4.9★</span>
-          <span class="block text-xs tracking-[0.08em] uppercase text-sand-900/50 mt-1">Customer rating</span>
-        </div>
+        <StatCounter value={`${totalProducts}`}   label="Curated pieces" />
+        <StatCounter value={`${totalStudios}`}    label="Design families" />
+        <StatCounter value={`${avgRating}★`}      label="Avg. rating" />
       </div>
     </div>
 
+    {/* Fix #6 — imagen real del heroProduct si existe, fallback a SVG */}
     <div class="relative overflow-hidden bg-sand-100 h-[60vw] min-h-[320px] lg:h-auto animate-fade-in" aria-hidden="true">
-      {/* Placeholder del Hero Image */}
-      <svg class="absolute inset-0 w-full h-full" viewBox="0 0 700 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        <rect width="700" height="800" fill="#F2EFE9"></rect>
-        <path d="M0 620 L700 550 L700 800 L0 800 Z" fill="#E5DFD3"></path>
-      </svg>
+      {heroProduct.image ? (
+        <img
+          src={heroProduct.image}
+          alt={heroProduct.name}
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+          decoding="async"
+        />
+      ) : (
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 700 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+          <rect width="700" height="800" fill="#F2EFE9"></rect>
+          <path d="M0 620 L700 550 L700 800 L0 800 Z" fill="#E5DFD3"></path>
+        </svg>
+      )}
 
-      {/* Hero Product - Dynamic Acrylic Card */}
+      {/* Hero Product — Acrylic Card */}
+      {/* Fix #5 — variante dinámica */}
       <div class="absolute bottom-8 left-6 fluent-acrylic rounded-f2-lg px-5 py-4 flex items-center gap-4 min-w-[240px]">
         <div class="w-[52px] h-[52px] rounded-f2-md bg-sand-200 overflow-hidden shrink-0" aria-hidden="true">
           {heroProduct.image ? (
@@ -129,7 +159,7 @@ const CATEGORY_PILLS = [
         </div>
         <div>
           <p class="font-sans text-[13px] font-medium text-sand-900">
-            {heroProduct.name} · Oat
+            {heroProduct.name} · {heroVariantLabel}
           </p>
           <p class="font-sans text-[15px] font-medium text-petrol mt-0.5">
             {heroFormattedPrice}
@@ -138,6 +168,7 @@ const CATEGORY_PILLS = [
         <button
           class="ml-auto w-8 h-8 rounded-f2-md bg-watermelon flex items-center justify-center cursor-pointer border-none f2-transition hover:bg-watermelon-hover hover:scale-110 active:scale-95 shrink-0"
           data-hero-add-to-cart={heroProduct.id}
+          data-hero-variant={heroVariantLabel}
           aria-label={`Add ${heroProduct.name} to cart`}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" aria-hidden="true">
@@ -150,34 +181,27 @@ const CATEGORY_PILLS = [
   </section>
 
   {/* ─── TRUST BAND ─── */}
+  {/* Fix #8 — TrustItem atom con SVG accesible en lugar de emojis sin a11y */}
   <div class="bg-sand-100 border-y border-sand-200 py-8" role="list" aria-label="Our promises">
     <div class="max-w-[1320px] mx-auto px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {[
-        { emoji: "🚚", title: "Free Shipping", sub: `On orders over ${freeShippingLabel}` },
-        { emoji: "🔄", title: "60-Day Returns", sub: "No questions asked" },
-        { emoji: "🤝", title: "Artisan Sourced", sub: "Direct from craftspeople" },
-        { emoji: "🌿", title: "Sustainably Made", sub: "Certified materials only" },
-      ].map((item) => (
-        <div class="flex items-center gap-4" role="listitem">
-          <div class="w-11 h-11 rounded-f2-md bg-white shadow-f2-rest flex items-center justify-center text-xl shrink-0" aria-hidden="true">
-            {item.emoji}
-          </div>
-          <div class="font-sans">
-            <p class="text-[13px] font-medium text-sand-900">{item.title}</p>
-            <p class="text-[12px] text-sand-900/60 mt-0.5">{item.sub}</p>
-          </div>
-        </div>
-      ))}
+      <TrustItem icon="shipping"    title="Free Shipping"    sub={`On orders over ${freeShippingLabel}`} />
+      <TrustItem icon="returns"     title="60-Day Returns"   sub="No questions asked" />
+      <TrustItem icon="artisan"     title="Artisan Sourced"  sub="Direct from craftspeople" />
+      <TrustItem icon="sustainable" title="Sustainably Made" sub="Certified materials only" />
     </div>
   </div>
 
   {/* ─── CATEGORY PILLS ─── */}
-  <nav class="max-w-[1320px] mx-auto px-8 flex gap-3 overflow-x-auto py-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Browse by type">
+  {/* Fix #4 — los pills ahora generan URLs que realmente filtran la grilla */}
+  <nav
+    class="max-w-[1320px] mx-auto px-8 flex gap-3 overflow-x-auto py-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    aria-label="Browse by type"
+  >
     {CATEGORY_PILLS.map((pill) => (
       <a
         href={`/?category=${pill.value}`}
-        class:list={["filter-pill", pill.active ? "filter-pill--active" : ""]}
-        aria-current={pill.active ? "true" : undefined}
+        class:list={["filter-pill", activeCategory === pill.value ? "filter-pill--active" : ""]}
+        aria-current={activeCategory === pill.value ? "true" : undefined}
       >
         <span class="text-[15px]" aria-hidden="true">{pill.emoji}</span>
         {pill.label}
@@ -189,7 +213,7 @@ const CATEGORY_PILLS = [
   <section class="py-16" aria-labelledby="featured-heading">
     <div class="max-w-330 mx-auto px-8">
       <ProductGrid
-        products={featuredProducts as any} 
+        products={featuredProducts as any}
         layout="featured"
         label="Featured Picks"
         title="New <em>arrivals</em>"
@@ -197,13 +221,14 @@ const CATEGORY_PILLS = [
         showFilters={true}
         showSort={true}
         ctaLabel="View All"
-        ctaHref="/new-arrivals"
+        ctaHref="/collections"
       />
     </div>
   </section>
 
   {/* ─── BRAND STRIP ─── */}
-  <div class="bg-petrol py-16 lg:py-32 relative overflow-hidden">
+  {/* Fix #9 — <div> → <section> con landmark semántico */}
+  <section class="bg-petrol py-16 lg:py-32 relative overflow-hidden" aria-label="Our philosophy">
     <div class="absolute -top-[100px] -right-[100px] w-[400px] h-[400px] bg-white/5 rounded-full pointer-events-none"></div>
     <div class="absolute -bottom-[80px] -left-[80px] w-[300px] h-[300px] bg-watermelon/10 rounded-full pointer-events-none"></div>
 
@@ -225,61 +250,52 @@ const CATEGORY_PILLS = [
         </Button>
       </div>
     </div>
-  </div>
+  </section>
 
   {/* ─── CATEGORY SHOWCASE ─── */}
+  {/* Fix #1 + Fix #12 — hrefs corregidos, conteos reales, CategoryCard molecule */}
   <section class="py-16" aria-labelledby="categories-heading">
     <div class="max-w-[1320px] mx-auto px-8">
       <div class="mb-10">
-        <p class="font-sans text-xs tracking-[0.2em] uppercase text-sand-900/50 mb-2">Shop by Space</p>
+        <Eyebrow text="Shop by Space" color="sand" class="mb-2" />
         <h2 class="font-display text-4xl font-light text-petrol" id="categories-heading">
           Find your<br /><em class="italic text-sand-900/70">sanctuary</em>
         </h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {CATEGORY_CARDS.map((cat) => (
-          <a
+        {CATEGORY_CARDS.map((cat, i) => (
+          <CategoryCard
+            id={cat.id}
+            name={cat.name}
+            label={cat.label}
             href={cat.href}
-            class="group relative aspect-[3/4] rounded-f2-lg overflow-hidden cursor-pointer bg-sand-200 block no-underline md:last:col-span-2 lg:last:col-span-1 shadow-f2-rest hover:shadow-f2-hover f2-transition"
-            aria-label={`Shop ${cat.name} — ${cat.count} pieces available`}
-          >
-            <div class="absolute inset-0 bg-sand-300 transition-transform duration-[800ms] ease-fluent group-hover:scale-105" aria-hidden="true" />
-            <div class="absolute inset-0 bg-gradient-to-t from-petrol/90 via-petrol/20 to-transparent" aria-hidden="true" />
-
-            <div class="absolute top-5 right-5 w-10 h-10 rounded-full fluent-acrylic flex items-center justify-center z-10 f2-transition group-hover:rotate-45" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-petrol" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </div>
-
-            <div class="absolute bottom-0 left-0 right-0 p-6 z-10 font-sans">
-              <p class="text-[11px] tracking-[0.2em] uppercase text-white/60 mb-2">{cat.label}</p>
-              <p class="font-display text-4xl font-light text-white leading-[1.1]">{cat.name}</p>
-              <p class="text-[13px] text-white/60 mt-2">{cat.count} pieces available</p>
-            </div>
-          </a>
+            count={cat.count}
+            class={`${i === CATEGORY_CARDS.length - 1 ? "md:last:col-span-2 lg:last:col-span-1" : ""}`}
+          />
         ))}
       </div>
     </div>
   </section>
+
 </MainLayout>
 
 <script>
-  // Script exclusivo para el Hero Button, conectándolo a la arquitectura de eventos
+  // Script exclusivo para el Hero Button — usa data-hero-variant dinámico
   // Los botones de la ProductGrid ya tienen su script en ProductCard.astro
   const heroCartBtn = document.querySelector('[data-hero-add-to-cart]');
 
   if (heroCartBtn) {
     heroCartBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const id = (e.currentTarget as HTMLElement).dataset.heroAddToCart;
-      
+      const el = e.currentTarget as HTMLElement;
+      const id = el.dataset.heroAddToCart;
+      // Fix #5 — usa la variante del propio producto, no hardcodeada
+      const variant = el.dataset.heroVariant ?? 'Standard';
+
       if (id) {
-        // Disparamos el evento para que CartDrawer.jsx haga el lookup seguro
         window.dispatchEvent(new CustomEvent('cart:add', {
-          detail: { id, variant: 'Oat' } // La variante 'Oat' es específica del Hero
+          detail: { id, variant }
         }));
       }
     });

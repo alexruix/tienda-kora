@@ -2,7 +2,7 @@
  * CartDrawer Organism — React Island
  * BeautyHome · NODO Studio
  */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useStore } from "@nanostores/react";
 import CartItem from "../molecules/CartItem.jsx";
 import {
@@ -15,10 +15,17 @@ import {
   freeShippingRemaining,
   cartTotalFormatted,
   cartTotal,
+  cartTotalWithPromo,
+  promoDiscount,
+  appliedPromoCode,
+  applyPromoCode,
+  clearPromoCode,
+  PROMO_DISCOUNT_PCT,
   removeCartItem,
   setCartQuantity,
   toggleCart,
 } from "../../store/cart.ts";
+import { formatPrice } from "../../utils/formatters.ts";
 
 // ✅ RECIBIMOS 'products' como prop
 export default function CartDrawer({ products = [] }) {
@@ -31,8 +38,31 @@ export default function CartDrawer({ products = [] }) {
   const remainingForFree = useStore(freeShippingRemaining);
   const totalStr = useStore(cartTotalFormatted);
   const subtotal = useStore(cartTotal);
+  const discount = useStore(promoDiscount);
+  const promoCode = useStore(appliedPromoCode);
+  const totalWithPromo = useStore(cartTotalWithPromo);
+
+  // Promo code input state (efímero, no persistido — el código aplicado sí persiste en el atom)
+  const [promoInput, setPromoInput] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [promoOpen, setPromoOpen] = useState(false);
 
   const items = Object.values(itemsMap);
+
+  const handleApplyPromo = useCallback(() => {
+    if (!promoInput.trim()) { setPromoError("Ingresá un código."); return; }
+    if (applyPromoCode(promoInput.trim())) {
+      setPromoError("");
+    } else {
+      setPromoError("Código inválido.");
+    }
+  }, [promoInput]);
+
+  const handleRemovePromo = useCallback(() => {
+    clearPromoCode();
+    setPromoInput("");
+    setPromoError("");
+  }, []);
 
   useEffect(() => {
     setIsMounted(true);
@@ -137,11 +167,7 @@ export default function CartDrawer({ products = [] }) {
                   <p className="font-sans text-[12px] text-sand-900/70 mb-2">
                     Add{" "}
                     <strong className="text-petrol">
-                      {new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "ARS",
-                        minimumFractionDigits: 0,
-                      }).format(remainingForFree)}
+                      {formatPrice(remainingForFree)}
                     </strong>{" "}
                     more for free shipping
                   </p>
@@ -179,13 +205,87 @@ export default function CartDrawer({ products = [] }) {
         {/* Footer */}
         {items.length > 0 && (
           <div className="p-5 px-6 border-t border-sand-200 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
-            <div className="mb-6 flex justify-between items-center">
-              <span className="text-[15px] font-medium text-sand-900 font-sans">
-                Total
-              </span>
-              <span className="font-display text-[28px] text-petrol leading-none">
-                {totalStr}
-              </span>
+
+            {/* ── Promo Code Block ── */}
+            <div className="mb-4 border border-sand-200 rounded-f2-lg overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setPromoOpen((o) => !o)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-sand-50 hover:bg-sand-100 transition-colors text-left border-none cursor-pointer"
+                aria-expanded={promoOpen}
+              >
+                <span className="font-sans text-[12px] text-sand-900/60">
+                  {promoCode ? (
+                    <span className="text-green-600 font-medium flex items-center gap-1.5">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+                      {promoCode} — {PROMO_DISCOUNT_PCT}% off
+                    </span>
+                  ) : "¿Tenés un código de descuento?"}
+                </span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                  className={`text-sand-900/30 transition-transform duration-200 ${promoOpen ? "rotate-180" : ""}`}>
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+
+              {promoOpen && (
+                <div className="px-3 py-3 border-t border-sand-100 bg-white">
+                  {promoCode ? (
+                    <div className="flex items-center justify-between">
+                      <p className="font-sans text-[12px] text-green-600">
+                        Ahorro de <strong>{formatPrice(discount)}</strong>
+                      </p>
+                      <button type="button" onClick={handleRemovePromo}
+                        className="font-sans text-[11px] text-watermelon hover:opacity-70 bg-transparent border-none cursor-pointer">
+                        Quitar
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        type="text" value={promoInput}
+                        onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError(""); }}
+                        onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleApplyPromo())}
+                        placeholder="Ej: NODO26" maxLength={20} autoComplete="off" spellCheck={false}
+                        className="promo-input py-1.5"
+                        aria-label="Código de descuento"
+                      />
+                      <button type="button" onClick={handleApplyPromo}
+                        className="px-3 py-1.5 bg-petrol text-white rounded-f2-md font-sans text-[11px] tracking-[0.06em] uppercase border-none cursor-pointer hover:bg-petrol/90 transition-colors shrink-0">
+                        Aplicar
+                      </button>
+                    </div>
+                  )}
+                  {promoError && (
+                    <p role="alert" className="font-sans text-[11px] text-watermelon mt-1.5">{promoError}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ── Total ── */}
+            <div className="mb-4">
+              {discount > 0 ? (
+                <>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[12px] text-sand-900/40 font-sans">Subtotal</span>
+                    <span className="text-[13px] text-sand-900/50 font-sans line-through">{totalStr}</span>
+                  </div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[12px] text-green-600 font-sans font-medium">Descuento ({promoCode})</span>
+                    <span className="text-[13px] text-green-600 font-sans font-medium">−{formatPrice(discount)}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2 border-t border-sand-100">
+                    <span className="text-[15px] font-medium text-sand-900 font-sans">Total</span>
+                    <span className="font-display text-[28px] text-petrol leading-none">{formatPrice(totalWithPromo)}</span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex justify-between items-center">
+                  <span className="text-[15px] font-medium text-sand-900 font-sans">Total</span>
+                  <span className="font-display text-[28px] text-petrol leading-none">{totalStr}</span>
+                </div>
+              )}
             </div>
             <a
               href="/checkout"

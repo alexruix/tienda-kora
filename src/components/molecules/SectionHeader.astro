@@ -1,0 +1,80 @@
+---
+/**
+ * SectionHeader Molecule — Eyebrow + h2 + optional subtitle
+ * BeautyHome · NODO Studio
+ *
+ * El patrón más repetido del sitio. Aparece en collections, sale, account,
+ * index, category, y más. De ahora en adelante usar este componente.
+ *
+ * Uso:
+ *   <SectionHeader eyebrow="Shop by Space" title="Find your <em>sanctuary</em>" />
+ *   <SectionHeader eyebrow="Sale" title="Up to 20% Off" subtitle="Limited stock." align="center" id="sale-heading" />
+ */
+
+interface Props {
+  eyebrow?:       string;
+  eyebrowColor?:  "watermelon" | "sand" | "white";
+  title:          string;          // Acepta HTML (usa set:html internamente)
+  subtitle?:      string;
+  align?:         "left" | "center";
+  id?:            string;          // Para aria-labelledby en la sección padre
+  titleSize?:     "sm" | "md" | "lg" | "xl";
+  class?:         string;
+}
+
+const {
+  eyebrow,
+  eyebrowColor   = "watermelon",
+  title,
+  subtitle,
+  align          = "left",
+  id,
+  titleSize      = "md",
+  class: extraClass = "",
+} = Astro.props;
+
+const eyebrowColorMap: Record<string, string> = {
+  watermelon: "text-watermelon",
+  sand:       "text-sand-900/50",
+  white:      "text-white/60",
+};
+
+const titleSizeMap: Record<string, string> = {
+  sm: "text-3xl",
+  md: "text-[clamp(32px,4vw,48px)]",
+  lg: "text-[clamp(40px,5vw,64px)]",
+  xl: "text-[clamp(48px,6vw,80px)]",
+};
+---
+
+<div
+  class:list={[
+    "flex flex-col",
+    align === "center" ? "items-center text-center" : "",
+    extraClass,
+  ]}
+>
+  {eyebrow && (
+    <p
+      class:list={[
+        "font-sans text-[11px] tracking-[0.22em] uppercase font-medium mb-3",
+        eyebrowColorMap[eyebrowColor],
+      ]}
+    >
+      {eyebrow}
+    </p>
+  )}
+  <h2
+    id={id}
+    class:list={[
+      "font-display font-light text-petrol leading-[1.05]",
+      titleSizeMap[titleSize],
+    ]}
+    set:html={title}
+  />
+  {subtitle && (
+    <p class:list={["font-sans text-[14px] text-sand-900/60 leading-relaxed mt-3", align === "center" ? "max-w-xl" : "max-w-xl"]}>
+      {subtitle}
+    </p>
+  )}
+</div>

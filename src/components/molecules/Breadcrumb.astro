@@ -1,0 +1,52 @@
+---
+/**
+ * Breadcrumb Molecule — Barra de navegación de migas de pan
+ * BeautyHome · NODO Studio
+ *
+ * Usa clases del Design System: .ds-breadcrumb-bar y .ds-container
+ * Aparece en product/[id], checkout/index, checkout/payment, wishlist, CategoryLayout.
+ *
+ * Uso:
+ *   <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Living" }]} />
+ */
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+  class?: string;
+}
+
+const { items, class: extraClass = "" } = Astro.props;
+---
+
+<nav
+  class:list={["ds-breadcrumb-bar", extraClass]}
+  aria-label="Breadcrumb"
+>
+  <div class="ds-container">
+    <ol class="flex items-center gap-2 font-sans text-[13px] text-sand-900/50 py-0 flex-wrap min-h-[48px] items-center">
+      {items.map((item, i) => (
+        <>
+          <li>
+            {item.href ? (
+              <a href={item.href} class="hover:text-sand-900 f2-transition">
+                {item.label}
+              </a>
+            ) : (
+              <span class="text-sand-900 font-medium" aria-current="page">
+                {item.label}
+              </span>
+            )}
+          </li>
+          {i < items.length - 1 && (
+            <li aria-hidden="true" class="text-sand-900/30 select-none">›</li>
+          )}
+        </>
+      ))}
+    </ol>
+  </div>
+</nav>

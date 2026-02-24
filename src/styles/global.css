@@ -456,6 +456,58 @@
     .step-connector {
       @apply text-sand-200 font-light select-none;
     }
+
+    /* ── Design System Layout ───────────────────────────────────────── */
+
+    /**
+     * Wrapper principal del sitio.
+     * Reemplaza el patrón repetido: max-w-[1320px] mx-auto px-5 md:px-8
+     */
+    .ds-container {
+      @apply max-w-[1320px] mx-auto px-5 md:px-8;
+    }
+
+    /** Contenedor estrecho — checkout, account, modales */
+    .ds-container--narrow {
+      @apply max-w-[1100px] mx-auto px-5 md:px-8;
+    }
+
+    /** Sección con espaciado vertical estándar */
+    .ds-page-section {
+      @apply py-16 lg:py-20;
+    }
+
+    /** Barra de breadcrumb / sub-nav */
+    .ds-breadcrumb-bar {
+      @apply bg-sand-50 border-b border-sand-200 py-4;
+    }
+
+    /**
+     * Input del código de descuento.
+     * Compartido entre CartDrawer.jsx y CheckoutForm.jsx.
+     * El py se define por contexto (py-1.5 drawer, py-2 checkout).
+     */
+    .promo-input {
+      @apply flex-1 px-3 rounded-f2-md border border-sand-200 bg-white font-sans
+             text-[13px] text-sand-900 tracking-[0.1em] uppercase
+             focus:outline-none focus:border-petrol transition-colors;
+    }
+
+    /** Variante oscura del efecto acrílico (superficies sobre bg claro) */
+    .fluent-acrylic--dark {
+      @apply bg-petrol/70 backdrop-blur-xl border border-white/10 shadow-f2-rest;
+    }
+
+    /** Animate card-in — referenciado en ProductCard.astro */
+    .animate-card-in {
+      animation: cardIn 0.5s var(--ease-fluent) both;
+    }
+
+    /** Animate fade-in (modal, accordions) */
+    .animate-fade-in {
+      animation: fadeIn 0.25s var(--ease-fluent) both;
+    }
+
   }
 
   /* =========================================

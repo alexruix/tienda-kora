@@ -1,0 +1,69 @@
+---
+/**
+ * StatCounter Atom — Contador de stats (valor + label)
+ * BeautyHome · NODO Studio
+ *
+ * Uso:
+ *   <StatCounter value="9" label="Artisan pieces" />
+ *   <StatCounter value="4.9★" label="Customer rating" size="lg" />
+ */
+
+interface Props {
+  value:    string;
+  label:    string;
+  size?:    "sm" | "md" | "lg";
+  color?:   "petrol" | "white";
+  class?:   string;
+}
+
+const {
+  value,
+  label,
+  size   = "md",
+  color  = "petrol",
+  class: extraClass = "",
+} = Astro.props;
+
+const valueSize: Record<string, string> = {
+  sm: "text-2xl",
+  md: "text-4xl",
+  lg: "text-5xl",
+};
+
+const labelSize: Record<string, string> = {
+  sm: "text-[10px]",
+  md: "text-xs",
+  lg: "text-[13px]",
+};
+
+const valueColor: Record<string, string> = {
+  petrol: "text-petrol",
+  white:  "text-white",
+};
+
+const labelColor: Record<string, string> = {
+  petrol: "text-sand-900/50",
+  white:  "text-white/50",
+};
+---
+
+<div class:list={["text-left", extraClass]}>
+  <span
+    class:list={[
+      "block font-sans font-light leading-none",
+      valueSize[size],
+      valueColor[color],
+    ]}
+  >
+    {value}
+  </span>
+  <span
+    class:list={[
+      "block tracking-[0.08em] uppercase mt-1",
+      labelSize[size],
+      labelColor[color],
+    ]}
+  >
+    {label}
+  </span>
+</div>

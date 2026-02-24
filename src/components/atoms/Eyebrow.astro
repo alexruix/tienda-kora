@@ -1,0 +1,57 @@
+---
+/**
+ * Eyebrow Atom — Label de sección estilo editorial
+ * BeautyHome · NODO Studio
+ *
+ * Uso:
+ *   <Eyebrow text="New Collection 2026" />
+ *   <Eyebrow text="Shop by Space" color="sand" />
+ *   <Eyebrow text="Curated Catalog" withLine />
+ */
+
+interface Props {
+  text:       string;
+  color?:     "watermelon" | "sand" | "white";
+  withLine?:  boolean;
+  class?:     string;
+  center?:    boolean;
+}
+
+const {
+  text,
+  color    = "watermelon",
+  withLine = false,
+  center   = false,
+  class: extraClass = "",
+} = Astro.props;
+
+const colorMap: Record<string, string> = {
+  watermelon: "text-watermelon",
+  sand:       "text-sand-900/50",
+  white:      "text-white/50",
+};
+
+const lineColorMap: Record<string, string> = {
+  watermelon: "bg-watermelon",
+  sand:       "bg-sand-900/30",
+  white:      "bg-white/30",
+};
+---
+
+<p
+  class:list={[
+    "font-sans text-[11px] tracking-[0.22em] uppercase font-medium",
+    colorMap[color],
+    withLine ? "flex items-center gap-3" : "",
+    center ? "justify-center" : "",
+    extraClass,
+  ]}
+>
+  {withLine && (
+    <span
+      class:list={["w-6 h-px shrink-0", lineColorMap[color]]}
+      aria-hidden="true"
+    />
+  )}
+  {text}
+</p>

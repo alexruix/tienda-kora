@@ -9,16 +9,14 @@
  * - SSG: generado en build time.
  */
 
-import MainLayout from "../components/templates/MainLayout.astro";
-import ProductGrid from "../components/organisms/ProductGrid.astro";
+import MainLayout     from "../components/templates/MainLayout.astro";
+import ProductGrid    from "../components/organisms/ProductGrid.astro";
+import SectionHeader  from "../components/molecules/SectionHeader.astro";
 import { getCollection } from "astro:content";
-import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "../utils/shipping";
+import { FREE_SHIPPING_THRESHOLD } from "../utils/shipping";
+import { formatPrice } from "../utils/formatters";
 
-const freeShippingLabel = new Intl.NumberFormat("es-AR", {
-  style: "currency",
-  currency: "ARS",
-  minimumFractionDigits: 0,
-}).format(FREE_SHIPPING_THRESHOLD);
+const freeShippingLabel = formatPrice(FREE_SHIPPING_THRESHOLD);
 
 const productsData = await getCollection("products");
 const allProducts = productsData.map((p) => ({ ...p.data, id: p.id }));
@@ -46,11 +44,7 @@ const maxDiscountPct = saleProducts.reduce((max, p) => {
   return max;
 }, 0);
 
-const formattedSavings = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "ARS",
-  minimumFractionDigits: 0,
-}).format(totalSavings);
+const formattedSavings = formatPrice(totalSavings);
 ---
 
 <MainLayout
@@ -64,7 +58,7 @@ const formattedSavings = new Intl.NumberFormat("en-US", {
       <div class="absolute bottom-0 left-1/4 w-[200px] h-[200px] bg-white/5 rounded-full translate-y-1/2" />
     </div>
 
-    <div class="max-w-[1320px] mx-auto px-5 md:px-8 py-16 lg:py-24 relative z-10 animate-fade-in-up text-white">
+    <div class="ds-container py-16 lg:py-24 relative z-10 animate-fade-in-up text-white">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
           <div class="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-4 py-1.5 mb-6">
@@ -111,7 +105,7 @@ const formattedSavings = new Intl.NumberFormat("en-US", {
 
   {/* ─── TRUST STRIP ─── */}
   <div class="bg-sand-50 border-b border-sand-200 py-5">
-    <div class="max-w-[1320px] mx-auto px-5 md:px-8">
+    <div class="ds-container">
       <ul class="flex flex-wrap gap-x-8 gap-y-3 justify-center text-[12px] font-sans text-sand-900/50 tracking-[0.04em]" role="list">
         {[
           "🔄  60-day returns on all sale items",
@@ -126,22 +120,14 @@ const formattedSavings = new Intl.NumberFormat("en-US", {
   </div>
 
   {/* ─── PRODUCT GRID ─── */}
-  <section class="max-w-[1320px] mx-auto px-5 md:px-8 py-16 lg:py-20" aria-labelledby="sale-heading">
+  <section class="ds-container ds-page-section" aria-labelledby="sale-heading">
     {saleProducts.length > 0 ? (
       <>
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <p class="font-sans text-[11px] tracking-[0.22em] uppercase text-watermelon mb-1">
-              Sale Selection
-            </p>
-            <h2 id="sale-heading" class="font-display text-3xl font-light text-petrol">
-              {saleProducts.length} pieces at reduced prices
-            </h2>
-          </div>
-          <p class="font-sans text-[13px] text-sand-900/40">
-            Ends when stock runs out
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="Sale Selection"
+          title={`${saleProducts.length} pieces at reduced prices`}
+          id="sale-heading"
+        />
 
         <ProductGrid
           products={saleProducts as any}
