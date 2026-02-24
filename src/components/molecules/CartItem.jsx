@@ -3,7 +3,7 @@
  * BeautyHome · NODO Studio
  */
 
-import { formatPrice } from "../../utils/formatters.js";
+import { formatPrice } from "../../utils/formatters.ts";
 
 export default function CartItem({
   id,

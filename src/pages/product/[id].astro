@@ -12,7 +12,7 @@ import MainLayout from "../../components/templates/MainLayout.astro";
 import Badge from "../../components/atoms/Badge.astro";
 import ProductGrid from "../../components/organisms/ProductGrid.astro";
 import { getCollection } from "astro:content";
-import { formatPrice } from "../../utils/formatters.js";
+import { formatPrice } from "../../utils/formatters.ts";
 
 // 1. Rutas Estáticas y Sincronización de IDs
 export async function getStaticPaths() {

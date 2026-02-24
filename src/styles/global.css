@@ -59,6 +59,7 @@
       opacity: 0;
       transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -70,6 +71,7 @@
       opacity: 0;
       transform: translateY(12px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -167,6 +169,7 @@
    3. COMPONENTS
    ========================================= */
   @layer components {
+
     /* Fluent 2 "Acrylic" - Efecto translúcido */
     .fluent-acrylic {
       @apply bg-white/60 backdrop-blur-xl border border-white/30 shadow-f2-rest animate-acrylic-in;
@@ -353,11 +356,11 @@
 
     /* Selectores complejos para el layout Featured y vista de Lista */
     /* Nota: Usamos anidamiento nativo CSS que Tailwind v4 soporta por defecto */
-    .product-grid--featured > div:first-child {
+    .product-grid--featured>div:first-child {
       @apply lg:row-span-2;
     }
 
-    .product-grid--featured > div:first-child .pc-img-wrap {
+    .product-grid--featured>div:first-child .pc-img-wrap {
       @apply lg:min-h-[480px] lg:aspect-auto lg:h-full;
     }
 
@@ -380,8 +383,7 @@
     }
 
     .swatch-btn {
-      @apply w-8 h-8 rounded-full border-[1.5px] border-transparent shadow-[inset_0_0_0_2px_rgba(0,0,0,0.08)] 
-           f2-transition hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed outline-none;
+      @apply w-8 h-8 rounded-full border-[1.5px] border-transparent f2-transition hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed outline-none;
     }
 
     .swatch-btn[aria-pressed="true"] {
@@ -390,8 +392,7 @@
 
     /* ── PDP Gallery Thumbnails ── */
     .gt-thumb {
-      @apply w-20 h-20 rounded-f2-md bg-sand-100 border-[1.5px] border-transparent shrink-0 
-           f2-transition  focus-visible:border-petrol outline-none;
+      @apply w-20 h-20 rounded-f2-md bg-sand-100 border-[1.5px] border-transparent shrink-0 f2-transition focus-visible:border-petrol outline-none;
     }
 
     .gt-thumb.is-active {
@@ -413,12 +414,47 @@
 
     /* ── Details Accordion (PDP) ── */
     .pdp-details summary {
-      @apply flex items-center justify-between font-sans text-[14px] font-medium text-sand-900 
-           py-4 cursor-pointer list-none transition-colors duration-200 hover:text-petrol;
+      @apply flex items-center justify-between font-sans text-[14px] font-medium text-sand-900 py-4 cursor-pointer list-none transition-colors duration-200 hover:text-petrol;
     }
 
     .pdp-details summary::-webkit-details-marker {
       display: none;
+    }
+
+    /* ── Checkout Layout Container ── */
+    .checkout-container {
+      @apply max-w-[1100px] mx-auto px-5 md:px-8;
+    }
+
+    /* ── Step Indicator (Steppers) ── */
+    .step-item {
+      @apply flex items-center gap-2 text-[12px] font-sans tracking-[0.06em] uppercase transition-colors duration-300;
+    }
+
+    .step-bullet {
+      @apply w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold f2-transition;
+    }
+
+    /* Estado Activo */
+    .step-item--active {
+      @apply text-petrol font-medium;
+    }
+
+    .step-item--active .step-bullet {
+      @apply bg-petrol text-white;
+    }
+
+    /* Estado Inactivo / Pendiente */
+    .step-item--pending {
+      @apply text-sand-900/30;
+    }
+
+    .step-item--pending .step-bullet {
+      @apply bg-sand-100 text-sand-900/30;
+    }
+
+    .step-connector {
+      @apply text-sand-200 font-light select-none;
     }
   }
 

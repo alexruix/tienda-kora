@@ -11,6 +11,13 @@ import MainLayout from "../components/templates/MainLayout.astro";
 import ProductGrid from "../components/organisms/ProductGrid.astro";
 import Button from "../components/atoms/Button.astro";
 import { getCollection } from "astro:content";
+import { FREE_SHIPPING_THRESHOLD } from "../utils/shipping";
+
+const freeShippingLabel = new Intl.NumberFormat("es-AR", {
+  style: "currency",
+  currency: "ARS",
+  minimumFractionDigits: 0,
+}).format(FREE_SHIPPING_THRESHOLD);
 
 // 1. Extraemos la colección validada y aseguramos el ID
 const productsCollection = await getCollection("products");
@@ -146,7 +153,7 @@ const CATEGORY_PILLS = [
   <div class="bg-sand-100 border-y border-sand-200 py-8" role="list" aria-label="Our promises">
     <div class="max-w-[1320px] mx-auto px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {[
-        { emoji: "🚚", title: "Free Shipping", sub: "On orders over $5,000" },
+        { emoji: "🚚", title: "Free Shipping", sub: `On orders over ${freeShippingLabel}` },
         { emoji: "🔄", title: "60-Day Returns", sub: "No questions asked" },
         { emoji: "🤝", title: "Artisan Sourced", sub: "Direct from craftspeople" },
         { emoji: "🌿", title: "Sustainably Made", sub: "Certified materials only" },

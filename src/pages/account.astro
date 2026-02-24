@@ -1,0 +1,270 @@
+---
+/**
+ * /account — Account Page
+ * BeautyHome · NODO Studio
+ *
+ * Arquitectura:
+ * - Página SSR (prerender: false) para poder leer cookies/sesión en el futuro.
+ * - Actualmente muestra el estado de "guest" con datos del localStorage (cliente).
+ * - Las secciones de órdenes y perfil son placeholders anotados con TODO para
+ *   cuando se integre un sistema de autenticación real (Clerk, Auth.js, etc.).
+ */
+
+export const prerender = false;
+
+import MainLayout from "../components/templates/MainLayout.astro";
+---
+
+<MainLayout
+  title="My Account — BeautyHome"
+  description="Manage your BeautyHome account, view your orders, and update your personal details."
+  noIndex={true}
+>
+  {/* ─── HEADER ─── */}
+  <header class="bg-sand-100 border-b border-sand-200 pt-24 pb-10">
+    <div class="max-w-[1100px] mx-auto px-5 md:px-8">
+      <div class="flex items-center gap-5">
+        {/* Avatar placeholder */}
+        <div
+          id="account-avatar"
+          class="w-16 h-16 rounded-full bg-petrol flex items-center justify-center text-white font-display text-2xl font-light shrink-0"
+          aria-hidden="true"
+        >
+          ✦
+        </div>
+        <div>
+          <p class="font-sans text-[11px] tracking-[0.22em] uppercase text-sand-900/40 mb-1">
+            Welcome back
+          </p>
+          <h1
+            id="account-name"
+            class="font-display text-[clamp(28px,3vw,40px)] font-light text-petrol leading-none"
+          >
+            My Account
+          </h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {/* ─── MAIN CONTENT ─── */}
+  <div class="max-w-[1100px] mx-auto px-5 md:px-8 py-12 lg:py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-10 lg:gap-16 items-start">
+
+      {/* ─── SIDEBAR NAV ─── */}
+      <nav class="lg:sticky lg:top-24" aria-label="Account sections">
+        <ul class="space-y-1" role="list">
+          {[
+            { icon: "📦", label: "My Orders",     id: "orders",   active: true  },
+            { icon: "❤️", label: "Wishlist",       id: "wishlist", active: false, href: "/wishlist" },
+            { icon: "👤", label: "Profile",        id: "profile",  active: false },
+            { icon: "🔔", label: "Notifications",  id: "notifs",   active: false },
+            { icon: "🏠", label: "Addresses",      id: "addresses",active: false },
+          ].map((item) => (
+            <li role="listitem">
+              {item.href ? (
+                <a
+                  href={item.href}
+                  class={`flex items-center gap-3 px-4 py-3 rounded-f2-md font-sans text-[14px] no-underline transition-all duration-150 ${
+                    item.active
+                      ? "bg-petrol text-white font-medium"
+                      : "text-sand-900/70 hover:bg-sand-100 hover:text-sand-900"
+                  }`}
+                >
+                  <span class="text-base" aria-hidden="true">{item.icon}</span>
+                  {item.label}
+                </a>
+              ) : (
+                <button
+                  class={`w-full flex items-center gap-3 px-4 py-3 rounded-f2-md font-sans text-[14px] text-left border-none cursor-pointer transition-all duration-150 ${
+                    item.active
+                      ? "bg-petrol text-white font-medium"
+                      : "bg-transparent text-sand-900/70 hover:bg-sand-100 hover:text-sand-900"
+                  }`}
+                  aria-current={item.active ? "page" : undefined}
+                  data-section={item.id}
+                >
+                  <span class="text-base" aria-hidden="true">{item.icon}</span>
+                  {item.label}
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-8 pt-8 border-t border-sand-200">
+          <button
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-f2-md font-sans text-[14px] text-left border-none cursor-pointer text-sand-900/50 hover:bg-sand-100 hover:text-sand-900 bg-transparent transition-all duration-150"
+          >
+            <span class="text-base" aria-hidden="true">🚪</span>
+            Sign Out
+          </button>
+        </div>
+      </nav>
+
+      {/* ─── MAIN PANEL ─── */}
+      <main>
+
+        {/* ── ORDERS SECTION ── */}
+        <section aria-labelledby="orders-heading">
+          <div class="flex items-center justify-between mb-8">
+            <h2 id="orders-heading" class="font-display text-[28px] font-light text-petrol">
+              My Orders
+            </h2>
+            <span id="order-count" class="font-sans text-[12px] text-sand-900/40 tracking-[0.06em]"></span>
+          </div>
+
+          {/* Guest state — shown until auth is implemented or orders loaded */}
+          <div
+            id="orders-guest"
+            class="bg-white rounded-f2-xl border border-sand-200 p-10 text-center animate-fade-in-up"
+          >
+            <div class="w-16 h-16 rounded-full bg-sand-100 flex items-center justify-center mx-auto mb-6">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sand-900/30">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+            </div>
+            <h3 class="font-display text-2xl font-light text-petrol mb-2">No orders yet</h3>
+            <p class="font-sans text-[14px] text-sand-900/50 mb-8 max-w-sm mx-auto leading-relaxed">
+              Your order history will appear here. Start by exploring our collections.
+            </p>
+            <a href="/collections" class="btn btn-primary btn-md no-underline">
+              Browse Collections
+            </a>
+          </div>
+
+          {/* TODO: Replace above with real order list when auth is integrated.
+              Each order card should show: orderId, date, status badge, items thumbnail, total.
+              Pattern:
+              <div class="divide-y divide-sand-100 bg-white rounded-f2-xl border border-sand-200">
+                {orders.map(order => <OrderCard {...order} />)}
+              </div>
+          */}
+        </section>
+
+        {/* ── PROFILE QUICK CARD ── */}
+        <section class="mt-12" aria-labelledby="profile-quick-heading">
+          <h2 id="profile-quick-heading" class="font-display text-[22px] font-light text-petrol mb-6">
+            Your Details
+          </h2>
+          <div class="bg-white rounded-f2-xl border border-sand-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-sand-100 flex items-center justify-between">
+              <p class="font-sans text-[12px] tracking-[0.1em] uppercase text-sand-900/40">
+                Saved from last checkout
+              </p>
+              <span
+                id="profile-status"
+                class="font-sans text-[11px] text-sand-900/30"
+              >Loading…</span>
+            </div>
+
+            <dl class="divide-y divide-sand-100" id="profile-fields">
+              {[
+                { label: "Name",    id: "f-name"  },
+                { label: "Email",   id: "f-email" },
+                { label: "Phone",   id: "f-phone" },
+                { label: "DNI",     id: "f-dni"   },
+              ].map((field) => (
+                <div class="flex items-center gap-4 px-6 py-4">
+                  <dt class="font-sans text-[12px] tracking-[0.06em] uppercase text-sand-900/40 w-20 shrink-0">
+                    {field.label}
+                  </dt>
+                  <dd
+                    id={field.id}
+                    class="font-sans text-[14px] text-sand-900/70 flex-1"
+                  >
+                    —
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <div class="px-6 py-4 bg-sand-50 border-t border-sand-100">
+              <p class="font-sans text-[11px] text-sand-900/30">
+                These details are pre-filled from your last purchase. They are stored locally on your device.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── LOYALTY CARD ── */}
+        <section class="mt-12" aria-labelledby="loyalty-heading">
+          <div class="bg-petrol rounded-f2-xl p-8 text-white relative overflow-hidden">
+            <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+              <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full translate-x-1/2 -translate-y-1/2" />
+            </div>
+            <div class="relative z-10">
+              <p class="font-sans text-[11px] tracking-widest uppercase text-watermelon mb-3">
+                BeautyHome Atelier
+              </p>
+              <h2 id="loyalty-heading" class="font-display text-[28px] font-light text-white mb-3">
+                Collector Member
+              </h2>
+              <p class="font-sans text-[13px] text-white/60 leading-relaxed mb-6 max-w-sm">
+                As a member you get early access to new collections, exclusive sale events,
+                and dedicated concierge service for custom pieces.
+              </p>
+              <div class="flex flex-wrap gap-4">
+                <a href="mailto:concierge@beautyhome.com" class="btn btn-sm no-underline !bg-white/10 !text-white/80 !border-white/20 border hover:!bg-white/20 hover:!text-white">
+                  Contact Concierge
+                </a>
+                <a href="/wishlist" class="btn btn-sm no-underline !bg-transparent !text-white/60 hover:!text-white">
+                  View Wishlist →
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  // Leer datos del customerInfo store (localStorage) y mostrarlos en la UI
+  // Se ejecuta en el cliente para evitar flash de hidratación
+  import { customerInfo } from "../store/customer.ts";
+
+  document.addEventListener("astro:page-load", () => {
+    const customer = customerInfo.get();
+    const hasData = !!(customer.name || customer.email);
+
+    // Avatar inicial
+    const avatar = document.getElementById("account-avatar");
+    if (avatar && customer.name) {
+      const initials = [customer.name[0], customer.surname?.[0]]
+        .filter(Boolean)
+        .join("")
+        .toUpperCase();
+      avatar.textContent = initials || "✦";
+    }
+
+    // Nombre en el header
+    const accountName = document.getElementById("account-name");
+    if (accountName && customer.name) {
+      accountName.textContent = `${customer.name} ${customer.surname}`.trim();
+    }
+
+    // Profile fields
+    const fields: Record<string, string> = {
+      "f-name":  [customer.name, customer.surname].filter(Boolean).join(" ") || "—",
+      "f-email": customer.email || "—",
+      "f-phone": customer.phone || "—",
+      "f-dni":   customer.dni   || "—",
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    // Status badge
+    const statusEl = document.getElementById("profile-status");
+    if (statusEl) {
+      statusEl.textContent = hasData ? "From last checkout" : "No data yet";
+    }
+  });
+</script>

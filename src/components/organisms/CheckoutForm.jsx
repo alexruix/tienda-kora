@@ -6,7 +6,7 @@
  *   1. Shipping — SHIPPING_COST importado de utils/shipping.ts (fuente única)
  *   2. Persistencia — customerInfo persistentAtom (nanostores)
  *   3. Hidratación — skeleton estructural en lugar de spinner (sin flicker)
- *   4. DRY — formatPrice de utils/formatters.js, validadores de utils/validators.ts
+ *   4. DRY — formatPrice de utils/formatters.ts, validadores de utils/validators.ts
  */
 
 import { useState, useEffect, useCallback } from "react";
@@ -20,7 +20,7 @@ import {
 import { customerInfo, updateCustomerField } from "../../store/customer.ts";
 
 // Fix #4 — DRY
-import { formatPrice } from "../../utils/formatters.js";
+import { formatPrice } from "../../utils/formatters.ts";
 import {
   validateEmail,
   validateDNI,
@@ -35,6 +35,15 @@ import {
   SHIPPING_COST,
   calculateShipping,
 } from "../../utils/shipping.ts";
+
+// Promo code store
+import {
+  appliedPromoCode,
+  promoDiscount,
+  applyPromoCode,
+  clearPromoCode,
+  PROMO_DISCOUNT_PCT,
+} from "../../store/cart.ts";
 
 // ── Field + Input ─────────────────────────────────────────────────────────────
 
@@ -96,10 +105,9 @@ function FormSkeleton() {
 
 // ── OrderSummary ──────────────────────────────────────────────────────────────
 
-function OrderSummary({ items, subtotal, isFreeShipping }) {
-  // Fix #1: usa la misma función que create-preference.ts
+function OrderSummary({ items, subtotal, isFreeShipping, discount }) {
   const shippingCost = calculateShipping(subtotal);
-  const total = subtotal + shippingCost;
+  const total = subtotal + shippingCost - discount;
   const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
 
   return (
@@ -149,6 +157,12 @@ function OrderSummary({ items, subtotal, isFreeShipping }) {
             Agregá {formatPrice(remaining)} más para envío gratis
           </p>
         )}
+        {discount > 0 && (
+          <div className="flex justify-between text-[13px] font-sans">
+            <span className="text-green-600 font-medium">Promo ({PROMO_DISCOUNT_PCT}% off)</span>
+            <span className="text-green-600 font-medium">−{formatPrice(discount)}</span>
+          </div>
+        )}
         <div className="pt-3 border-t border-sand-200 flex justify-between items-baseline">
           <span className="font-sans text-[14px] font-medium text-sand-900">Total</span>
           <span className="font-display text-[28px] font-light text-petrol leading-none">
@@ -175,16 +189,36 @@ export default function CheckoutForm() {
   const itemsMap = useStore(cartItems);
   const subtotal = useStore(cartTotal);
   const freeShipping = useStore(hasFreeShipping);
+  const discount = useStore(promoDiscount);
+  const promoCode = useStore(appliedPromoCode);
 
-  // Fix #2: form state desde persistentAtom — persiste en localStorage automáticamente
+  // Fix #2: form state desde persistentAtom
   const customer = useStore(customerInfo);
   const items = Object.values(itemsMap);
 
+  // Promo code input state (local, no persistido)
+  const [promoInput, setPromoInput] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [promoOpen, setPromoOpen] = useState(false);
+
   useEffect(() => { setIsMounted(true); }, []);
+  useEffect(() => { if (promoCode) setPromoOpen(true); }, [promoCode]);
 
   useEffect(() => {
     if (isMounted && items.length === 0) window.location.href = "/";
   }, [isMounted, items.length]);
+
+  const handleApplyPromo = useCallback(() => {
+    if (!promoInput.trim()) { setPromoError("Ingresá un código."); return; }
+    const valid = applyPromoCode(promoInput.trim());
+    if (valid) { setPromoError(""); } else { setPromoError("Código inválido. Verificá e intentá de nuevo."); }
+  }, [promoInput]);
+
+  const handleRemovePromo = useCallback(() => {
+    clearPromoCode();
+    setPromoInput("");
+    setPromoError("");
+  }, []);
 
   // Fix #2: cada keystroke escribe al store (localStorage)
   const updateField = useCallback((field, value) => {
@@ -234,11 +268,12 @@ export default function CheckoutForm() {
             ...(customer.phone && { phone: customer.phone.trim() }),
             ...(customer.dni && { dni: customer.dni.replace(/\./g, "") }),
           },
+          ...(promoCode && { promoCode }),
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error al procesar el pago");
-      window.location.href = `/checkout/payment?pid=${encodeURIComponent(data.preferenceId)}`;
+      window.location.href = `/checkout/payment?pid=${encodeURIComponent(data.preferenceId)}&amt=${data.total}`;
     } catch (err) {
       setApiError(err instanceof Error ? err.message : "Ocurrió un error. Por favor intentá de nuevo.");
       setIsSubmitting(false);
@@ -320,6 +355,58 @@ export default function CheckoutForm() {
               </div>
             </fieldset>
 
+            {/* ── Promo Code ── */}
+            <div className="mb-8 border border-sand-200 rounded-f2-lg overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setPromoOpen((o) => !o)}
+                className="w-full flex items-center justify-between px-4 py-3.5 bg-sand-50 hover:bg-sand-100 transition-colors text-left border-none cursor-pointer"
+                aria-expanded={promoOpen}
+              >
+                <span className="font-sans text-[13px] text-sand-900/70">
+                  {promoCode
+                    ? <span className="text-green-600 font-medium flex items-center gap-2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>Código <strong>{promoCode}</strong> — {PROMO_DISCOUNT_PCT}% off aplicado</span>
+                    : "¿Tenés un código de descuento?"}
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`text-sand-900/40 transition-transform duration-200 ${promoOpen ? "rotate-180" : ""}`}><path d="M6 9l6 6 6-6" /></svg>
+              </button>
+
+              {promoOpen && (
+                <div className="px-4 py-4 border-t border-sand-200 bg-white">
+                  {promoCode ? (
+                    <div className="flex items-center justify-between">
+                      <p className="font-sans text-[13px] text-green-600">
+                        Ahorro de <strong>{formatPrice(discount)}</strong> aplicado al total.
+                      </p>
+                      <button type="button" onClick={handleRemovePromo}
+                        className="font-sans text-[12px] text-watermelon hover:opacity-70 bg-transparent border-none cursor-pointer">
+                        Quitar
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        id="promo-code" type="text" value={promoInput}
+                        onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError(""); }}
+                        onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleApplyPromo())}
+                        placeholder="Ej: NODO26" maxLength={20} autoComplete="off" spellCheck={false}
+                        className="flex-1 px-3 py-2 rounded-f2-md border border-sand-200 bg-white font-sans text-[13px] text-sand-900 tracking-widest uppercase focus:outline-none focus:border-petrol transition-colors"
+                        aria-label="Código de descuento"
+                        aria-describedby={promoError ? "promo-error" : undefined}
+                      />
+                      <button type="button" onClick={handleApplyPromo}
+                        className="px-4 py-2 bg-petrol text-white rounded-f2-md font-sans text-[12px] tracking-[0.06em] uppercase border-none cursor-pointer hover:bg-petrol/90 transition-colors shrink-0">
+                        Aplicar
+                      </button>
+                    </div>
+                  )}
+                  {promoError && (
+                    <p id="promo-error" role="alert" className="font-sans text-[12px] text-watermelon mt-2">{promoError}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
             {apiError && (
               <div className="bg-watermelon/5 border border-watermelon/30 rounded-f2-md px-4 py-3 mb-6" role="alert">
                 <p className="font-sans text-[13px] text-watermelon flex items-center gap-2">
@@ -354,7 +441,7 @@ export default function CheckoutForm() {
 
         {/* Right: Order Summary */}
         <div className="lg:sticky lg:top-24">
-          <OrderSummary items={items} subtotal={subtotal} isFreeShipping={freeShipping} />
+          <OrderSummary items={items} subtotal={subtotal} isFreeShipping={freeShipping} discount={discount} />
         </div>
       </div>
     </div>

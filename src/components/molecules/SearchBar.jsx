@@ -7,13 +7,13 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 
 // Formateador de moneda (puedes ajustarlo a ARS si prefieres)
-import { formatPrice } from '../../utils/formatters.js';
+import { formatPrice } from '../../utils/formatters.ts';
 
 
-export default function SearchBar({ 
-    products = [], 
-    placeholder = 'Buscar piezas...', 
-    onSearch 
+export default function SearchBar({
+    products = [],
+    placeholder = 'Buscar piezas...',
+    onSearch
 }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
@@ -30,12 +30,12 @@ export default function SearchBar({
             setIsOpen(false);
             return;
         }
-        
+
         const q = query.toLowerCase();
         const res = products.filter(
             (p) => p.name.toLowerCase().includes(q) || p.category?.toLowerCase().includes(q)
         ).slice(0, 5); // Mostramos máximo 5 resultados rápidos
-        
+
         setResults(res);
         setIsOpen(res.length > 0);
         setActiveIdx(-1);

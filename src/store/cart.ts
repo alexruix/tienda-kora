@@ -5,6 +5,9 @@
 
 import { atom, computed } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "../utils/shipping";
+import { PROMO_CODE, PROMO_DISCOUNT_PCT, calculatePromoDiscount } from "../utils/promo";
+import { formatPrice } from "../utils/formatters";
 
 /* ── Types ───────────────────────────────────────────────── */
 export type CartItem = {
@@ -18,14 +21,14 @@ export type CartItem = {
 
 export type CartMap = Record<string, CartItem>;
 
-export const FREE_SHIPPING_THRESHOLD = 5000; // Umbral unificado
-export const PROMO_CODE = "NODO26"
+/* ── Re-exports para que los consumidores no cambien sus imports ── */
+export { FREE_SHIPPING_THRESHOLD, SHIPPING_COST };   // desde utils/shipping.ts
+export { PROMO_CODE, PROMO_DISCOUNT_PCT };           // desde utils/promo.ts
 
 /* ── Atoms ───────────────────────────────────────────────── */
 
-// 1. Guardamos el try/catch de Claude para máxima seguridad
 export const cartItems = persistentAtom<CartMap>(
-  "beautyhome_cart", // Mantenemos nuestra llave original
+  "beautyhome_cart",
   {},
   {
     encode: JSON.stringify,
@@ -41,6 +44,9 @@ export const cartItems = persistentAtom<CartMap>(
 
 export const isCartOpen = atom<boolean>(false);
 
+/** Código promocional ingresado por el usuario (solo en sesión, no persistido) */
+export const appliedPromoCode = atom<string>("");
+
 /* ── Derived / Computed ──────────────────────────────────── */
 
 export const cartCount = computed(cartItems, (items) =>
@@ -54,7 +60,6 @@ export const cartTotal = computed(cartItems, (items) =>
   ),
 );
 
-// NUEVO: Lógica de negocio extraída al Store (Genialidad de Claude)
 export const hasFreeShipping = computed(
   cartTotal,
   (total) => total >= FREE_SHIPPING_THRESHOLD,
@@ -64,18 +69,25 @@ export const freeShippingRemaining = computed(cartTotal, (total) =>
   Math.max(0, FREE_SHIPPING_THRESHOLD - total),
 );
 
-// NUEVO: Formateador global
+/** Monto del descuento por código promo (0 si no aplica) */
+export const promoDiscount = computed(
+  [cartTotal, appliedPromoCode],
+  (total, code) => calculatePromoDiscount(total, code),
+);
+
+/** Total del carrito después del descuento promo */
+export const cartTotalWithPromo = computed(
+  [cartTotal, promoDiscount],
+  (total, discount) => total - discount,
+);
+
+/** Formateador global — usa formatPrice de utils/formatters.ts (sin duplicación) */
 export const cartTotalFormatted = computed(cartTotal, (total) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "ARS",
-    minimumFractionDigits: 0,
-  }).format(total),
+  formatPrice(total),
 );
 
 /* ── Actions ─────────────────────────────────────────────── */
 
-// Mantenemos nuestros nombres de funciones para no romper la app
 export function addCartItem(
   product: Omit<CartItem, "quantity"> & { quantity?: number },
 ) {
@@ -89,7 +101,6 @@ export function addCartItem(
       : { ...product, quantity: product.quantity ?? 1 },
   });
 
-  // MANTENEMOS ESTO: La mejora de UX de NODO
   isCartOpen.set(true);
 }
 
@@ -109,11 +120,26 @@ export function setCartQuantity(id: string, quantity: number) {
   cartItems.set({ ...current, [id]: { ...current[id], quantity } });
 }
 
-// NUEVO: Función útil para cuando se implemente el Checkout
 export function clearCart() {
   cartItems.set({});
 }
 
 export function toggleCart() {
   isCartOpen.set(!isCartOpen.get());
+}
+
+/**
+ * Aplica un código promo al carrito.
+ * @returns `true` si el código es válido, `false` si no.
+ */
+export function applyPromoCode(code: string): boolean {
+  if (code.trim().toUpperCase() === PROMO_CODE) {
+    appliedPromoCode.set(PROMO_CODE);
+    return true;
+  }
+  return false;
+}
+
+export function clearPromoCode(): void {
+  appliedPromoCode.set("");
 }

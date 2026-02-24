@@ -2,91 +2,156 @@
 /**
  * /checkout/failure — Payment Failed
  * BeautyHome · NODO Studio
+ * * Arquitectura:
+ * - Traduce los crípticos errores de MP a lenguaje humano y premium.
+ * - Intencionalmente NO borra el carrito ni los datos del store
+ * para facilitar el reintento inmediato.
  */
 import MainLayout from "../../components/templates/MainLayout.astro";
 
 export const prerender = false;
 
+// MercadoPago envía el motivo del rechazo en el query param 'status_detail'
 const reason = Astro.url.searchParams.get("status_detail") ?? "";
 
+// Diccionario de traducción MP -> BeautyHome (Humanizado)
 const REJECTION_MESSAGES: Record<string, string> = {
-    cc_rejected_insufficient_amount: "Your card doesn't have enough funds.",
+    cc_rejected_insufficient_amount:
+        "Your card doesn't have enough funds to cover this purchase.",
     cc_rejected_bad_filled_card_number:
-        "The card number you entered is incorrect.",
-    cc_rejected_bad_filled_date: "The expiry date you entered is incorrect.",
+        "The card number you entered seems to be incorrect.",
+    cc_rejected_bad_filled_date: "The expiration date entered is incorrect.",
     cc_rejected_bad_filled_security_code:
-        "The security code you entered is incorrect.",
-    cc_rejected_blacklist: "This card can't be processed. Please try another.",
+        "The security code (CVV) entered is incorrect.",
+    cc_rejected_blacklist:
+        "We couldn't process this card. Please try a different payment method.",
     cc_rejected_call_for_authorize:
-        "Please contact your bank to authorize this payment.",
-    cc_rejected_duplicate_payment: "This payment appears to be a duplicate.",
+        "Please contact your bank to authorize this payment to MercadoPago.",
+    cc_rejected_duplicate_payment:
+        "This payment appears to be a duplicate. Please check your email.",
     cc_rejected_high_risk:
-        "This payment was declined. Please try another card.",
+        "For security reasons, this payment was declined. Please try another card.",
+    cc_rejected_max_attempts:
+        "You've reached the maximum number of attempts allowed for this card.",
 };
 
 const friendlyMessage =
     REJECTION_MESSAGES[reason] ??
-    "The payment couldn't be processed. Please try again or use a different payment method.";
+    "The payment couldn't be processed by the bank. Please try again or use a different payment method.";
 ---
 
 <MainLayout title="Payment Failed — BeautyHome" noIndex={true}>
     <div
-        class="max-w-[600px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center"
+        class="max-w-[600px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center animate-fade-in-up"
     >
-        <div
-            class="w-20 h-20 rounded-full bg-watermelon/8 border-2 border-watermelon/15 flex items-center justify-center mb-8"
-        >
-            <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                class="text-watermelon"
+        <div class="relative mb-8">
+            <div
+                class="w-20 h-20 rounded-full bg-watermelon/10 flex items-center justify-center relative z-10 border border-watermelon/20"
             >
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="15" y1="9" x2="9" y2="15"></line>
-                <line x1="9" y1="9" x2="15" y2="15"></line>
-            </svg>
+                <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    class="text-watermelon"
+                >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            <div
+                class="absolute inset-0 w-20 h-20 rounded-full bg-watermelon/5 animate-ping opacity-20"
+            >
+            </div>
         </div>
+
         <p
-            class="font-sans text-[11px] tracking-[0.18em] uppercase text-watermelon/70 mb-3"
+            class="font-sans text-[11px] tracking-[0.2em] uppercase text-watermelon font-bold mb-3"
         >
             Payment Declined
         </p>
+
         <h1
-            class="font-display text-[clamp(32px,4vw,46px)] font-light text-petrol leading-[1.1] mb-4"
+            class="font-display text-[clamp(36px,5vw,52px)] font-light text-petrol leading-[1.1] mb-6"
         >
-            Something went wrong
+            Something went <em>wrong</em>
         </h1>
-        <p
-            class="font-sans text-[15px] text-sand-900/60 leading-relaxed mb-10 max-w-[400px]"
+
+        <div
+            class="bg-white border border-watermelon/10 rounded-f2-lg p-6 w-full max-w-[440px] shadow-sm mb-8"
         >
-            {friendlyMessage}
-        </p>
-        <div class="flex flex-col sm:flex-row gap-3 w-full max-w-[360px]">
+            <p
+                class="font-sans text-[15px] text-sand-900/80 leading-relaxed font-medium"
+            >
+                {friendlyMessage}
+            </p>
+        </div>
+
+        <ul
+            class="text-left font-sans text-[13px] text-sand-900/60 space-y-3 mb-12 w-full max-w-[400px]"
+        >
+            <li class="flex items-center gap-2">
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#059669"
+                    stroke-width="2"
+                    ><polyline points="20 6 9 17 4 12"></polyline></svg
+                >
+                No charges have been made to your account.
+            </li>
+            <li class="flex items-center gap-2">
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#059669"
+                    stroke-width="2"
+                    ><polyline points="20 6 9 17 4 12"></polyline></svg
+                >
+                Your cart and shipping details are safely saved.
+            </li>
+        </ul>
+
+        <div class="flex flex-col sm:flex-row gap-4 w-full max-w-[440px]">
             <a
                 href="/checkout"
-                class="f2-button-primary flex-1 flex items-center justify-center gap-2 h-12 text-[12px] tracking-[0.07em] uppercase no-underline"
+                class="btn btn-primary btn-lg flex-1 group no-underline"
             >
                 <svg
-                    width="13"
-                    height="13"
+                    class="transition-transform duration-200 group-hover:-translate-x-1"
+                    width="16"
+                    height="16"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
                     stroke-width="2.5"
-                    ><line x1="19" y1="12" x2="5" y2="12"></line><path
-                        d="M12 19l-7-7 7-7"></path></svg
                 >
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <path d="M12 19l-7-7 7-7"></path>
+                </svg>
                 Try Again
             </a>
-            <a
-                href="/"
-                class="flex-1 h-12 flex items-center justify-center font-sans text-[12px] tracking-[0.07em] uppercase text-sand-900/60 border border-sand-200 rounded-f2-md bg-white hover:border-sand-900/30 hover:text-sand-900 f2-transition no-underline"
-                >Go Home</a
-            >
+            <a href="/" class="btn btn-secondary btn-lg flex-1 no-underline">
+                Return Home
+            </a>
+        </div>
+
+        <div class="mt-12 pt-8 border-t border-sand-200 w-full max-w-[440px]">
+            <p class="text-[12px] text-sand-900/40 font-sans">
+                Having trouble with your payment? <br />
+                Contact our concierge at <a
+                    href="mailto:support@beautyhome.com"
+                    class="text-petrol hover:underline"
+                    >support@beautyhome.com</a
+                >
+            </p>
         </div>
     </div>
 </MainLayout>

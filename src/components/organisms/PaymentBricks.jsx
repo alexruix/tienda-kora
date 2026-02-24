@@ -1,76 +1,69 @@
 /**
  * PaymentBricks Organism — React Island
  * BeautyHome · NODO Studio
- *
- * Carga el SDK de MercadoPago dinámicamente y monta el Brick de pago.
- * El PUBLIC_KEY viene como prop desde Astro (variable de entorno pública).
- * El preferenceId viene por query param.
+ * * Arquitectura:
+ * - Race-condition safe: Espera activamente al SDK de MP antes de inicializar.
+ * - Delega el estado de "Cargando" al HTML padre (Astro) vía eventos.
+ * - Maneja el ciclo de vida estricto para evitar duplicación de iframes.
  */
 
 import { useState, useEffect, useRef } from "react";
 
-export default function PaymentBricks({ publicKey, preferenceId }) {
-  const [status, setStatus] = useState("loading"); // loading | ready | error
+export default function PaymentBricks({ publicKey, preferenceId, amount }) {
+  const [hasError, setHasError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const brickContainerRef = useRef(null);
-  const brickControllerRef = useRef(null);
+  const containerRef = useRef(null);
+  const controllerRef = useRef(null);
 
   useEffect(() => {
-    if (!publicKey || !preferenceId) {
-      setStatus("error");
-      setErrorMsg("Faltan parámetros de pago. Por favor volvé al checkout.");
+    if (!publicKey || !preferenceId || !amount) {
+      setHasError(true);
+      setErrorMsg("Faltan parámetros de pago. Por favor, vuelve al checkout.");
       return;
     }
 
     let isMounted = true;
 
-    const initBricks = async () => {
+    const initializeBrick = async () => {
       try {
-        // 1. Cargar el SDK de MercadoPago dinámicamente
+        // 1. GUARDIÁN ASÍNCRONO: Aseguramos que el SDK esté cargado
         await loadMPScript();
 
         if (!isMounted) return;
 
-        // 2. Instanciar MercadoPago con la PUBLIC_KEY
-        const mp = new (window as any).MercadoPago(publicKey, {
-          locale: "es-AR",
-        });
-
-        // 3. Crear el BricksBuilder
+        const mp = new window.MercadoPago(publicKey, { locale: "es-AR" });
         const bricksBuilder = mp.bricks();
 
-        // 4. Configurar y montar el Brick de pago
-        //    Usamos "payment" brick que incluye card + otros métodos
+        // 2. Configuración Visual y de Negocio
         const settings = {
           initialization: {
-            amount: 0,           // El monto lo controla la preferencia en MP
-            preferenceId,        // Vincula al brick con la preferencia creada
+            amount: amount,
+            preferenceId: preferenceId,
           },
           customization: {
             paymentMethods: {
               creditCard: "all",
               debitCard: "all",
-              ticket: "all",          // Rapipago, Pagofácil
-              bankTransfer: "all",    // Transferencia bancaria
-              mercadoPago: "all",     // Cuotas sin tarjeta, dinero en MP
+              ticket: "all",
+              bankTransfer: "all",
+              mercadoPago: "all",
             },
             visual: {
               style: {
-                theme: "flat",        // flat | default | dark | bootstrap
+                theme: "flat",
                 customVariables: {
-                  // Mapear los tokens del Design System al theme del Brick
-                  baseColor: "#0b3948",         // petrol
+                  baseColor: "#0b3948", // petrol
                   baseColorFirstVariant: "#051c24",
                   baseColorSecondVariant: "#0b3948",
-                  errorColor: "#ee4266",         // watermelon
-                  successColor: "#3d9970",
+                  errorColor: "#ee4266", // watermelon
+                  successColor: "#059669",
                   warningColor: "#d4a853",
                   fontSizeSmall: "12px",
                   fontSizeMedium: "14px",
                   formInputsTextFontSize: "14px",
-                  formInputsBackgroundColor: "#f2efe9",  // sand-100
+                  formInputsBackgroundColor: "#f9f8f6", // sand-50
                   inputFocusedBorderColor: "#0b3948",
-                  borderRadiusFull: "8px",               // f2-md
+                  borderRadiusFull: "8px",
                   borderRadiusMedium: "8px",
                   fontFamilyDefault: "DM Sans, system-ui, sans-serif",
                 },
@@ -81,106 +74,103 @@ export default function PaymentBricks({ publicKey, preferenceId }) {
           },
           callbacks: {
             onReady: () => {
-              if (isMounted) setStatus("ready");
+              if (!isMounted) return;
+              // 3. Avisamos a Astro que destruya el Skeleton
+              window.dispatchEvent(new Event("mercadopago:ready"));
             },
-            onSubmit: async ({ selectedPaymentMethod, formData }) => {
-              // El Brick maneja el submit internamente cuando hay preferenceId.
-              // Este callback se dispara antes de la redirección.
+            onSubmit: async ({ selectedPaymentMethod }) => {
               console.log("[PaymentBricks] Submit:", selectedPaymentMethod);
-              // Podés mostrar un loading state aquí si querés
             },
             onError: (error) => {
-              console.error("[PaymentBricks] Brick error:", error);
+              console.error("[MP Brick Error]", error);
               if (isMounted) {
-                setErrorMsg("Ocurrió un error en el formulario de pago. Por favor recargá la página.");
+                setHasError(true);
+                setErrorMsg("Ocurrió un error en el formulario de pago. Por favor, recarga la página.");
               }
             },
           },
         };
 
-        if (brickContainerRef.current) {
-          brickControllerRef.current = await bricksBuilder.create(
+        // 4. Montaje Seguro (Evita duplicados en React Strict Mode)
+        if (containerRef.current && isMounted) {
+          containerRef.current.innerHTML = "";
+
+          controllerRef.current = await bricksBuilder.create(
             "payment",
             "payment-brick-container",
             settings
           );
         }
       } catch (err) {
-        console.error("[PaymentBricks] Init error:", err);
+        console.error("[Payment Initialization Failed]", err);
         if (isMounted) {
-          setStatus("error");
-          setErrorMsg("No se pudo cargar el formulario de pago. Por favor intentá de nuevo.");
+          setHasError(true);
+          setErrorMsg("No se pudo conectar con el servidor de pagos.");
         }
       }
     };
 
-    initBricks();
+    initializeBrick();
 
-    // Cleanup: destruir el brick al desmontar
+    // 5. Limpieza Estricta
     return () => {
       isMounted = false;
-      brickControllerRef.current?.unmount();
+      if (controllerRef.current && typeof controllerRef.current.unmount === "function") {
+        try {
+          controllerRef.current.unmount();
+        } catch (e) {
+          console.warn("Error silencioso al desmontar el Brick", e);
+        }
+      }
     };
   }, [publicKey, preferenceId]);
 
-  if (status === "error") {
+  if (hasError) {
+    setTimeout(() => window.dispatchEvent(new Event("mercadopago:ready")), 50);
+
     return (
-      <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-        <div className="w-14 h-14 rounded-full bg-watermelon/10 flex items-center justify-center mb-5">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-watermelon">
+      <div className="flex flex-col items-center justify-center py-12 px-6 text-center animate-fade-in-up">
+        <div className="w-16 h-16 rounded-full bg-watermelon/10 flex items-center justify-center mb-6">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-watermelon">
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
         </div>
-        <p className="font-display text-[22px] font-light text-petrol mb-2">
-          Payment Error
+        <p className="font-display text-2xl font-light text-petrol mb-3">
+          Connection Interrupted
         </p>
-        <p className="font-sans text-[14px] text-sand-900/60 max-w-sm mb-6">
+        <p className="font-sans text-sm text-sand-900/60 max-w-sm mb-8">
           {errorMsg}
         </p>
-        <a
-          href="/checkout"
-          className="f2-button-primary inline-flex items-center gap-2 px-6 py-2.5 text-[12px] tracking-[0.07em] uppercase no-underline"
-        >
-          Back to Checkout
-        </a>
+        <div className="flex gap-4">
+          <button
+            onClick={() => window.location.reload()}
+            className="btn btn-primary btn-md"
+          >
+            Retry Connection
+          </button>
+          <a href="/checkout" className="btn btn-secondary btn-md no-underline">
+            Back to Checkout
+          </a>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="relative">
-      {/* Loading skeleton */}
-      {status === "loading" && (
-        <div className="absolute inset-0 flex flex-col gap-4 p-6 animate-pulse z-10">
-          <div className="h-4 bg-sand-200 rounded-full w-1/3" />
-          <div className="h-12 bg-sand-100 rounded-f2-md" />
-          <div className="h-12 bg-sand-100 rounded-f2-md" />
-          <div className="grid grid-cols-2 gap-4">
-            <div className="h-12 bg-sand-100 rounded-f2-md" />
-            <div className="h-12 bg-sand-100 rounded-f2-md" />
-          </div>
-          <div className="h-12 bg-sand-200 rounded-f2-md mt-2" />
-        </div>
-      )}
-
-      {/* El Brick se monta aquí */}
-      <div
-        id="payment-brick-container"
-        ref={brickContainerRef}
-        className={status === "loading" ? "opacity-0" : "opacity-100 transition-opacity duration-300"}
-      />
-    </div>
+    <div
+      id="payment-brick-container"
+      ref={containerRef}
+      className="w-full min-h-[400px]"
+    />
   );
 }
 
-// ── SDK Loader ────────────────────────────────────────────────────────────────
-
-function loadMPScript(): Promise<void> {
+// ── SDK Loader (Restaurado para prevenir Race Conditions) ──
+function loadMPScript() {
   return new Promise((resolve, reject) => {
-    // Si ya está cargado, resolver inmediatamente
-    if ((window as any).MercadoPago) {
+    if (window.MercadoPago) {
       resolve();
       return;
     }

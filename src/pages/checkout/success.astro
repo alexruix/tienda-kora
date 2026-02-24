@@ -2,83 +2,144 @@
 /**
  * /checkout/success — Payment Success
  * BeautyHome · NODO Studio
- *
- * MP redirige aquí con: ?payment_id=...&status=approved&collection_id=...
- * Limpiamos el carrito y mostramos la confirmación.
+ * * * Arquitectura:
+ * - Renderizado en servidor (SSR) para capturar IDs de transacción.
+ * - Limpieza de Stores sincronizada con el ciclo de vida de la página.
+ * - Feedback personalizado recuperando datos del persistent store antes de borrarlos.
  */
 import MainLayout from "../../components/templates/MainLayout.astro";
 
 export const prerender = false;
 
+// Capturamos los datos que envía MercadoPago en la redirección
 const paymentId = Astro.url.searchParams.get("payment_id");
-const collectionId = Astro.url.searchParams.get("collection_id");
 ---
 
 <MainLayout
   title="Order Confirmed — BeautyHome"
-  description="Your order has been confirmed."
+  description="Thank you for your purchase. Your order is now being processed."
   noIndex={true}
 >
-  <div class="max-w-[600px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center">
-
-    <!-- Icon -->
-    <div class="relative mb-8 animate-[scaleIn_0.5s_cubic-bezier(0.33,1,0.68,1)_both]">
-      <div class="w-20 h-20 rounded-full bg-green-50 border-2 border-green-100 flex items-center justify-center">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-green-600">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-          <polyline points="22 4 12 14.01 9 11.01"/>
+  <div
+    class="max-w-[700px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center animate-fade-in-up"
+  >
+    <div class="relative mb-10">
+      <div
+        class="w-24 h-24 rounded-full bg-[#f0fdf4] flex items-center justify-center relative z-10 border border-[#dcfce7] shadow-sm"
+      >
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#059669"
+          stroke-width="1.5"
+        >
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
       </div>
-      <span class="absolute -top-2 -right-2 text-[20px]">✦</span>
+
+      <span class="absolute -top-2 -left-2 text-2xl animate-bounce select-none"
+        >✨</span
+      >
+      <span
+        class="absolute -bottom-2 -right-2 text-2xl animate-bounce select-none [animation-delay:0.2s]"
+        >✦</span
+      >
     </div>
 
-    <!-- Copy -->
-    <p class="font-sans text-[11px] tracking-[0.18em] uppercase text-sand-900/40 mb-3">
-      Order Confirmed
+    <p
+      class="font-sans text-[11px] tracking-[0.25em] uppercase text-[#047857] font-bold mb-4"
+    >
+      Payment Successful
     </p>
-    <h1 class="font-display text-[clamp(34px,5vw,52px)] font-light text-petrol leading-[1.1] mb-4">
-      Thank you for your purchase
+
+    <h1
+      class="font-display text-[clamp(40px,6vw,60px)] font-light text-petrol leading-[1.1] mb-6"
+    >
+      Thank you for <em>choosing us</em>
     </h1>
-    <p class="font-sans text-[15px] text-sand-900/60 leading-relaxed mb-3 max-w-[420px]">
-      We've received your payment and your order is being prepared. You'll receive a confirmation email shortly.
-    </p>
 
-    {paymentId && (
-      <p class="font-mono text-[12px] text-sand-900/30 mb-10">
-        Payment ID: {paymentId}
+    <div
+      class="bg-white border border-sand-200 rounded-f2-xl p-8 w-full max-w-[480px] shadow-f2-rest mb-12"
+    >
+      <p class="font-sans text-[16px] text-sand-900/70 leading-relaxed mb-6">
+        Your artisan pieces are now being prepared. We've sent your order
+        confirmation and digital receipt to:
+        <br />
+        <strong id="display-email" class="text-petrol font-medium"
+          >your email</strong
+        >
       </p>
-    )}
 
-    <!-- CTAs -->
-    <div class="flex flex-col sm:flex-row gap-3 w-full max-w-[340px]">
-      <a
-        href="/collections"
-        class="f2-button-primary flex-1 flex items-center justify-center gap-2 h-12 text-[12px] tracking-[0.07em] uppercase no-underline"
-      >
+      {
+        paymentId && (
+          <div class="pt-6 border-t border-sand-100 flex flex-col items-center">
+            <span class="font-sans text-[11px] uppercase tracking-widest text-sand-900/30 mb-2">
+              Transaction ID
+            </span>
+            <code class="font-mono text-[14px] text-petrol font-semibold bg-sand-50 px-3 py-1 rounded-full border border-sand-200">
+              {paymentId}
+            </code>
+          </div>
+        )
+      }
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 w-full max-w-[440px]">
+      <a href="/collections" class="btn btn-primary btn-lg flex-1 no-underline">
         Continue Shopping
       </a>
-      <a
-        href="/account"
-        class="flex-1 h-12 flex items-center justify-center gap-2 font-sans text-[12px] tracking-[0.07em] uppercase text-sand-900/60 border border-sand-200 rounded-f2-md bg-white hover:border-sand-900/30 hover:text-sand-900 f2-transition no-underline"
-      >
-        My Orders
+      <a href="/account" class="btn btn-secondary btn-lg flex-1 no-underline">
+        Track My Order
       </a>
+    </div>
+
+    <div class="mt-16 space-y-2">
+      <p class="text-[12px] text-sand-900/30 font-sans italic">
+        A copy of this confirmation has been sent to your inbox.
+      </p>
+      <p
+        class="text-[11px] text-sand-900/20 font-sans uppercase tracking-tighter"
+      >
+        BeautyHome Atelier · NODO Studio
+      </p>
     </div>
   </div>
 </MainLayout>
 
-<!-- Limpiar el carrito después del pago exitoso -->
 <script>
-  import { cartItems } from '../../store/cart.ts';
-  import { clearCustomerInfo } from '../../store/customer.ts';
-  // Pago exitoso: limpiar carrito Y datos del comprador
-  cartItems.set({});
-  clearCustomerInfo();
-</script>
+  import { cartItems } from "../../store/cart.ts";
+  import { customerInfo, clearCustomerInfo } from "../../store/customer.ts";
+  // Nota: Instala esto para el efecto: npm install canvas-confetti
+  import confetti from "canvas-confetti";
 
-<style>
-  @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.7); }
-    to   { opacity: 1; transform: scale(1); }
-  }
-</style>
+  document.addEventListener(
+    "astro:page-load",
+    () => {
+      // 1. Recuperamos el email para el feedback visual ANTES de limpiar el store
+      const savedEmail = customerInfo.get().email;
+      const emailDisplay = document.getElementById("display-email");
+
+      if (emailDisplay && savedEmail) {
+        emailDisplay.textContent = savedEmail;
+      }
+
+      // 2. 🎉 Lanzamos la celebración (Colores de marca: Petrol, Watermelon, Gold)
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#0b3948", "#ee4266", "#dcc87a"],
+        disableForReducedMotion: true, // Respeto a la accesibilidad
+      });
+
+      // 3. 🛡️ LIMPIEZA DE SEGURIDAD
+      // Vaciamos el carrito y los datos personales para que el navegador no los retenga.
+      cartItems.set({});
+      clearCustomerInfo();
+    },
+    { once: true },
+  ); // Nos aseguramos de que solo ocurra una vez por carga de página
+</script>
