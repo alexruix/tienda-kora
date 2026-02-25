@@ -44,8 +44,12 @@ export const cartItems = persistentAtom<CartMap>(
 
 export const isCartOpen = atom<boolean>(false);
 
-/** Código promocional ingresado por el usuario (solo en sesión, no persistido) */
-export const appliedPromoCode = atom<string>("");
+/**
+ * Código promo aplicado — persistido en localStorage.
+ * Sobrevive recargas de página durante la sesión de compra.
+ * Se limpia en clearPromoCode() o después del pago.
+ */
+export const appliedPromoCode = persistentAtom<string>("@beautyhome/promo", "");
 
 /* ── Derived / Computed ──────────────────────────────────── */
 

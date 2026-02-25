@@ -17,11 +17,15 @@
     "@tailwindcss/vite": "^4.2.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@upstash/redis": "^1.36.2",
     "astro": "^5.17.1",
     "lucide-react": "^0.575.0",
     "nanostores": "^1.1.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0"
   }
 }

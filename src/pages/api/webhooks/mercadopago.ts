@@ -4,10 +4,14 @@
  *
  * Webhook handler — production grade.
  *
- * Fixes aplicados:
- *   1. Idempotencia     — procesamiento único por payment_id
- *   2. Status 200 / 500 — 500 en errores técnicos para que MP reintente
- *   3. X-Signature      — validación HMAC del header de MP
+ * Idempotencia:
+ *   - En producción: Upstash Redis (persistente entre instancias serverless).
+ *   - En local (sin KV vars): fallback a Map en memoria (solo para dev).
+ *
+ * Para activar Redis en Vercel:
+ *   1. Dashboard Vercel → Storage → Create → Upstash Redis
+ *   2. Conectar al proyecto (auto-setea KV_REST_API_URL + KV_REST_API_TOKEN)
+ *   3. El webhook usa esas vars automáticamente.
  */
 
 import type { APIRoute } from "astro";
@@ -28,14 +32,66 @@ interface MPNotification {
   user_id?: string;
 }
 
-// ── Fix #3: Validación de firma X-Signature ───────────────────────────────────
+// ── Fix #1: Idempotency Layer ─────────────────────────────────────────────────
 //
-// MP firma cada request con HMAC-SHA256 usando tu MP_WEBHOOK_SECRET.
-// El header tiene este formato:
-//   x-signature: ts=1704908010,v1=abc123...
+// Abstracción que Elige entre Redis (producción) o Map en memoria (dev local).
+// El switch ocurre en runtime según disponibilidad de las env vars.
 //
-// La cadena que se firma es: "id:{notification.id};request-id:{x-request-id};ts:{ts};"
-// Referencia: https://www.mercadopago.com.ar/developers/es/docs/your-integrations/notifications/webhooks
+// TTL Redis: 48h — suficiente para cubrir los reintentos de MP (max 5 en 24h)
+// y la ventana típica de disputas / chargebacks iniciales.
+
+const IDEMPOTENCY_TTL_SECONDS = 60 * 60 * 48; // 48h
+
+async function isAlreadyProcessed(paymentId: string): Promise<boolean> {
+  const kvUrl = import.meta.env.KV_REST_API_URL;
+  const kvToken = import.meta.env.KV_REST_API_TOKEN;
+
+  if (kvUrl && kvToken) {
+    // ── Producción: Upstash Redis ──────────────────────────────────────────────
+    try {
+      const { Redis } = await import("@upstash/redis");
+      const redis = new Redis({ url: kvUrl, token: kvToken });
+      const exists = await redis.exists(`mp:processed:${paymentId}`);
+      return exists === 1;
+    } catch (err) {
+      // Si Redis falla, NO bloqueamos el procesamiento.
+      // Es mejor procesar en duplicado que perder un pago.
+      console.warn("[webhook] Redis check failed — procesando sin garantía de idempotencia:", err);
+      return false;
+    }
+  }
+
+  // ── Desarrollo local: fallback a Map en memoria ────────────────────────────
+  console.warn("[webhook] KV_REST_API_URL/TOKEN no definidos — usando fallback en memoria (solo dev)");
+  return devMap.has(paymentId);
+}
+
+async function markAsProcessed(paymentId: string): Promise<void> {
+  const kvUrl = import.meta.env.KV_REST_API_URL;
+  const kvToken = import.meta.env.KV_REST_API_TOKEN;
+
+  if (kvUrl && kvToken) {
+    // ── Producción: Upstash Redis con TTL ─────────────────────────────────────
+    try {
+      const { Redis } = await import("@upstash/redis");
+      const redis = new Redis({ url: kvUrl, token: kvToken });
+      // SET con EX (expiry en segundos) — el key se auto-elimina, sin cleanup manual
+      await redis.set(`mp:processed:${paymentId}`, Date.now(), { ex: IDEMPOTENCY_TTL_SECONDS });
+    } catch (err) {
+      // Log pero no lanzar — el pago ya fue procesado exitosamente
+      console.error("[webhook] Error guardando idempotencia en Redis:", err);
+    }
+    return;
+  }
+
+  // ── Desarrollo local: fallback ────────────────────────────────────────────
+  devMap.set(paymentId, Date.now());
+}
+
+// Solo se usa en dev (sin env vars de KV)
+const devMap = new Map<string, number>();
+
+// ── Fix: HMAC Signature Validation ───────────────────────────────────────────
 
 function validateSignature(request: Request, rawBody: string, secret: string): boolean {
   const xSignature = request.headers.get("x-signature");
@@ -43,7 +99,6 @@ function validateSignature(request: Request, rawBody: string, secret: string): b
 
   if (!xSignature || !secret) return false;
 
-  // Parsear el header: "ts=1704908010,v1=abc123..."
   const parts = Object.fromEntries(
     xSignature.split(",").map((part) => {
       const [key, value] = part.split("=");
@@ -56,7 +111,6 @@ function validateSignature(request: Request, rawBody: string, secret: string): b
 
   if (!ts || !v1) return false;
 
-  // Extraer el id de la notificación del body
   let notificationId = "";
   try {
     const body = JSON.parse(rawBody);
@@ -65,57 +119,16 @@ function validateSignature(request: Request, rawBody: string, secret: string): b
     return false;
   }
 
-  // Construir la cadena a firmar según la especificación de MP
   const signedPayload = `id:${notificationId};request-id:${xRequestId};ts:${ts};`;
+  const expectedSignature = createHmac("sha256", secret).update(signedPayload).digest("hex");
 
-  // Calcular HMAC-SHA256
-  const expectedSignature = createHmac("sha256", secret)
-    .update(signedPayload)
-    .digest("hex");
-
-  // Comparación segura en tiempo constante (evita timing attacks)
+  // Comparación en tiempo constante (evita timing attacks)
   if (expectedSignature.length !== v1.length) return false;
-
   let mismatch = 0;
   for (let i = 0; i < expectedSignature.length; i++) {
     mismatch |= expectedSignature.charCodeAt(i) ^ v1.charCodeAt(i);
   }
-
   return mismatch === 0;
-}
-
-// ── Fix #1: Idempotencia ──────────────────────────────────────────────────────
-//
-// Map en memoria como placeholder. En producción DEBE ser una DB persistente
-// (Redis, Postgres, etc.) — este Map se vacía con cada restart del server.
-//
-// Migración a DB (ejemplo con Prisma):
-//
-//   async function isAlreadyProcessed(paymentId: string): Promise<boolean> {
-//     const existing = await db.processedPayment.findUnique({ where: { paymentId } });
-//     return !!existing;
-//   }
-//
-//   async function markAsProcessed(paymentId: string): Promise<void> {
-//     await db.processedPayment.create({ data: { paymentId, processedAt: new Date() } });
-//   }
-
-const processedPayments = new Map<string, number>(); // paymentId → timestamp Unix
-
-// Limpiar entradas > 24h cada 10 min para evitar memory leaks
-setInterval(() => {
-  const cutoff = Date.now() - 1000 * 60 * 60 * 24;
-  for (const [id, ts] of processedPayments.entries()) {
-    if (ts < cutoff) processedPayments.delete(id);
-  }
-}, 1000 * 60 * 10);
-
-function isAlreadyProcessed(paymentId: string): boolean {
-  return processedPayments.has(paymentId);
-}
-
-function markAsProcessed(paymentId: string): void {
-  processedPayments.set(paymentId, Date.now());
 }
 
 // ── MP API ────────────────────────────────────────────────────────────────────
@@ -129,23 +142,16 @@ async function fetchPaymentDetails(
   });
 
   if (!res.ok) {
-    // Lanzar para que el caller pueda devolver 500 y forzar el reintento de MP
     throw new Error(`MP API ${res.status}: ${await res.text()}`);
   }
 
   return res.json();
 }
 
-// ── Business logic ────────────────────────────────────────────────────────────
+// ── Business Logic ────────────────────────────────────────────────────────────
 
 async function handlePaymentApproved(payment: Record<string, unknown>): Promise<void> {
   const paymentId = String(payment.id);
-
-  // Fix #1: Guard de idempotencia ANTES de cualquier efecto secundario
-  if (isAlreadyProcessed(paymentId)) {
-    console.log(`[webhook] ${paymentId} ya procesado — ignorando duplicado`);
-    return;
-  }
 
   console.log("[webhook] ✅ Procesando pago aprobado:", {
     id: paymentId,
@@ -154,17 +160,17 @@ async function handlePaymentApproved(payment: Record<string, unknown>): Promise<
     payer: (payment.payer as Record<string, unknown>)?.email,
   });
 
-  // TODO: Ejecutar como transacción atómica en tu DB para garantizar consistencia:
+  // TODO: Ejecutar como transacción atómica en tu DB:
   //
   // await db.transaction(async (tx) => {
-  //   await tx.orders.create({ data: { paymentId, items: [...], total: ... } });
+  //   await tx.orders.create({ data: { paymentId, total: ..., items: [...] } });
   //   await tx.stock.decrement({ where: { id: { in: itemIds } }, by: quantities });
   // });
   // await emailService.sendOrderConfirmation({ to: payer.email, orderId: ... });
 
-  // Marcar como procesado SOLO si todo lo anterior fue exitoso.
-  // Si algo lanza, este código no corre y MP reintentará.
-  markAsProcessed(paymentId);
+  // Marcar DESPUÉS de que la lógica de negocio fue exitosa
+  // Si algo lanzó antes de esta línea, MP reintentará y volveremos a intentar
+  await markAsProcessed(paymentId);
 }
 
 async function handlePaymentFailed(payment: Record<string, unknown>): Promise<void> {
@@ -184,7 +190,7 @@ async function handlePaymentPending(payment: Record<string, unknown>): Promise<v
   // TODO: Reservar stock, enviar instrucciones de pago (cupón Rapipago, etc.)
 }
 
-// ── Handler principal ─────────────────────────────────────────────────────────
+// ── Main Handler ──────────────────────────────────────────────────────────────
 
 export const POST: APIRoute = async ({ request }) => {
   const accessToken = import.meta.env.MP_ACCESS_TOKEN;
@@ -195,22 +201,20 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response("Misconfigured", { status: 500 });
   }
 
-  // Leer el body UNA SOLA VEZ — los ReadableStreams no se pueden releer
+  // Leer el body UNA SOLA VEZ (ReadableStream no se puede releer)
   const rawBody = await request.text();
 
-  // ── Fix #3: Validar X-Signature ──────────────────────────────────────────────
-  // En TEST, MP puede no enviar el header. Si no hay secret configurado, se omite.
-  // En PRODUCCIÓN, configurar MP_WEBHOOK_SECRET es obligatorio.
+  // ── Validar X-Signature ───────────────────────────────────────────────────
+  // En TEST, MP puede no enviar el header. Si no hay secret, se omite.
+  // En PRODUCCIÓN configurar MP_WEBHOOK_SECRET es obligatorio.
   if (webhookSecret) {
-    const isValid = validateSignature(request, rawBody, webhookSecret);
-    if (!isValid) {
+    if (!validateSignature(request, rawBody, webhookSecret)) {
       console.warn("[webhook] ⚠️ Firma inválida — posible request falsificado");
-      // 401: NO marcar como entregado si la firma no matchea
       return new Response("Unauthorized", { status: 401 });
     }
   }
 
-  // Parsear el body ya leído como texto
+  // ── Parsear body ──────────────────────────────────────────────────────────
   let notification: MPNotification;
   try {
     notification = JSON.parse(rawBody);
@@ -218,31 +222,30 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response("Bad JSON", { status: 400 });
   }
 
-  // Notificaciones que no son de tipo "payment" → ignorar con 200
-  // (MP también envía merchant_order, subscription, etc. — son esperadas)
+  // Solo manejamos notificaciones de tipo "payment"
   if (notification.type !== "payment" || !notification.data?.id) {
     return new Response("OK", { status: 200 });
   }
 
   const paymentId = notification.data.id;
 
-  // ── Fix #1: Early return si el pago ya fue procesado ──────────────────────────
-  if (isAlreadyProcessed(paymentId)) {
+  // ── Idempotency Guard — Redis en prod, Map en dev ─────────────────────────
+  if (await isAlreadyProcessed(paymentId)) {
     console.log(`[webhook] Notificación duplicada para ${paymentId} — OK sin reprocesar`);
     return new Response("OK", { status: 200 });
   }
 
-  // ── Fix #2: Si el fetch a MP falla, devolver 500 para forzar el reintento ─────
+  // ── Obtener detalles del pago desde la API de MP ──────────────────────────
   let payment: Record<string, unknown>;
   try {
     payment = await fetchPaymentDetails(paymentId, accessToken);
   } catch (err) {
-    console.error("[webhook] Error al obtener detalles del pago — MP reintentará:", err);
-    // 500 → MP aplicará backoff exponencial y reintentará (hasta 5 veces en 24h)
+    console.error("[webhook] Error al obtener detalles — MP reintentará:", err);
+    // 500 → MP aplica backoff exponencial y reintenta hasta 5 veces en 24h
     return new Response("Upstream error", { status: 500 });
   }
 
-  // ── Procesar según el estado del pago ─────────────────────────────────────────
+  // ── Procesar según estado ─────────────────────────────────────────────────
   try {
     const status = payment.status as string;
 
@@ -259,20 +262,18 @@ export const POST: APIRoute = async ({ request }) => {
         await handlePaymentPending(payment);
         break;
       default:
-        console.log(`[webhook] Estado no manejado: ${status} — ignorando`);
+        console.log(`[webhook] Estado no manejado: "${status}" — ignorando`);
     }
 
-    // Fix #2: 200 solo si el procesamiento fue exitoso
     return new Response("OK", { status: 200 });
 
   } catch (err) {
-    console.error("[webhook] Error en el procesamiento del pago:", err);
-    // Fix #2: 500 → MP reintentará. El pago no se pierde.
+    console.error("[webhook] Error en el procesamiento:", err);
+    // 500 → MP reintentará. El flag de idempotencia no se seteó, así que es seguro.
     return new Response("Processing error", { status: 500 });
   }
 };
 
 // MP envía GET al configurar/verificar el endpoint en el panel
-export const GET: APIRoute = async () => {
-  return new Response("BeautyHome MP Webhook — OK", { status: 200 });
-};
+export const GET: APIRoute = async () =>
+  new Response("BeautyHome MP Webhook — OK", { status: 200 });
