@@ -1,0 +1,28 @@
+---
+/**
+ * UpsellBadge.astro — Molecule
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Badge de recomendación inteligente. Usado para sugerir un "Esencial"
+ * cuando el usuario está viendo un producto "Héroe".
+ */
+
+interface Props {
+  suggestedProductSlug: string;
+  suggestedProductName: string;
+  class?: string;
+}
+
+const { suggestedProductSlug, suggestedProductName, class: extraClass = '' } = Astro.props;
+---
+
+<a 
+  href={`/product/${suggestedProductSlug}`}
+  class:list={["inline-flex items-center gap-2 px-3 py-1.5 rounded-f2-md bg-watermelon/10 text-watermelon border border-watermelon/20 font-sans text-[12px] font-medium transition-all hover:bg-watermelon/20 no-underline", extraClass]}
+>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="shrink-0" aria-hidden="true">
+    <path d="M5 12h14"></path>
+    <path d="M12 5v14"></path>
+  </svg>
+  <span>Ideal con {suggestedProductName}</span>
+</a>

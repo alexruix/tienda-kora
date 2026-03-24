@@ -7,6 +7,7 @@
  */
 
 import { getCollection } from 'astro:content';
+import { FooterContent } from '../../data/footerContent';
 
 // 1. Obtenemos todos los productos desde los archivos JSON
 const allProducts = await getCollection('products');
@@ -25,34 +26,21 @@ const shopLinks = uniqueCategories.map(cat => ({
   label: cat,
   href: `/category/${cat.toLowerCase()}`
 }));
-shopLinks.push({ label: 'Collections', href: '/collections' });
-shopLinks.push({ label: 'Sale', href: '/sale' });
+shopLinks.push(...FooterContent.extraShopLinks);
 
 // 4. Definimos la estructura final de las columnas
 const NAV_COLUMNS = [
   {
-    title: 'Shop',
+    title: FooterContent.columnsTitles.shop,
     links: shopLinks,
   },
   {
-    title: 'About',
-    links: [
-      { label: 'Our Philosophy', href: '/our-philosophy' },
-      { label: 'NODO Studio', href: '/nodo-studio' },
-      { label: 'Artisan Partners', href: '/artisan-partners' },
-      { label: 'Sustainability', href: '/sustainability' },
-      { label: 'Press', href: '/press' },
-    ],
+    title: FooterContent.columnsTitles.about,
+    links: FooterContent.aboutLinks,
   },
   {
-    title: 'Support',
-    links: [
-      { label: 'Shipping & Returns', href: '/shipping-returns' },
-      { label: 'Track My Order', href: '/track-order' },
-      { label: 'Care Instructions', href: '/care-instructions' },
-      { label: 'Design Consultancy', href: '/design-consultancy' },
-      { label: 'Contact Us', href: '/contact' },
-    ],
+    title: FooterContent.columnsTitles.support,
+    links: FooterContent.supportLinks,
   },
 ];
 ---
@@ -63,20 +51,19 @@ const NAV_COLUMNS = [
     <div class="grid grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-8 lg:gap-12 pb-12 border-b border-white/10">
 
       <div class="col-span-2 lg:col-span-1">
-        <p class="font-display text-[30px] font-light tracking-[0.1em] text-white uppercase mb-4">BeautyHome</p>
+        <p class="font-display text-[30px] font-light tracking-widest text-white uppercase mb-4">{FooterContent.brand.name}</p>
         <p class="text-[14px] leading-[1.7] text-white/40 max-w-[300px] mb-6">
-          A curated atelier for high-end home décor — bringing together the finest
-          artisan studios from Japan, Scandinavia, and Southern Europe.
+          {FooterContent.brand.description}
         </p>
 
         <div class="mb-6">
-          <p class="text-[11px] tracking-[0.14em] uppercase text-white/35 mb-3">Join the inner circle</p>
+          <p class="text-[11px] tracking-[0.14em] uppercase text-white/35 mb-3">{FooterContent.newsletter.title}</p>
           {/* NOTA: Cambia el action a tu proveedor real (Mailchimp/Formspree) o crea un endpoint SSR en Astro */}
           <form class="flex h-10 mb-6" action="#" method="POST" id="newsletter-form">
             <input
               type="email"
               name="email"
-              placeholder="your@email.com"
+              placeholder={FooterContent.newsletter.placeholder}
               class="flex-1 px-4 font-sans text-[13px] bg-white/5 border border-white/10 border-r-0 rounded-l-f2-md text-white outline-none transition-colors duration-200 placeholder:text-white/25 focus:border-white/25 focus:bg-white/10"
               required
               aria-label="Email for newsletter"
@@ -131,17 +118,17 @@ const NAV_COLUMNS = [
     </div>
 
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-8 text-[13px] text-white/30 flex-wrap gap-4">
-      <span class="font-sans">© {new Date().getFullYear()} BeautyHome · All rights reserved</span>
+      <span class="font-sans">© {new Date().getFullYear()} {FooterContent.bottom.rights}</span>
       
       <div class="flex flex-wrap gap-3 sm:gap-5 font-sans">
-        <a href="/privacy" class="text-[12px] text-white/30 no-underline transition-colors duration-200 hover:text-white/60">Privacy Policy</a>
-        <a href="/terms"   class="text-[12px] text-white/30 no-underline transition-colors duration-200 hover:text-white/60">Terms of Use</a>
-        <a href="/cookies" class="text-[12px] text-white/30 no-underline transition-colors duration-200 hover:text-white/60">Cookie Settings</a>
+        {FooterContent.bottom.links.map(link => (
+          <a href={link.href} class="text-[12px] text-white/30 no-underline transition-colors duration-200 hover:text-white/60">{link.label}</a>
+        ))}
       </div>
       
       <div class="flex items-center gap-2 text-[12px] text-white/30 font-sans">
-        <div class="w-[26px] h-[26px] rounded-f2-sm bg-white/10 flex items-center justify-center text-[10px] tracking-[0.04em] text-white/40 font-semibold font-sans" aria-hidden="true">NO</div>
-        Designed at NODO Studio
+        <div class="w-[26px] h-[26px] rounded-f2-sm bg-white/10 flex items-center justify-center text-[10px] tracking-[0.04em] text-white/40 font-semibold font-sans" aria-hidden="true">{FooterContent.bottom.badgeLabel}</div>
+        {FooterContent.bottom.designedBy}
       </div>
     </div>
 

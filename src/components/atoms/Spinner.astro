@@ -1,0 +1,46 @@
+---
+/**
+ * Spinner.astro — Atom
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Indicador de carga circular para acciones asincrónicas.
+ */
+
+interface Props {
+  size?: 'sm' | 'md' | 'lg';
+  color?: 'current' | 'petrol' | 'white' | 'watermelon';
+  class?: string;
+}
+
+const { 
+  size = 'md', 
+  color = 'current',
+  class: extraClass = '' 
+} = Astro.props;
+
+const sizeClasses = {
+  sm: 'w-4 h-4 border-2',
+  md: 'w-6 h-6 border-2',
+  lg: 'w-8 h-8 border-3',
+};
+
+const colorClasses = {
+  current: 'border-current border-t-transparent',
+  petrol: 'border-petrol border-t-transparent',
+  white: 'border-white border-t-white/30',
+  watermelon: 'border-watermelon border-t-transparent',
+};
+---
+
+<div 
+  class:list={[
+    "rounded-full animate-spin", 
+    sizeClasses[size], 
+    colorClasses[color],
+    extraClass
+  ]}
+  role="status"
+  aria-label="Cargando..."
+>
+  <span class="sr-only">Cargando...</span>
+</div>

@@ -1,0 +1,28 @@
+{
+  "id": "comedero-elevado-madera",
+  "name": "Comedero Elevado de Madera",
+  "subtitle": "Diseño de Autor Platense",
+  "slug": "comedero-elevado-madera",
+  "category": "dining",
+  "subcategory": "Alimentación Saludable",
+  "price": 35000,
+  "inStock": true,
+  "leadTime": "7 días",
+  "rating": 5.0,
+  "reviewCount": 18,
+  "badges": ["featured"],
+  "featured": true,
+  "newArrival": false,
+  "image": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=800",
+  "description": "Hecho a mano por artesanos de Berisso. Madera sólida protegida con lacas vegetales seguras para mascotas. Incluye cuencos de acero inoxidable de fácil limpieza.",
+  "details": [
+    { "label": "Madera", "value": "Paraíso Protegido" },
+    { "label": "Cuencos", "value": "Acero Inoxidable (Removibles)" },
+    { "label": "Origen", "value": "Berisso / La Plata" }
+  ],
+  "care": "Limpiar la base de madera con paño húmedo. Cuencos aptos para lavavajillas.",
+  "shipping": "Producción Local: Entrega en 7 días hábiles tras confirmar diseño.",
+  "metaDescription": "Comedero elevado de madera KORA. Diseño ergonómico y artesanal para la salud de tu mascota.",
+  "altText": "Comedero doble elevado con base de madera clara y cuencos metálicos.",
+  "relatedProducts": ["perfume-textil-kora", "snacks-articulaciones"]
+}

@@ -1,0 +1,73 @@
+---
+/**
+ * AttributeSelector.astro — Molecule
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Muestra selectores de atributos visuales (Talle/Color) en la PDP.
+ * Soporta modo "pill" (talles) o "color" (swatches).
+ */
+
+export interface AttributeOption {
+  label: string;
+  value: string;
+  colorHex?: string; // Para el modo color
+  available?: boolean;
+}
+
+interface Props {
+  name: string; // Ej: "Talle", "Color"
+  options: AttributeOption[];
+  type?: 'pill' | 'color';
+  class?: string;
+}
+
+const { 
+  name, 
+  options, 
+  type = 'pill',
+  class: extraClass = '' 
+} = Astro.props;
+---
+
+<fieldset class:list={["border-none m-0 p-0", extraClass]}>
+  <legend class="font-sans text-[13px] font-semibold tracking-[0.05em] uppercase text-petrol mb-3">
+    {name}
+  </legend>
+  
+  <div class="flex gap-2 flex-wrap">
+    {options.map((opt, i) => {
+      const isAvailable = opt.available ?? true;
+      const inputId = `attr-${name}-${opt.value}-${i}`;
+      
+      return (
+        <div class="relative">
+          {/* <input> oculto pero accesible */}
+          <input 
+            type="radio" 
+            name={name} 
+            id={inputId} 
+            value={opt.value} 
+            disabled={!isAvailable}
+            class="peer sr-only"
+            checked={i === 0 && isAvailable}
+          />
+          
+          <label 
+            for={inputId}
+            class:list={[
+              "cursor-pointer f2-transition relative flex items-center justify-center peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+              type === 'pill' 
+                ? "px-4 py-2 border rounded-f2-md font-sans text-[13px] hover:border-petrol/50 peer-checked:bg-petrol peer-checked:border-petrol peer-checked:text-white border-sand-200 text-sand-900 bg-white"
+                : "w-8 h-8 rounded-full border border-sand-200 peer-checked:ring-2 peer-checked:ring-petrol peer-checked:ring-offset-2 hover:scale-110",
+              !isAvailable && "after:content-[''] after:absolute after:inset-0 after:w-full after:h-full after:border-t after:border-sand-500 after:-rotate-45"
+            ]}
+            style={type === 'color' ? `background-color: ${opt.colorHex || '#ccc'};` : ''}
+            title={!isAvailable ? 'Agotado' : opt.label}
+          >
+            {type === 'pill' && opt.label}
+          </label>
+        </div>
+      );
+    })}
+  </div>
+</fieldset>

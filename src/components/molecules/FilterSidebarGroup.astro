@@ -1,0 +1,61 @@
+---
+/**
+ * FilterSidebarGroup.astro — Molecule
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Agrupa opciones de filtrado en la barra lateral de categorías.
+ */
+
+export interface FilterOption {
+  id: string;
+  label: string;
+  count?: number;
+}
+
+interface Props {
+  title: string;
+  options: FilterOption[];
+  type?: 'checkbox' | 'radio';
+  class?: string;
+}
+
+const { title, options, type = 'checkbox', class: extraClass = '' } = Astro.props;
+---
+
+<div class:list={["border-b border-sand-200 py-6 last:border-none", extraClass]}>
+  <h3 class="font-sans text-[12px] font-semibold tracking-widest uppercase text-petrol mb-4">
+    {title}
+  </h3>
+  
+  <ul class="flex flex-col gap-2 m-0 p-0 list-none">
+    {options.map((opt) => (
+      <li>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <div class="relative flex items-center justify-center w-4 h-4 rounded-sm border border-sand-300 bg-white group-hover:border-petrol transition-colors">
+            <input 
+              type={type} 
+              name={title.toLowerCase()} 
+              value={opt.id} 
+              class="peer sr-only"
+            />
+            {/* Checkmark icon (visible solo cuando peer-checked) */}
+            <svg class="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <div class="absolute inset-0 bg-petrol opacity-0 peer-checked:opacity-100 transition-opacity rounded-sm"></div>
+          </div>
+          
+          <span class="font-sans text-[14px] text-sand-900 group-hover:text-petrol transition-colors">
+            {opt.label}
+          </span>
+          
+          {opt.count !== undefined && (
+            <span class="ml-auto font-sans text-[12px] text-sand-500">
+              ({opt.count})
+            </span>
+          )}
+        </label>
+      </li>
+    ))}
+  </ul>
+</div>

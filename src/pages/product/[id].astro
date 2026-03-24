@@ -9,10 +9,10 @@
  */
 
 import MainLayout from "../../components/templates/MainLayout.astro";
-import Badge from "../../components/atoms/Badge.astro";
-import ProductGrid from "../../components/organisms/ProductGrid.astro";
+import ProductDetails from "../../components/organisms/ProductDetails.astro";
+import RecommendGrid from "../../components/organisms/RecommendGrid.astro";
 import { getCollection } from "astro:content";
-import { formatPrice } from "../../utils/formatters.ts";
+import { formatCurrency } from "../../utils/formatters.ts";
 
 // 1. Rutas Estáticas y Sincronización de IDs
 export async function getStaticPaths() {
@@ -37,13 +37,7 @@ const related = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
-const formattedPrice = formatPrice(product.price);
-
-// 3. Variantes y Detalles (Fallbacks seguros)
-const productVariants = product.variants || [
-    { label: "Standard", value: "standard", color: "#C8B89A", available: true },
-];
-const productDetails = product.details || [];
+const formattedPrice = formatCurrency(product.price);
 
 // 4. Truncado inteligente para SEO
 const seoDescription =
@@ -53,353 +47,35 @@ const seoDescription =
         : product.description;
 ---
 
-<MainLayout title={`${product.name} — BeautyHome`} description={seoDescription}>
+<MainLayout title={`${product.name} — KORA`} description={seoDescription}>
     {/* ─── Breadcrumb ─── */}
-    <nav
-        class="bg-sand-50 border-b border-sand-200 py-4"
-        aria-label="Breadcrumb"
-    >
+    <nav class="bg-sand-50 border-b border-sand-200 py-4" aria-label="Breadcrumb">
         <div class="max-w-[1320px] mx-auto px-5 md:px-8">
-            <ol
-                class="flex items-center gap-2 text-[13px] text-sand-900/50 flex-wrap"
-            >
-                <li>
-                    <a href="/" class="hover:text-sand-900 f2-transition"
-                        >Home</a
-                    >
-                </li>
+            <ol class="flex items-center gap-2 text-[13px] text-sand-900/50 flex-wrap">
+                <li><a href="/" class="hover:text-sand-900 f2-transition">Home</a></li>
                 <li aria-hidden="true">›</li>
                 <li>
-                    <a
-                        href={`/category/${product.category.split(" ·")[0].toLowerCase()}`}
-                        class="hover:text-sand-900 f2-transition"
-                    >
-                        {product.category.split(" ·")[0]}
+                    <a href={`/category/${product.category.toLowerCase()}`} class="hover:text-sand-900 f2-transition">
+                        {product.category}
                     </a>
                 </li>
                 <li aria-hidden="true">›</li>
-                <li aria-current="page" class="text-sand-900 font-medium">
-                    {product.name}
-                </li>
+                <li aria-current="page" class="text-sand-900 font-medium">{product.name}</li>
             </ol>
         </div>
     </nav>
 
-    {/* ─── Main PDP Grid ─── */}
-    <div
-        class="max-w-[1320px] mx-auto px-5 md:px-8 py-10 lg:py-16 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start animate-fade-in-up"
-    >
-        {/* ─── Gallery ─── */}
-        <div class="lg:sticky lg:top-24 flex flex-col gap-4">
-            <div
-                class="relative aspect-[4/5] rounded-f2-lg overflow-hidden bg-sand-100 group"
-            >
-                {
-                    product.image ? (
-                        <img
-                            src={product.image}
-                            alt={product.name}
-                            class="w-full h-full object-cover transition-transform duration-[800ms] ease-fluent group-hover:scale-105"
-                        />
-                    ) : (
-                        <div class="w-full h-full flex items-center justify-center text-sand-300">
-                            <span class="font-sans text-sm">
-                                Image Placeholder
-                            </span>
-                        </div>
-                    )
-                }
-            </div>
-
-            {/* Thumbnails (Mocks) */}
-            <div
-                class="flex gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                role="list"
-            >
-                {
-                    [0, 1, 2, 3].map((i) => (
-                        <button
-                            class="w-20 h-20 rounded-f2-md bg-sand-100 border-[1.5px] border-transparent shrink-0 f2-transition hover:border-sand-300 focus-visible:border-petrol outline-none [&.is-active]:border-petrol gt-thumb"
-                            role="listitem"
-                            aria-label={`View image ${i + 1}`}
-                        />
-                    ))
-                }
-            </div>
-        </div>
-
-        {/* ─── Product Info ─── */}
-        <div class="flex flex-col">
-            <p
-                class="font-sans text-[11px] tracking-[0.15em] uppercase text-sand-900/50 mb-3"
-            >
-                {product.category}
-            </p>
-            <h1
-                class="font-display text-[clamp(36px,4vw,48px)] font-light text-petrol leading-[1.1] mb-2"
-            >
-                {product.name}
-            </h1>
-            <p class="font-sans text-[15px] text-sand-900/70 mb-5">
-                {product.subtitle}
-            </p>
-
-            {/* Rating */}
-            {
-                product.rating && (
-                    <div class="flex items-center gap-2 text-[13px] mb-6">
-                        <span
-                            class="text-gold-400 tracking-[0.1em]"
-                            aria-hidden="true"
-                        >
-                            {"★".repeat(Math.floor(product.rating))}
-                        </span>
-                        <span class="font-medium text-sand-900">
-                            {product.rating}
-                        </span>
-                        <span class="text-sand-300">·</span>
-                        <a
-                            href="#reviews"
-                            class="text-watermelon hover:underline underline-offset-4"
-                        >
-                            {product.reviewCount} reviews
-                        </a>
-                    </div>
-                )
-            }
-
-            {/* Pricing */}
-            <div class="flex items-center gap-3 mb-8 flex-wrap">
-                <span class="font-display text-4xl font-light text-petrol"
-                    >{formattedPrice}</span
-                >
-            </div>
-
-            <p
-                class="font-sans text-[15px] text-sand-900/80 leading-[1.8] mb-10"
-            >
-                {product.description}
-            </p>
-
-            {/* Color Variants */}
-            <div class="mb-10">
-                <p class="font-sans text-[13px] text-sand-900/70 mb-3">
-                    Colour: <strong
-                        class="text-sand-900 font-medium"
-                        id="selected-variant">{productVariants[0].label}</strong
-                    >
-                </p>
-                <div
-                    class="flex gap-3 flex-wrap"
-                    role="group"
-                    aria-label="Select colour"
-                >
-                    {
-                        productVariants.map((v, i) => (
-                            <button
-                                class={`w-8 h-8 rounded-full border-[1.5px] border-transparent shadow-[inset_0_0_0_2px_rgba(0,0,0,0.08)] f2-transition hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed swatch-btn ${i === 0 ? "ring-2 ring-offset-2 ring-petrol" : ""}`}
-                                style={`background-color: ${v.color}`}
-                                data-label={v.label}
-                                title={
-                                    v.available
-                                        ? v.label
-                                        : `${v.label} — Out of Stock`
-                                }
-                                aria-label={v.label}
-                                aria-pressed={i === 0 ? "true" : "false"}
-                                disabled={!v.available}
-                            />
-                        ))
-                    }
-                </div>
-            </div>
-
-            {/* CTAs */}
-            <div class="flex flex-col sm:flex-row gap-3 mb-6">
-                <button
-                    class="btn btn-primary btn-lg bg-watermelon flex-1 h-[52px]"
-                    data-add-to-cart={product.id}
-                    aria-label={`Add ${product.name} to cart`}
-                >
-                    <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                    >
-                        <path
-                            d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"
-                        ></path>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                    Add to Cart
-                </button>
-
-                <button
-                    class="w-full sm:w-[52px] h-[52px] rounded-f2-lg border-[1.5px] border-sand-200 bg-white flex items-center justify-center text-sand-900/50 f2-transition hover:border-watermelon hover:text-watermelon shrink-0 group [&.is-active]:text-watermelon [&.is-active]:border-watermelon"
-                    aria-label="Add to wishlist"
-                    data-wishlist-btn={product.id}
-                >
-                    <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        class="transition-colors group-[.is-active]:fill-watermelon"
-                    >
-                        <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                        ></path>
-                    </svg>
-                </button>
-            </div>
-
-            {/* Accordion (Details Dymanics) */}
-            {
-                productDetails.length > 0 && (
-                    <div class="border-t border-sand-200 mt-8">
-                        <details class="group border-b border-sand-200" open>
-                            <summary class="flex items-center justify-between font-sans text-[14px] font-medium text-sand-900 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                                Product Details
-                                <svg
-                                    class="w-4 h-4 transition-transform duration-300 group-open:rotate-180"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                >
-                                    <path d="M6 9l6 6 6-6" />
-                                </svg>
-                            </summary>
-                            <div class="pb-5 font-sans">
-                                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
-                                    {productDetails.map((detail) => (
-                                        <div class="flex flex-col gap-1">
-                                            <dt class="text-[12px] text-sand-900/50 uppercase tracking-[0.08em] font-medium">
-                                                {detail.label}
-                                            </dt>
-                                            <dd class="text-[13px] text-sand-900/80">
-                                                {detail.value}
-                                            </dd>
-                                        </div>
-                                    ))}
-                                </dl>
-                            </div>
-                        </details>
-                    </div>
-                )
-            }
-        </div>
-    </div>
+    {/* ─── Core Product Details ─── */}
+    <ProductDetails product={product} />
 
     {/* ─── Related Products ─── */}
-    {
-        related.length > 0 && (
-            <section class="py-16 bg-sand-100 border-t border-sand-200">
-                <div class="max-w-[1320px] mx-auto px-5 md:px-8">
-                    <ProductGrid
-                        products={related as any}
-                        layout="default"
-                        label="Complete the Space"
-                        title="You might <em>also love</em>"
-                    />
-                </div>
-            </section>
-        )
-    }
+    {related.length > 0 && (
+        <section class="py-16 bg-sand-100 border-t border-sand-200">
+            <RecommendGrid 
+                products={related as any} 
+                title="Completá el espacio con <em>piezas de autor</em>"
+                subtitle="Recomendados para vos"
+            />
+        </section>
+    )}
 </MainLayout>
-
-<script>
-    import { wishlistItems, toggleWishlistItem } from "../../store/wishlist";
-
-    // 1. Envolvemos en astro:page-load para compatibilidad con View Transitions
-    document.addEventListener("astro:page-load", () => {
-        /* --- LÓGICA DE VARIANTES --- */
-        let selectedVariant = "";
-        const variantLabel = document.getElementById("selected-variant");
-        const swatches = document.querySelectorAll(".swatch-btn");
-
-        // Setup Inicial
-        const firstSwatch = document.querySelector(
-            ".swatch-btn:not(:disabled)",
-        ) as HTMLElement | null;
-        if (firstSwatch) {
-            selectedVariant = firstSwatch.dataset.label ?? "";
-            if (variantLabel) variantLabel.textContent = selectedVariant;
-        }
-
-        swatches.forEach((s) => {
-            s.addEventListener("click", (e) => {
-                const target = e.currentTarget as HTMLElement;
-                if ((target as HTMLButtonElement).disabled) return;
-
-                swatches.forEach((x) => {
-                    x.classList.remove(
-                        "ring-2",
-                        "ring-offset-2",
-                        "ring-petrol",
-                    );
-                    x.setAttribute("aria-pressed", "false");
-                });
-
-                target.classList.add("ring-2", "ring-offset-2", "ring-petrol");
-                target.setAttribute("aria-pressed", "true");
-
-                selectedVariant = target.dataset.label ?? "";
-                if (variantLabel) variantLabel.textContent = selectedVariant;
-            });
-        });
-
-        /* --- LÓGICA DEL CARRITO --- */
-        const addToCartBtn = document.querySelector("[data-add-to-cart]");
-        addToCartBtn?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const id = (e.currentTarget as HTMLElement).dataset.addToCart ?? "";
-            if (id) {
-                // Emitimos el ID y la variante seleccionada dinámicamente
-                window.dispatchEvent(
-                    new CustomEvent("cart:add", { detail: { id } }),
-                );
-            }
-        });
-
-        /* --- LÓGICA DE WISHLIST (Sincronizada Globalmente) --- */
-        const syncPDPWishlist = () => {
-            const items = wishlistItems.get();
-            const btn = document.querySelector("[data-wishlist-btn]");
-            if (btn) {
-                const id = (btn as HTMLElement).dataset.wishlistBtn;
-                const svg = btn.querySelector("svg");
-                if (id && items[id]) {
-                    btn.classList.add("is-active");
-                    svg?.setAttribute("fill", "currentColor");
-                } else {
-                    btn.classList.remove("is-active");
-                    svg?.setAttribute("fill", "none");
-                }
-            }
-        };
-
-        syncPDPWishlist(); // Sincronizamos al cargar
-
-        // Evitamos doble suscripción al navegar
-        if (!(window as any).isPDPSubscribed) {
-            wishlistItems.subscribe(() => syncPDPWishlist());
-            (window as any).isPDPSubscribed = true;
-        }
-
-        const wishlistBtn = document.querySelector("[data-wishlist-btn]");
-        wishlistBtn?.addEventListener("click", (e) => {
-            e.preventDefault();
-            const id = (e.currentTarget as HTMLElement).dataset.wishlistBtn;
-            if (id) toggleWishlistItem(id);
-        });
-    });
-</script>

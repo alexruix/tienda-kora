@@ -1,0 +1,60 @@
+---
+/**
+ * CategoryNav.astro — Molecule
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Renderiza una lista horizontal de FilterPills.
+ * Se adapta al contexto según la prop "variant".
+ */
+
+import FilterPill from '../atoms/FilterPill.astro';
+
+export interface CategoryItem {
+  id: string;
+  label: string;
+  emoji?: string;
+  count?: number;
+}
+
+interface Props {
+  items: CategoryItem[];
+  activeId?: string;
+  variant?: "light" | "dark";
+  useHashRoute?: boolean; // true = "#collection-id", false = "/?category=id"
+  ariaLabel?: string;
+  class?: string;
+}
+
+const {
+  items,
+  activeId = "all",
+  variant = "light",
+  useHashRoute = false,
+  ariaLabel = "Navegación de categorías",
+  class: extraClass = "",
+} = Astro.props;
+
+// Clases del contenedor principal
+const navClasses = variant === "light" 
+  ? "max-w-[1320px] mx-auto px-8 flex gap-3 overflow-x-auto py-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+  : "flex gap-2 flex-wrap";
+---
+
+<nav
+  class:list={[navClasses, extraClass]}
+  aria-label={ariaLabel}
+>
+  {items.map((item) => {
+    const href = useHashRoute ? `#collection-${item.id}` : `/?category=${item.id}`;
+    return (
+      <FilterPill
+        href={href}
+        label={item.label}
+        emoji={item.emoji}
+        count={item.count}
+        isActive={activeId === item.id}
+        variant={variant}
+      />
+    );
+  })}
+</nav>

@@ -1,0 +1,45 @@
+---
+/**
+ * NewsletterSection.astro — Organism
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Bloque de ancho completo para la captura de leads. Combina el molecule
+ * NewsletterBox con una imagen estilizada para maximizar conversión.
+ */
+
+import NewsletterBox from '../molecules/NewsletterBox.astro';
+
+interface Props {
+  image?: string;
+  class?: string;
+}
+
+const { 
+  image = "https://images.unsplash.com/photo-1544568100-847a948585b9?w=1600&q=80",
+  class: extraClass = '' 
+} = Astro.props;
+---
+
+<section class:list={["w-full relative py-20 lg:py-32 overflow-hidden", extraClass]}>
+  {/* Background Image Container */}
+  <div class="absolute inset-0 z-0">
+    <img 
+      src={image} 
+      alt="Perro descansando en cama KORA" 
+      class="w-full h-full object-cover" 
+      loading="lazy" 
+    />
+    <div class="absolute inset-0 bg-petrol/60 backdrop-blur-[2px]"></div>
+  </div>
+
+  <div class="relative z-10 max-w-[1320px] mx-auto px-5 md:px-8 flex items-center justify-center lg:justify-end">
+    <div class="w-full max-w-lg">
+      <NewsletterBox 
+        title="La posta de tus viajes" 
+        description="Recibí novedades sobre nuevos 'Héroes de Diseño' y repunte de 'Esenciales' directamente en tu correo."
+        buttonLabel="Suscribirme a KORA"
+        class="bg-petrol/90 border border-white/10 shadow-xl"
+      />
+    </div>
+  </div>
+</section>

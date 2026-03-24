@@ -70,51 +70,82 @@ const SORT_OPTIONS = [
   )}
 
   {showFilters && (
-    <div class="flex items-center justify-between gap-4 py-4 border-b border-sand-200 mb-8 flex-wrap" role="toolbar" aria-label="Product filters">
-      
-      <div class="flex gap-2 sm:gap-1 flex-wrap" role="group" aria-label="Filter by">
-        {FILTERS.map((f, i) => (
-          <button
-            class={`filter-pill sm:text-[12px] sm:px-3 sm:py-[6px] ${i === 0 ? 'filter-pill--active' : ''}`}
-            data-filter={f}
-            aria-pressed={i === 0 ? 'true' : 'false'}
-          >
-            {f}
+    <div class="flex flex-col gap-4 mb-8">
+      {/* Top Toolbar: Switch + Sort + Mobile Filter Btn */}
+      <div class="flex items-center justify-between gap-4 py-3 border-y border-sand-200 flex-wrap" role="toolbar" aria-label="Product filters">
+        
+        {/* Fast Shipping Switch (Llega Mañana) */}
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <div class="relative inline-flex items-center">
+            <input type="checkbox" class="sr-only peer" />
+            <div class="w-10 h-6 bg-sand-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-petrol/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 f2-transition"></div>
+          </div>
+          <span class="font-sans text-[13px] font-bold text-petrol group-hover:text-green-600 f2-transition flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-green-600">
+              <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Llega mañana
+          </span>
+        </label>
+
+        {/* Right side: Filter Btn (Mobile) + Sort (Desktop) */}
+        <div class="flex items-center gap-3 ml-auto">
+          {/* Mobile Filter Button */}
+          <button class="lg:hidden flex items-center gap-2 font-sans font-medium text-[13px] text-petrol bg-sand-100 px-4 py-2 rounded-full border border-sand-200">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+            </svg>
+            Filtrar
           </button>
-        ))}
+
+          {/* Sort Dropdown */}
+          {showSort && (
+            <div class="relative hidden lg:flex flex-items-center">
+              <select class="sort-select border-none bg-transparent font-sans text-[13px] font-medium text-petrol cursor-pointer pr-6 appearance-none focus:ring-0" aria-label="Ordenar por">
+                {SORT_OPTIONS.map((opt) => (
+                  <option value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+              <svg class="absolute right-0 pointer-events-none text-sand-900/40 mt-1" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </div>
+          )}
+
+          {/* View Toggles */}
+          <div class="hidden md:flex gap-1 border-l border-sand-200 pl-3 ml-1" role="group" aria-label="View style">
+            <button class="view-btn view-btn--active text-petrol" data-view="grid" aria-label="Grid view" aria-pressed="true">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+                <rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/>
+              </svg>
+            </button>
+            <button class="view-btn text-sand-900/30 hover:text-petrol f2-transition" data-view="list" aria-label="List view" aria-pressed="false">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+                <rect x="1" y="2" width="14" height="2.5" rx="1"/><rect x="1" y="6.75" width="14" height="2.5" rx="1"/><rect x="1" y="11.5" width="14" height="2.5" rx="1"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        {showSort && (
-          <div class="relative flex items-center">
-            <select class="sort-select" aria-label="Sort products">
-              {SORT_OPTIONS.map((opt) => (
-                <option value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-            <svg class="absolute right-[10px] pointer-events-none text-sand-900/40" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </div>
-        )}
-
-        <div class="flex gap-1" role="group" aria-label="View style">
-          <button class="view-btn view-btn--active" data-view="grid" aria-label="Grid view" aria-pressed="true">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
-              <rect x="1" y="1" width="6" height="6" rx="1"/>
-              <rect x="9" y="1" width="6" height="6" rx="1"/>
-              <rect x="1" y="9" width="6" height="6" rx="1"/>
-              <rect x="9" y="9" width="6" height="6" rx="1"/>
-            </svg>
-          </button>
-          <button class="view-btn" data-view="list" aria-label="List view" aria-pressed="false">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
-              <rect x="1" y="2" width="14" height="2.5" rx="1"/>
-              <rect x="1" y="6.75" width="14" height="2.5" rx="1"/>
-              <rect x="1" y="11.5" width="14" height="2.5" rx="1"/>
-            </svg>
-          </button>
-        </div>
+      {/* Active Filter Chips Strip */}
+      <div class="flex flex-wrap gap-2 items-center" id="active-filters-container">
+        {/* Placeholder chips for demonstration */}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sand-100 border border-sand-200 rounded-full font-sans text-[12px] text-petrol font-medium cursor-pointer hover:bg-sand-200 f2-transition">
+          Material: Madera
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ml-0.5 opacity-60">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sand-100 border border-sand-200 rounded-full font-sans text-[12px] text-petrol font-medium cursor-pointer hover:bg-sand-200 f2-transition">
+          Hasta $50.000
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ml-0.5 opacity-60">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </span>
+        <button class="font-sans text-[11px] font-bold text-watermelon ml-2 bg-transparent border-none cursor-pointer tracking-wide hover:opacity-70 p-0">
+          Limpiar todos
+        </button>
       </div>
     </div>
   )}

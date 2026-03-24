@@ -1,10 +1,13 @@
 ---
 /**
  * /checkout/payment — Payment Page (Step 2)
- * BeautyHome · NODO Studio
+ * KORA · NODO Studio
  */
-import MainLayout from "../../components/templates/MainLayout.astro";
-import PaymentBricks from "../../components/organisms/PaymentBricks.jsx";
+import MainLayout           from "../../components/templates/MainLayout.astro";
+import PaymentBricks        from "../../components/organisms/PaymentBricks.jsx";
+import CheckoutProgressBar  from "../../components/molecules/CheckoutProgressBar.astro";
+import { CheckoutContent }  from "../../data/checkoutContent.ts";
+import { NavContent }       from "../../data/navContent.ts";
 
 export const prerender = false;
 
@@ -18,7 +21,7 @@ if (!preferenceId || !amount) {
 }
 
 // 2. Formateador de moneda nativo para mostrar el total
-const formattedTotal = new Intl.NumberFormat("en-US", {
+const formattedTotal = new Intl.NumberFormat("es-AR", {
     style: "currency",
     currency: "ARS",
     minimumFractionDigits: 0,
@@ -26,45 +29,19 @@ const formattedTotal = new Intl.NumberFormat("en-US", {
 ---
 
 <MainLayout
-    title="Secure Payment — BeautyHome"
+    title={`${CheckoutContent.payment.title.replace(/<\/?[^>]+(>|$)/g, "")} — ${NavContent.logo}`}
     description="Complete your order using our secure payment gateway."
     noIndex={true}
 >
     <script src="https://sdk.mercadopago.com/js/v2" is:inline></script>
 
-    <nav
-        class="bg-sand-50 border-b border-sand-200 py-4"
-        aria-label="Breadcrumb"
-    >
-        <div class="checkout-container">
-            <ol
-                class="flex items-center gap-2 text-[13px] text-sand-900/50 flex-wrap"
-            >
-                <li>
-                    <a href="/" class="hover:text-sand-900 f2-transition"
-                        >Home</a>
-                </li>
-                <li aria-hidden="true">›</li>
-                <li>
-                    <a
-                        href="/checkout"
-                        class="hover:text-sand-900 f2-transition">Checkout</a>
-                </li>
-                <li aria-hidden="true">›</li>
-                <li aria-current="page" class="text-sand-900 font-medium">
-                    Payment
-                </li>
-            </ol>
-        </div>
-    </nav>
+    <CheckoutProgressBar step={2} />
 
     <div class="border-b border-sand-200 bg-white">
-        <div class="checkout-container py-4">
+        <div class="checkout-container max-w-[1100px] mx-auto px-5 md:px-8 py-4">
             <div class="flex items-center gap-4">
-                <div class="step-item text-sand-900/40">
-                    <span
-                        class="step-bullet bg-green-50 text-green-600 border border-green-100"
-                    >
+                <div class="flex items-center gap-2 font-medium text-sand-900/40">
+                    <span class="w-6 h-6 flex items-center justify-center rounded-full bg-sand-100 text-[12px]">
                         <svg
                             width="10"
                             height="10"
@@ -76,21 +53,23 @@ const formattedTotal = new Intl.NumberFormat("en-US", {
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </span>
-                    <span>Details</span>
+                    <span class="text-[14px]">{CheckoutContent.steps.step1.label}</span>
                 </div>
 
-                <span class="step-connector" aria-hidden="true">————</span>
+                <span class="text-sand-200" aria-hidden="true">————</span>
 
-                <div class="step-item step-item--active">
-                    <span class="step-bullet">2</span>
-                    <span>Payment</span>
+                <div class="flex items-center gap-2 font-medium text-petrol">
+                    <span class="w-6 h-6 flex items-center justify-center rounded-full bg-petrol text-white text-[12px]">
+                        {CheckoutContent.steps.step2.number}
+                    </span>
+                    <span class="text-[14px]">{CheckoutContent.steps.step2.label}</span>
                 </div>
             </div>
         </div>
     </div>
 
     <div
-        class="max-w-[680px] mx-auto px-5 md:px-8 py-10 lg:py-14 animate-fade-in-up"
+        class="max-w-[680px] mx-auto px-5 md:px-8 py-10 lg:py-14 animate-[fadeUp_0.5s_cubic-bezier(0.33,1,0.68,1)_both]"
     >
         <header
             class="mb-10 text-center lg:text-left flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-sand-200 pb-6"
@@ -99,13 +78,12 @@ const formattedTotal = new Intl.NumberFormat("en-US", {
                 <p
                     class="font-sans text-[11px] tracking-[0.18em] uppercase text-sand-900/40 mb-2"
                 >
-                    Final Step
+                    {CheckoutContent.payment.eyebrow}
                 </p>
                 <h1
                     class="font-display text-[clamp(32px,4vw,44px)] font-light text-petrol leading-[1.1] mb-3"
-                >
-                    Secure <em>Payment</em>
-                </h1>
+                    set:html={CheckoutContent.payment.title}
+                />
                 <div
                     class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-full border border-green-100"
                 >
@@ -123,7 +101,7 @@ const formattedTotal = new Intl.NumberFormat("en-US", {
                     </svg>
                     <span
                         class="text-[11px] font-sans font-medium text-green-700 uppercase tracking-wider"
-                        >PCI-DSS Encrypted</span
+                        >{CheckoutContent.payment.badge}</span
                     >
                 </div>
             </div>
@@ -134,7 +112,7 @@ const formattedTotal = new Intl.NumberFormat("en-US", {
                 <p
                     class="font-sans text-[12px] uppercase tracking-widest text-sand-900/40 mb-1"
                 >
-                    Total to pay
+                    {CheckoutContent.payment.totalToPay}
                 </p>
                 <p class="font-display text-2xl text-petrol">
                     {formattedTotal}
@@ -177,14 +155,12 @@ const formattedTotal = new Intl.NumberFormat("en-US", {
             <p
                 class="text-[13px] text-sand-900/40 font-sans text-center max-w-[400px]"
             >
-                By clicking "Pay", you agree to our terms of service. Your
-                payment is processed safely through MercadoPago's secure
-                infrastructure.
+                {CheckoutContent.payment.disclaimer}
             </p>
 
             <a
                 href="/checkout"
-                class="btn btn-ghost text-[11px] tracking-widest group no-underline"
+                class="f2-button-outline text-[11px] tracking-widest group no-underline"
             >
                 <svg
                     class="transition-transform duration-200 group-hover:-translate-x-1"
@@ -198,7 +174,7 @@ const formattedTotal = new Intl.NumberFormat("en-US", {
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <path d="M12 19l-7-7 7-7"></path>
                 </svg>
-                Back to Details
+                {CheckoutContent.payment.backBtn}
             </a>
         </div>
     </div>

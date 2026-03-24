@@ -1,0 +1,29 @@
+{
+  "id": "cama-nido-autor",
+  "name": "Cama Nido de Autor",
+  "subtitle": "Diseño Boutique by Waw Pet",
+  "slug": "cama-nido-autor",
+  "category": "living",
+  "subcategory": "Descanso Premium",
+  "price": 125000,
+  "inStock": true,
+  "leadTime": "2 semanas",
+  "rating": 4.9,
+  "reviewCount": 42,
+  "badges": ["featured", "limited"],
+  "featured": true,
+  "newArrival": true,
+  "image": "https://images.unsplash.com/photo-1591584250647-39e77ee836f0?auto=format&fit=crop&q=80&w=800",
+  "description": "Nuestra pieza Héroe de la temporada. Confeccionada por Waw Pet con cordura de alta resistencia y colores tierra que se fusionan con tu decoración. Una pieza fotogénica que no solo es un refugio, sino un objeto de diseño en tu living.",
+  "details": [
+    { "label": "Material", "value": "Cordura Premium / Vellón Siliconado" },
+    { "label": "Dimensiones", "value": "70 x 70 x 25 cm" },
+    { "label": "Origen", "value": "Diseño de Autor (CABA)" },
+    { "label": "Lavable", "value": "Funda apta lavarropas" }
+  ],
+  "care": "Lavar la funda en ciclo delicado con agua fría. No usar secadora.",
+  "shipping": "Cross-docking: Se retira por taller tras la compra. Entrega en 10-14 días.",
+  "metaDescription": "Cama Nido de Autor KORA. Diseño exclusivo Waw Pet para el descanso de tu perro. Estética y confort en armonía.",
+  "altText": "Cama nido para perros en color visón, diseño minimalista sobre piso de madera.",
+  "relatedProducts": ["pretal-neoprene-aventura", "perfume-textil-kora"]
+}

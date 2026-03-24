@@ -1,12 +1,16 @@
 ---
 /**
  * ProductCard Molecule
- * BeautyHome · NODO Studio
+ * KORA · NODO Studio
+ *
+ * Mobile UX improvements:
+ * - Wishlist & Add-to-cart buttons always visible on mobile (no hover required)
+ * - Wider tap targets
+ * - Uses [@media(hover:none)] to differentiate touch from pointer devices
  */
-
+import PriceDisplay from './PriceDisplay.astro';
 import Badge from '../atoms/Badge.astro';
 
-// ... Props y lógica de moneda (se mantiene igual) ...
 interface Props {
   id:              string;
   name:            string;
@@ -38,8 +42,8 @@ const {
 } = Astro.props;
 
 const discount = originalPrice ? Math.round((1 - price / originalPrice) * 100) : null;
-const formattedPrice = price.toLocaleString('en-US', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+const formattedPrice = price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+const formattedOriginal = originalPrice?.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
 ---
 
 <article
@@ -51,7 +55,7 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
   data-product-id={id}
 >
   <div class="relative overflow-hidden bg-sand-100" style={`aspect-ratio: ${aspectRatio}`}>
-    <div class="w-full h-full flex items-center justify-center transition-transform duration-[600ms] ease-fluent group-hover:scale-105">
+    <div class="w-full h-full flex items-center justify-center transition-transform duration-600 ease-fluent group-hover:scale-105">
       {image ? (
         <img src={image} alt={name} loading="lazy" width="400" height="500" class="w-full h-full object-cover" />
       ) : (
@@ -65,50 +69,88 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
         {badges.map((b) => (
           <Badge variant={b} label={
             b === 'sale' && discount ? `-${discount}%` :
-            b === 'new'  ? 'New'     :
-            b === 'limited' ? 'Limited' : 'Best Seller'
+            b === 'new'  ? 'Nuevo'     :
+            b === 'limited' ? 'Limitado' : 'Destacado'
           } />
         ))}
       </div>
     )}
 
-    {/* Wishlist Button - Conexión al Store */}
+    {/*
+      Wishlist Button:
+      - Desktop: aparece solo en hover
+      - Mobile (@media hover:none): siempre visible
+    */}
     <button
-      class="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center z-10 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 fluent-acrylic border-none text-sand-900/50 f2-transition hover:scale-110 hover:!bg-white hover:text-watermelon [&.is-active]:text-watermelon"
-      aria-label={`Add ${name} to wishlist`}
-      data-wishlist-btn={id} 
+      class="
+        absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center z-10
+        fluent-acrylic border-none text-sand-900/50 f2-transition
+        hover:scale-110 hover:bg-white! hover:text-watermelon
+        [&.is-active]:text-watermelon [&.is-active]:bg-white
+        opacity-0 -translate-y-2
+        group-hover:opacity-100 group-hover:translate-y-0
+        [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-y-0
+      "
+      aria-label={`Guardar ${name} en favoritos`}
+      data-wishlist-btn={id}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" class="transition-colors">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
       </svg>
     </button>
 
-    {/* Add to Cart Button */}
-    <div class="absolute bottom-0 left-0 right-0 p-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-fluent z-10">
+    {/*
+      Add to Cart Button:
+      - Desktop: aparece en hover (overlay desde abajo)
+      - Mobile (@media hover:none): siempre visible, texto más corto
+    */}
+    <div class="
+      absolute bottom-0 left-0 right-0 p-2.5
+      opacity-0 translate-y-2
+      group-hover:opacity-100 group-hover:translate-y-0
+      [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-y-0
+      transition-all duration-300 ease-fluent z-10
+    ">
       <button
-        class="w-full h-10 bg-petrol/90 backdrop-blur-md text-white rounded-f2-md font-sans text-[12px] tracking-[0.08em] uppercase font-medium flex items-center justify-center gap-2 cursor-pointer border-none transition-colors duration-150 hover:bg-petrol"
+        class="
+          w-full h-10 bg-petrol/90 backdrop-blur-md text-white rounded-f2-md
+          font-sans text-[12px] tracking-[0.08em] uppercase font-medium
+          flex items-center justify-center gap-2
+          cursor-pointer border-none transition-colors duration-150
+          hover:bg-petrol active:scale-[0.97]
+        "
         data-add-to-cart={id}
-        aria-label={`Add ${name} to cart`}
+        aria-label={`Agregar ${name} al carrito`}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
           <line x1="12" y1="5" x2="12" y2="19"/>
           <line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
-        Add to Cart
+        <span class="hidden [@media(hover:none)]:hidden sm:inline">Agregar</span>
+        <span class="[@media(hover:none)]:inline hidden sm:hidden">+</span>
       </button>
     </div>
   </div>
 
-  <div class="p-4 pt-5 pb-5">
-    <a href={`/product/${id}`} class="block no-underline text-inherit mb-3 group/link">
-      <p class="text-[11px] tracking-[0.1em] uppercase text-sand-900/50 mb-2 font-sans">{category}</p>
-      <h3 class="text-[15px] font-display font-medium text-sand-900 leading-snug transition-colors duration-150 group-hover/link:text-petrol">{name}</h3>
+  <div class="p-4 pt-4 pb-5 flex flex-col h-full">
+    <a href={`/product/${id}`} class="block no-underline text-inherit mb-2 group/link grow">
+      <p class="text-[10px] tracking-widest uppercase text-sand-900/50 mb-1 font-sans">{category}</p>
+      <h3 class="text-[14px] font-display font-medium text-sand-900 leading-snug transition-colors duration-150 group-hover/link:text-petrol line-clamp-2">{name}</h3>
     </a>
-    <div class="flex items-center justify-between gap-3">
-      <div class="flex items-baseline gap-2">
-        <span class="text-[17px] font-medium text-petrol font-sans">{formattedPrice}</span>
-        {formattedOriginal && <span class="text-[13px] text-sand-900/40 line-through">{formattedOriginal}</span>}
-      </div>
+    <div class="mt-auto pt-2 flex flex-col gap-1">
+      <PriceDisplay 
+        price={price} 
+        compareAtPrice={originalPrice} 
+        showInstallments={true} 
+        installmentsCount={6} 
+        size="sm" 
+      />
+      <span class="text-[11px] font-semibold text-petrol mt-1 flex items-center gap-1">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="text-green-600">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        Llega gratis mañana
+      </span>
     </div>
   </div>
 </article>
@@ -116,13 +158,8 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
 <script>
   import { wishlistItems, toggleWishlistItem } from '../../store/wishlist';
 
-  /**
-   * 1. Sincronización Visual (UI)
-   * Buscamos los botones en el DOM ACTUAL y los pintamos según el Store.
-   */
   const syncWishlistUI = () => {
     const items = wishlistItems.get();
-    // QuerySelector vivo: siempre busca lo que hay en pantalla AHORA.
     document.querySelectorAll('[data-wishlist-btn]').forEach((btn) => {
       const id = (btn as HTMLElement).dataset.wishlistBtn;
       if (id) {
@@ -139,45 +176,32 @@ const formattedOriginal = originalPrice?.toLocaleString('en-US', { style: 'curre
     });
   };
 
-  /**
-   * 2. Suscripción Reactiva
-   * Si el store cambia (desde la Navbar, por ejemplo), actualizamos la UI.
-   */
   wishlistItems.subscribe(() => syncWishlistUI());
 
-  /**
-   * 3. Ciclo de Vida de Astro (ClientRouter compatible)
-   */
   document.addEventListener('astro:page-load', () => {
-    // Sincronizamos apenas carga la página o volvemos a ella
     syncWishlistUI();
 
-    // DELEGACIÓN DE EVENTOS: Un solo listener en el document para todo.
-    // Es más eficiente y no se rompe al navegar.
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
 
-      // --- Lógica de Wishlist ---
       const wishlistBtn = target.closest('[data-wishlist-btn]');
       if (wishlistBtn) {
         e.preventDefault();
         e.stopPropagation();
         const id = (wishlistBtn as HTMLElement).dataset.wishlistBtn;
         if (id) toggleWishlistItem(id);
-        return; // Detenemos aquí si ya encontramos el botón
+        return;
       }
 
-      // --- Lógica de Carrito ---
       const cartBtn = target.closest('[data-add-to-cart]');
       if (cartBtn) {
         e.preventDefault();
         e.stopPropagation();
         const id = (cartBtn as HTMLElement).dataset.addToCart;
         if (id) {
-          // Mantenemos tu CustomEvent exactamente igual
           window.dispatchEvent(new CustomEvent('cart:add', { detail: { id } }));
         }
       }
-    }, { once: false }); // Se mantiene activo durante la sesión
+    }, { once: false });
   }, { once: false });
 </script>

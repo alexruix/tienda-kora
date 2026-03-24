@@ -1,48 +1,28 @@
 ---
 /**
  * /checkout/failure — Payment Failed
- * BeautyHome · NODO Studio
+ * KORA · NODO Studio
  * * Arquitectura:
  * - Traduce los crípticos errores de MP a lenguaje humano y premium.
  * - Intencionalmente NO borra el carrito ni los datos del store
  * para facilitar el reintento inmediato.
  */
 import MainLayout from "../../components/templates/MainLayout.astro";
+import { CheckoutContent, MP_REJECTION_MESSAGES } from "../../data/checkoutContent.ts";
+import { NavContent } from "../../data/navContent.ts";
 
 export const prerender = false;
 
 // MercadoPago envía el motivo del rechazo en el query param 'status_detail'
 const reason = Astro.url.searchParams.get("status_detail") ?? "";
 
-// Diccionario de traducción MP -> BeautyHome (Humanizado)
-const REJECTION_MESSAGES: Record<string, string> = {
-    cc_rejected_insufficient_amount:
-        "Your card doesn't have enough funds to cover this purchase.",
-    cc_rejected_bad_filled_card_number:
-        "The card number you entered seems to be incorrect.",
-    cc_rejected_bad_filled_date: "The expiration date entered is incorrect.",
-    cc_rejected_bad_filled_security_code:
-        "The security code (CVV) entered is incorrect.",
-    cc_rejected_blacklist:
-        "We couldn't process this card. Please try a different payment method.",
-    cc_rejected_call_for_authorize:
-        "Please contact your bank to authorize this payment to MercadoPago.",
-    cc_rejected_duplicate_payment:
-        "This payment appears to be a duplicate. Please check your email.",
-    cc_rejected_high_risk:
-        "For security reasons, this payment was declined. Please try another card.",
-    cc_rejected_max_attempts:
-        "You've reached the maximum number of attempts allowed for this card.",
-};
-
 const friendlyMessage =
-    REJECTION_MESSAGES[reason] ??
-    "The payment couldn't be processed by the bank. Please try again or use a different payment method.";
+    MP_REJECTION_MESSAGES[reason as keyof typeof MP_REJECTION_MESSAGES] ?? CheckoutContent.failure.fallbackMessage;
 ---
 
-<MainLayout title="Payment Failed — BeautyHome" noIndex={true}>
+<MainLayout title={`${CheckoutContent.failure.title} — ${NavContent.logo}`} noIndex={true}>
     <div
-        class="max-w-[600px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center animate-fade-in-up"
+        class="max-w-[600px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center animate-[fadeUp_0.5s_cubic-bezier(0.33,1,0.68,1)_both]"
     >
         <div class="relative mb-8">
             <div
@@ -71,17 +51,16 @@ const friendlyMessage =
         <p
             class="font-sans text-[11px] tracking-[0.2em] uppercase text-watermelon font-bold mb-3"
         >
-            Payment Declined
+            {CheckoutContent.failure.eyebrow}
         </p>
 
         <h1
             class="font-display text-[clamp(36px,5vw,52px)] font-light text-petrol leading-[1.1] mb-6"
-        >
-            Something went <em>wrong</em>
-        </h1>
+            set:html={CheckoutContent.failure.displayTitle}
+        />
 
         <div
-            class="bg-white border border-watermelon/10 rounded-f2-lg p-6 w-full max-w-[440px] shadow-sm mb-8"
+            class="bg-white border border-watermelon/20 rounded-f2-lg p-6 w-full max-w-[440px] mb-8"
         >
             <p
                 class="font-sans text-[15px] text-sand-900/80 leading-relaxed font-medium"
@@ -99,11 +78,11 @@ const friendlyMessage =
                     height="16"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#059669"
+                    stroke="var(--color-rust)"
                     stroke-width="2"
                     ><polyline points="20 6 9 17 4 12"></polyline></svg
                 >
-                No charges have been made to your account.
+                {CheckoutContent.failure.listPoint1}
             </li>
             <li class="flex items-center gap-2">
                 <svg
@@ -111,18 +90,18 @@ const friendlyMessage =
                     height="16"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#059669"
+                    stroke="var(--color-rust)"
                     stroke-width="2"
                     ><polyline points="20 6 9 17 4 12"></polyline></svg
                 >
-                Your cart and shipping details are safely saved.
+                {CheckoutContent.failure.listPoint2}
             </li>
         </ul>
 
         <div class="flex flex-col sm:flex-row gap-4 w-full max-w-[440px]">
             <a
                 href="/checkout"
-                class="btn btn-primary btn-lg flex-1 group no-underline"
+                class="f2-button-primary flex-1 group no-underline text-center justify-center flex"
             >
                 <svg
                     class="transition-transform duration-200 group-hover:-translate-x-1"
@@ -136,22 +115,14 @@ const friendlyMessage =
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <path d="M12 19l-7-7 7-7"></path>
                 </svg>
-                Try Again
+                {CheckoutContent.failure.btnPrimary}
             </a>
-            <a href="/" class="btn btn-secondary btn-lg flex-1 no-underline">
-                Return Home
+            <a href="/" class="f2-button-outline flex-1 no-underline text-center">
+                {CheckoutContent.failure.btnSecondary}
             </a>
         </div>
 
-        <div class="mt-12 pt-8 border-t border-sand-200 w-full max-w-[440px]">
-            <p class="text-[12px] text-sand-900/40 font-sans">
-                Having trouble with your payment? <br />
-                Contact our concierge at <a
-                    href="mailto:support@beautyhome.com"
-                    class="text-petrol hover:underline"
-                    >support@beautyhome.com</a
-                >
-            </p>
-        </div>
+        <div class="mt-12 pt-8 border-t border-sand-200 w-full max-w-[440px]" set:html={CheckoutContent.failure.footer} />
     </div>
 </MainLayout>
+

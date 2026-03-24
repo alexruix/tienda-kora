@@ -5,9 +5,11 @@
  */
 
 import MainLayout from './MainLayout.astro';
+import Breadcrumb from '../molecules/Breadcrumb.astro';
+import { CategoryContent } from '../../data/categoryContent';
 
 interface Props {
-  category:      'living' | 'dining' | 'workspace';
+  category:      'living' | 'dining' | 'workspace' | 'bienestar';
   title?:        string;
   description?:  string;
   productCount?: number;
@@ -15,47 +17,25 @@ interface Props {
 
 const {
   category,
-  title        = category.charAt(0).toUpperCase() + category.slice(1),
-  description  = '',
+  title        = CategoryContent.categories[category]?.name || category,
+  description  = CategoryContent.categories[category]?.description || '',
   productCount = 0,
 } = Astro.props;
 
-const SIDEBAR_FILTERS: Record<string, { label: string; options: string[] }[]> = {
-  living: [
-    { label: 'Category',   options: ['Sofas','Chairs','Tables','Storage','Lighting','Décor'] },
-    { label: 'Material',   options: ['Solid Wood','Upholstered','Metal','Ceramic','Rattan'] },
-    { label: 'Style',      options: ['Japandi','Scandinavian','Wabi-Sabi','Minimalist'] },
-    { label: 'Price',      options: ['Under $500','$500–$1,500','$1,500–$3,000','$3,000+'] },
-  ],
-  dining: [
-    { label: 'Category',   options: ['Tables','Chairs','Benches','Sideboards','Bar Stools'] },
-    { label: 'Seats',      options: ['2','4','6','8+','Extendable'] },
-    { label: 'Material',   options: ['Oak','Walnut','Marble','Ceramic','Metal'] },
-    { label: 'Price',      options: ['Under $800','$800–$2,500','$2,500+'] },
-  ],
-  workspace: [
-    { label: 'Category',   options: ['Writing Desks','Standing Desks','Chairs','Shelving'] },
-    { label: 'Material',   options: ['Oak','Walnut','Steel','Bamboo'] },
-    { label: 'Price',      options: ['Under $500','$500–$1,500','$1,500+'] },
-  ],
-};
-
-const HERO: Record<string, { eyebrow: string; headline: string; sub: string }> = {
-  living:    { eyebrow: 'The Heart of Home', headline: 'Living <em>Spaces</em>', sub: 'Pieces chosen for their quiet confidence — where every object earns its place through beauty and utility.' },
-  dining:    { eyebrow: 'Gather & Share',    headline: 'Dining <em>Ritual</em>',  sub: 'Tables and chairs that transform everyday meals into moments of quiet ceremony.' },
-  workspace: { eyebrow: 'Focus & Flow',      headline: 'The Quiet <em>Workspace</em>', sub: 'Objects for clarity of thought — where the desk becomes a stage for focused presence.' },
-};
-
-const hero    = HERO[category] || HERO.living; // Fallback de seguridad
-const filters = SIDEBAR_FILTERS[category] ?? [];
+const hero = CategoryContent.categories[category] || CategoryContent.categories.living;
+const filters = [
+  { label: CategoryContent.filters.category, options: [CategoryContent.categories.living.name, CategoryContent.categories.dining.name, CategoryContent.categories.workspace.name, CategoryContent.categories.bienestar.name] },
+  { label: CategoryContent.filters.material, options: CategoryContent.filters.options.materials },
+  { label: CategoryContent.filters.style,    options: CategoryContent.filters.options.styles },
+];
 ---
 
-<MainLayout title={`${title} — BeautyHome`} description={description || hero.sub}>
+<MainLayout title={`${title} — KORA`} description={description || hero.sub}>
 
   {/* ─── Category Hero ─── */}
   <div class="bg-sand-100/50 border-b border-sand-200 py-12 lg:py-16">
     <div class="max-w-[1320px] mx-auto px-5 md:px-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-6 animate-fade-in-up">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 animate-fade-in-up">
         <div class="max-w-2xl">
           <p class="font-sans text-[11px] tracking-[0.22em] uppercase text-watermelon mb-3 flex items-center gap-3 before:content-[''] before:w-6 before:h-px before:bg-watermelon">
             {hero.eyebrow}
@@ -65,30 +45,30 @@ const filters = SIDEBAR_FILTERS[category] ?? [];
             {hero.sub}
           </p>
         </div>
-        <span class="font-sans text-[13px] text-sand-900/50 shrink-0">
-          {productCount} pieces
+        <span class="font-sans text-[13px] text-sand-900/50 shrink-0 mb-2 md:mb-0">
+          {productCount} {CategoryContent.common.pieces}
         </span>
       </div>
-
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" class="mt-6">
-        <ol class="flex items-center gap-2 font-sans text-[13px] text-sand-900/50 flex-wrap">
-          <li><a href="/" class="hover:text-sand-900 f2-transition">Home</a></li>
-          <li aria-hidden="true">›</li>
-          <li aria-current="page" class="text-sand-900 font-medium">{title}</li>
-        </ol>
-      </nav>
     </div>
+    
+    {/* Breadcrumb Molecule */}
+    <Breadcrumb 
+      items={[
+        { label: CategoryContent.common.home, href: "/" },
+        { label: title }
+      ]}
+      class="mt-8 bg-transparent! border-none! py-0" 
+    />
   </div>
 
   {/* ─── Layout: Sidebar + Grid ─── */}
   <div class="max-w-[1320px] mx-auto px-5 md:px-8 py-10 lg:py-16 grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-10 items-start">
 
-    {/* Sidebar Filters */}
-    <aside class="lg:sticky lg:top-[92px]" aria-label="Product filters">
+    {/* Sidebar Filters (Desktop Only) */}
+    <aside class="hidden lg:block lg:sticky lg:top-[92px]" aria-label="Filtros de producto">
       <div class="flex items-center justify-between mb-4">
-        <p class="font-sans text-[11px] tracking-[0.16em] uppercase text-sand-900/50 font-medium">Refine</p>
-        <button class="font-sans text-[11px] text-watermelon bg-transparent border-none cursor-pointer tracking-[0.04em] hover:opacity-70 f2-transition p-0">Clear all</button>
+        <p class="font-sans text-[11px] tracking-[0.16em] uppercase text-sand-900/50 font-medium">{CategoryContent.common.refine}</p>
+        <button class="font-sans text-[11px] text-watermelon bg-transparent border-none cursor-pointer tracking-[0.04em] hover:opacity-70 f2-transition p-0">{CategoryContent.common.clearAll}</button>
       </div>
 
       <div class="flex flex-col">
@@ -105,9 +85,7 @@ const filters = SIDEBAR_FILTERS[category] ?? [];
               {group.options.map((opt) => (
                 <label class="flex items-center gap-3 cursor-pointer group/label">
                   <div class="relative flex items-center justify-center w-4 h-4 rounded-f2-sm border-[1.5px] border-sand-300 bg-white group-hover/label:border-sand-400 f2-transition">
-                    {/* Checkbox Oculto con clase 'peer' de Tailwind */}
                     <input type="checkbox" name={group.label.toLowerCase()} value={opt} class="peer absolute inset-0 opacity-0 cursor-pointer" />
-                    {/* Caja visual reactiva al estado del peer */}
                     <div class="w-full h-full bg-petrol rounded-f2-sm scale-0 peer-checked:scale-100 peer-focus-visible:ring-2 peer-focus-visible:ring-watermelon peer-focus-visible:ring-offset-1 transition-transform duration-150 flex items-center justify-center">
                       <svg class="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                         <path d="M5 13l4 4L19 7" />
@@ -124,17 +102,90 @@ const filters = SIDEBAR_FILTERS[category] ?? [];
         {/* Price Range Slider */}
         <div class="py-4 border-b border-sand-200">
           <p class="flex items-center justify-between font-sans text-[13px] font-medium text-sand-900 mb-2 cursor-default">
-            Price Range
-            <span class="text-[12px] text-sand-900/50 font-normal">$0 — $5,000+</span>
+            {CategoryContent.common.priceRange}
+            <span class="text-[12px] text-sand-900/50 font-normal">$0 — $200.000+</span>
           </p>
           <input 
             type="range" 
             class="w-full h-[3px] bg-sand-200 rounded-sm appearance-none cursor-pointer accent-petrol mt-3 focus:outline-none focus:ring-2 focus:ring-watermelon focus:ring-offset-2" 
-            min="0" max="5000" step="100" value="5000" aria-label="Max price" 
+            min="0" max="200000" step="1000" value="200000" aria-label="Precio máximo" 
           />
         </div>
       </div>
     </aside>
+
+    {/* Mobile Filter Drawer */}
+    <dialog id="mobile-filter-drawer" class="lg:hidden m-0 w-full max-w-none h-dvh max-h-dvh bg-transparent backdrop:bg-petrol/40 border-none justify-end flex-col p-0 opacity-0 [[open]]:opacity-100 [[open]]:flex transition-opacity duration-300">
+      <div class="bg-white w-full h-[85dvh] rounded-t-3xl shadow-2xl flex flex-col translate-y-full transition-transform duration-300 ease-out" id="filter-drawer-content">
+        
+        {/* Header Drawer */}
+        <div class="flex items-center justify-between px-6 py-5 border-b border-sand-200 shrink-0">
+          <h2 class="font-display font-medium text-xl text-petrol">Filtrar y Ordenar</h2>
+          <button id="close-filter-drawer" class="w-8 h-8 flex items-center justify-center rounded-full bg-sand-100 text-sand-900 border-none cursor-pointer hover:bg-sand-200 transition-colors" aria-label="Cerrar filtros">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Body Drawer (Scrollable) */}
+        <div class="flex-1 overflow-y-auto overscroll-contain px-6 py-2">
+          <div class="flex flex-col">
+            {filters.map((group) => (
+              <details class="group border-b border-sand-200 py-2" open>
+                <summary class="flex items-center justify-between font-sans text-[15px] font-medium text-sand-900 py-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  {group.label}
+                  <svg class="w-4 h-4 transition-transform duration-300 group-open:rotate-90 text-sand-900/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </summary>
+                
+                <div class="pb-5 pt-2 flex flex-col gap-4 animate-fade-in">
+                  {group.options.map((opt) => (
+                    <label class="flex items-center gap-3 cursor-pointer group/label">
+                      <div class="relative flex items-center justify-center w-5 h-5 rounded-f2-sm border-[1.5px] border-sand-300 bg-white group-hover/label:border-sand-400 f2-transition">
+                        <input type="checkbox" name={`mobile-${group.label.toLowerCase()}`} value={opt} class="peer absolute inset-0 opacity-0 cursor-pointer" />
+                        <div class="w-full h-full bg-petrol rounded-f2-sm scale-0 peer-checked:scale-100 transition-transform duration-150 flex items-center justify-center">
+                          <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                      </div>
+                      <span class="font-sans text-[15px] text-sand-900/80">{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </details>
+            ))}
+
+            {/* Price Range Slider Mobile */}
+            <div class="py-5 border-b border-sand-200">
+              <p class="flex items-center justify-between font-sans text-[15px] font-medium text-sand-900 mb-2">
+                {CategoryContent.common.priceRange}
+                <span class="text-[13px] text-sand-900/50 font-normal">$0 — $200.000+</span>
+              </p>
+              <input 
+                type="range" 
+                class="w-full h-1 bg-sand-200 rounded-sm appearance-none accent-petrol mt-4" 
+                min="0" max="200000" step="1000" value="200000" aria-label="Precio máximo" 
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Drawer (Sticky CTA) */}
+        <div class="px-6 py-4 border-t border-sand-200 shrink-0 bg-white pb-[env(safe-area-inset-bottom)]">
+          <div class="flex gap-3">
+            <button class="flex-1 h-12 rounded-f2-md bg-sand-100 text-petrol font-sans font-bold text-[13px] uppercase tracking-widest border-none cursor-pointer">
+              Limpiar
+            </button>
+            <button id="apply-mobile-filters" class="flex-2 h-12 rounded-f2-md bg-petrol text-white font-sans font-bold text-[13px] uppercase tracking-widest border-none cursor-pointer">
+              Mostrar 24 piezas
+            </button>
+          </div>
+        </div>
+      </div>
+    </dialog>
 
     {/* Product Area (slot) */}
     <div class="min-w-0">
@@ -143,3 +194,42 @@ const filters = SIDEBAR_FILTERS[category] ?? [];
 
   </div>
 </MainLayout>
+
+<script>
+  function initMobileFilters() {
+    // The open button is inside ProductGrid (which is slotted here), so we have to listen globally or search
+    const openBtn = document.querySelector('button:has(svg polygon[points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"])');
+    const closeBtn = document.getElementById('close-filter-drawer');
+    const applyBtn = document.getElementById('apply-mobile-filters');
+    const dialog = document.getElementById('mobile-filter-drawer') as HTMLDialogElement;
+    const content = document.getElementById('filter-drawer-content');
+
+    const openDrawer = () => {
+      dialog?.showModal();
+      document.body.style.overflow = 'hidden';
+      // Trigger animation frame for transition
+      requestAnimationFrame(() => {
+        content?.classList.remove('translate-y-full');
+      });
+    };
+
+    const closeDrawer = () => {
+      content?.classList.add('translate-y-full');
+      setTimeout(() => {
+        dialog?.close();
+        document.body.style.overflow = '';
+      }, 300); // Wait for transition
+    };
+
+    openBtn?.addEventListener('click', openDrawer);
+    closeBtn?.addEventListener('click', closeDrawer);
+    applyBtn?.addEventListener('click', closeDrawer);
+
+    // Close on backdrop click
+    dialog?.addEventListener('click', (e) => {
+      if (e.target === dialog) closeDrawer();
+    });
+  }
+
+  document.addEventListener('astro:page-load', initMobileFilters);
+</script>

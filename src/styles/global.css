@@ -4,25 +4,25 @@
    1. DESIGN TOKENS (Tailwind v4 Way)
    ========================================= */
 @theme {
-  /* Brand Identity Colors */
-  --color-watermelon: #ee4266;
-  --color-watermelon-hover: #d63b5b;
-  --color-watermelon-pressed: #bd3450;
-  --color-watermelon-light: #fcebec;
+  /* Brand Identity Colors (KORA) */
+  --color-watermelon: #C67B5C; /* Terracota (CTA) */
+  --color-watermelon-hover: #b56a4b;
+  --color-watermelon-pressed: #a45a3c;
+  --color-watermelon-light: #f3e0d8;
 
-  --color-petrol: #0b3948;
-  --color-petrol-dark: #051c24;
+  --color-petrol: #2D4A3E; /* Verde Kora (Principal) */
+  --color-petrol-dark: #1b2d26;
 
   /* Gold / Premium Palette */
   --color-gold-100: #f5f0e8;
   --color-gold-400: #dcc87a;
   --color-gold-700: #8b6914;
 
-  /* Japandi & Nordic Palette */
-  --color-sand-50: #f9f8f6;
-  --color-sand-100: #f2efe9;
-  --color-sand-200: #e5dfd3;
-  --color-sand-900: #2d2926;
+  /* Japandi & Nordic Palette (KORA) */
+  --color-sand-50: #F5F1E9; /* Arena Suave */
+  --color-sand-100: #e8e2d4;
+  --color-sand-200: #dbd3c2;
+  --color-sand-900: #1A1A1A; /* Carbón */
 
   /* Fluent 2: Depth & Elevation */
   --shadow-f2-rest: 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 2px rgba(0, 0, 0, 0.06);
@@ -38,8 +38,8 @@
   --radius-f2-xl: 20px;
 
   /* Typography */
-  --font-sans: "DM Sans", system-ui, sans-serif;
-  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
 
   /* Animations */
   --animate-acrylic-in: acrylic-in 0.2s ease-out forwards;
@@ -139,6 +139,12 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Shrink keyframe para la barra de progreso del Toast */
+@keyframes shrink {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
 }
 
 /* =========================================
@@ -489,7 +495,7 @@
      */
     .promo-input {
       @apply flex-1 px-3 rounded-f2-md border border-sand-200 bg-white font-sans
-             text-[13px] text-sand-900 tracking-[0.1em] uppercase
+             text-[13px] text-sand-900 tracking-widest uppercase
              focus:outline-none focus:border-petrol transition-colors;
     }
 

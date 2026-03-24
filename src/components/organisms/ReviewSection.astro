@@ -1,0 +1,59 @@
+---
+/**
+ * ReviewSection.astro — Organism
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Listado de testimonios y valoraciones de clientes.
+ */
+
+import SocialProof from '../molecules/SocialProof.astro';
+import Avatar from '../atoms/Avatar.astro';
+import Button from '../atoms/Button.astro';
+
+const reviews = [
+  {
+    id: 1,
+    name: 'Carolina M.',
+    rating: 5,
+    date: 'Hace 2 meses',
+    content: 'La cama de Waw Pet es increíble. A mi bulldog le costaba encontrar posición y ahora no sale de ahí. El diseño queda perfecto en el living.',
+  },
+  {
+    id: 2,
+    name: 'Federico T.',
+    rating: 4.5,
+    date: 'Hace 1 semana',
+    content: 'Excelente atención. Compré el mordillo de caucho y aguantó perfecto. Aproveché a llevar unos snacks locales y a mi perra le encantaron.',
+  }
+];
+---
+
+<section class="max-w-[800px] mx-auto px-5 md:px-8 py-16 border-t border-sand-200">
+  <div class="flex flex-col sm:flex-row justify-between items-center gap-6 mb-12">
+    <div>
+      <h2 class="font-display text-3xl text-petrol mb-2">Opiniones Reales</h2>
+      <SocialProof rating={4.8} reviewCount={42} />
+    </div>
+    <Button variant="secondary" class="w-full sm:w-auto">Escribir Reseña</Button>
+  </div>
+
+  <div class="flex flex-col gap-8">
+    {reviews.map(review => (
+      <article class="p-6 rounded-f2-md bg-sand-100">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex items-center gap-3">
+            <Avatar name={review.name} size="md" />
+            <div>
+              <p class="font-sans text-[14px] font-medium text-petrol">{review.name}</p>
+              <p class="font-sans text-[12px] text-sand-500">{review.date}</p>
+            </div>
+          </div>
+          <SocialProof rating={review.rating} class="scale-90 origin-top-right" />
+        </div>
+        <p class="font-sans text-[14px] text-sand-900/70 leading-relaxed">
+          {review.content}
+        </p>
+      </article>
+    ))}
+  </div>
+</section>

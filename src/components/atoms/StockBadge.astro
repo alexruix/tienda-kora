@@ -1,0 +1,61 @@
+---
+/**
+ * StockBadge.astro — Atom
+ * KORA · NODO Studio
+ *
+ * Badge condicional de disponibilidad de stock.
+ * Verde: en stock normal. Amarillo: pocas unidades. Rojo: sin stock.
+ *
+ * Props:
+ *   stock: número de unidades disponibles (undefined = sin dato → no muestra badge)
+ *   lowThreshold: a partir de qué cantidad se considera "pocas" (default: 5)
+ */
+
+interface Props {
+  stock?: number;
+  lowThreshold?: number;
+  class?: string;
+}
+
+const { stock, lowThreshold = 5, class: extraClass = '' } = Astro.props;
+
+// Sin dato de stock → no renderizar nada
+if (stock === undefined || stock === null) return;
+
+type Variant = 'out' | 'low' | 'ok';
+
+const variant: Variant = stock <= 0 ? 'out' : stock <= lowThreshold ? 'low' : 'ok';
+
+const config: Record<Variant, { label: string; color: string; dot: string }> = {
+  out: {
+    label: 'Sin stock',
+    color: 'text-watermelon bg-watermelon/8 border-watermelon/20',
+    dot: 'bg-watermelon',
+  },
+  low: {
+    label: `¡Solo quedan ${stock} unidad${stock === 1 ? '' : 'es'}!`,
+    color: 'text-amber-700 bg-amber-50 border-amber-200',
+    dot: 'bg-amber-500 animate-pulse',
+  },
+  ok: {
+    label: 'En stock · Envío inmediato',
+    color: 'text-green-700 bg-green-50 border-green-200',
+    dot: 'bg-green-500',
+  },
+};
+
+const { label, color, dot } = config[variant];
+---
+
+<div
+  class:list={[
+    "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-sans text-[12px] font-medium",
+    color,
+    extraClass
+  ]}
+  role="status"
+  aria-label={label}
+>
+  <span class:list={["w-2 h-2 rounded-full shrink-0", dot]} aria-hidden="true" />
+  {label}
+</div>

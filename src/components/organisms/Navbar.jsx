@@ -13,6 +13,7 @@ import {
 } from "../../store/cart.ts";
 import { wishlistCount } from "../../store/wishlist.ts";
 import SearchBar from "../molecules/SearchBar.jsx";
+import { NavContent } from "../../data/navContent.ts";
 
 export default function Navbar({ products = [] }) {
   const [scrolled, setScrolled] = useState(false);
@@ -100,10 +101,9 @@ export default function Navbar({ products = [] }) {
     <>
       {/* Promo Banner Dinámico */}
       {promoBanner && (
-        <div className="relative z-[1001] bg-watermelon text-white text-center py-[9px] px-4 font-sans text-[13px] tracking-[0.04em]">
+        <div className="relative z-1001 bg-watermelon text-white text-center py-[9px] px-4 font-sans text-[13px] tracking-[0.04em]">
           <span>
-            ✦ &nbsp; Free shipping on orders over ${FREE_SHIPPING_THRESHOLD} —
-            Use code <strong>{PROMO_CODE}</strong> at checkout
+            {NavContent.promo.prefix} ${FREE_SHIPPING_THRESHOLD} {NavContent.promo.suffix} <strong>{PROMO_CODE}</strong>
           </span>
           <button
             className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-f2-sm opacity-70 hover:opacity-100 hover:bg-white/15 transition-all cursor-pointer border-none"
@@ -129,7 +129,7 @@ export default function Navbar({ products = [] }) {
       <header
         ref={navRef}
         role="banner"
-        className={`fixed top-0 left-0 right-0 z-[1000] h-[68px] animate-slide-down transition-all duration-300 ease-fluent ${
+        className={`fixed top-0 left-0 right-0 z-1000 h-[68px] animate-slide-down transition-all duration-300 ease-fluent ${
           scrolled
             ? "bg-sand-50/95 backdrop-blur-xl backdrop-saturate-150 border-b border-transparent shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3),0_2px_16px_rgba(0,0,0,0.06)]"
             : "bg-sand-50/80 backdrop-blur-xl backdrop-saturate-150 border-b border-sand-200/60 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3),0_1px_0_rgba(229,223,211,0.8)]"
@@ -143,10 +143,10 @@ export default function Navbar({ products = [] }) {
             aria-label="BeautyHome by NODO — Home"
           >
             <span className="font-display text-[22px] font-normal tracking-[0.12em] text-petrol uppercase">
-              BeautyHome
+              {NavContent.brand.name}
             </span>
             <span className="font-sans text-[9px] tracking-[0.22em] uppercase text-sand-900/50">
-              by NODO Studio
+              {NavContent.brand.tagline}
             </span>
           </a>
 
@@ -169,7 +169,7 @@ export default function Navbar({ products = [] }) {
               >
                 {cat.label}
                 <svg
-                  className={`transition-transform duration-[220ms] ease-fluent ${activeMenu === cat.id ? "rotate-180 opacity-100" : "opacity-50"}`}
+                  className={`transition-transform duration-220 ease-fluent ${activeMenu === cat.id ? "rotate-180 opacity-100" : "opacity-50"}`}
                   width="14"
                   height="14"
                   viewBox="0 0 24 24"
@@ -186,13 +186,13 @@ export default function Navbar({ products = [] }) {
               href="/collections"
               className="font-sans text-[13px] tracking-[0.06em] uppercase text-sand-900/70 hover:text-sand-900 hover:bg-sand-100 px-3 py-1.5 rounded-f2-md transition-colors duration-150 no-underline"
             >
-              Collections
+              {NavContent.links.collections}
             </a>
             <a
               href="/sale"
               className="relative flex items-center gap-1.5 font-sans text-[13px] tracking-[0.06em] uppercase text-watermelon hover:text-watermelon-hover hover:bg-sand-100 px-3 py-1.5 rounded-f2-md transition-colors duration-150 no-underline"
             >
-              Sale
+              {NavContent.links.sale}
               <span
                 className="w-1.5 h-1.5 bg-watermelon rounded-full inline-block"
                 aria-hidden="true"
@@ -300,7 +300,7 @@ export default function Navbar({ products = [] }) {
               {/* Columna de Enlaces */}
               <div>
                 <p className="font-sans text-[10px] tracking-[0.16em] uppercase text-sand-900/50 font-medium mb-6 border-b border-sand-200/60 pb-2">
-                  Shop by Category
+                  {NavContent.links.shopByCategory}
                 </p>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-3">
                   {activeCategoryData.subcategories.map((sub) => (
@@ -320,7 +320,7 @@ export default function Navbar({ products = [] }) {
                     href={`/category/${activeMenu}`}
                     className="group flex items-center gap-3 font-sans text-[14px] font-medium text-petrol py-1.5 no-underline cursor-pointer transition-all mt-2"
                   >
-                    View all {activeCategoryData.label} &rarr;
+                    {NavContent.links.viewAllPrefix} {activeCategoryData.label} &rarr;
                   </a>
                 </div>
               </div>
@@ -332,7 +332,7 @@ export default function Navbar({ products = [] }) {
                   className="group block bg-petrol rounded-f2-lg p-6 text-white relative overflow-hidden shadow-f2-rest hover:shadow-f2-hover f2-transition no-underline"
                 >
                   {/* Background Image/Shape */}
-                  <div className="absolute inset-0 opacity-40 mix-blend-overlay transition-transform duration-[800ms] ease-fluent group-hover:scale-105">
+                  <div className="absolute inset-0 opacity-40 mix-blend-overlay transition-transform duration-800 ease-out group-hover:scale-105">
                     {activeCategoryData.featuredProduct.image ? (
                       <img
                         src={activeCategoryData.featuredProduct.image}
@@ -345,17 +345,17 @@ export default function Navbar({ products = [] }) {
                   </div>
 
                   {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-petrol via-petrol/80 to-petrol/20"></div>
+                  <div className="absolute inset-0 bg-linear-to-t from-petrol via-petrol/80 to-petrol/20"></div>
 
                   <div className="relative z-10 h-full flex flex-col justify-end">
                     <p className="font-sans text-[10px] tracking-[0.16em] uppercase text-watermelon mb-2">
-                      Featured Piece
+                      {NavContent.featured.badge}
                     </p>
                     <p className="font-display text-[26px] font-light leading-[1.1] mb-2 text-white">
                       {activeCategoryData.featuredProduct.name}
                     </p>
                     <div className="inline-block bg-white/10 text-white backdrop-blur-md border border-white/20 text-[11px] tracking-[0.08em] uppercase px-[14px] py-[7px] rounded-f2-md font-sans transition-colors duration-150 group-hover:bg-white w-max group-hover:text-petrol mt-4">
-                      Shop Now
+                      {NavContent.featured.shopNow}
                     </div>
                   </div>
                 </a>

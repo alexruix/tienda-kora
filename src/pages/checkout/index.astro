@@ -1,56 +1,22 @@
 ---
 /**
  * /checkout — Checkout Page (Step 1)
- * BeautyHome · NODO Studio
+ * KORA · NODO Studio
  */
-import MainLayout from "../../components/templates/MainLayout.astro";
-import CheckoutForm from "../../components/organisms/CheckoutForm.jsx";
+import MainLayout           from "../../components/templates/MainLayout.astro";
+import CheckoutForm         from "../../components/organisms/CheckoutForm.jsx";
+import CheckoutProgressBar  from "../../components/molecules/CheckoutProgressBar.astro";
+import { CheckoutContent }  from "../../data/checkoutContent.ts";
+import { NavContent }       from "../../data/navContent.ts";
 
 export const prerender = false;
 ---
 
 <MainLayout
-    title="Checkout — BeautyHome"
-    description="Complete your order details."
+    title={`${CheckoutContent.steps.step1.label} — ${NavContent.logo}`}
+    description="Completá tus datos para finalizar tu compra en KORA."
     noIndex={true}
 >
-    <nav
-        class="bg-sand-50 border-b border-sand-200 py-4"
-        aria-label="Breadcrumb"
-    >
-        <div class="checkout-container">
-            <ol
-                class="flex items-center gap-2 text-[13px] text-sand-900/50 flex-wrap"
-            >
-                <li>
-                    <a href="/" class="hover:text-sand-900 f2-transition"
-                        >Home</a>
-                </li>
-                <li aria-hidden="true" class="select-none">›</li>
-                <li aria-current="page" class="text-sand-900 font-medium">
-                    Checkout
-                </li>
-            </ol>
-        </div>
-    </nav>
-
-    <div class="border-b border-sand-200 bg-white">
-        <div class="checkout-container py-4">
-            <div class="flex items-center gap-4">
-                <div class="step-item step-item--active">
-                    <span class="step-bullet">1</span>
-                    <span>Details</span>
-                </div>
-
-                <span class="step-connector" aria-hidden="true">————</span>
-
-                <div class="step-item step-item--pending">
-                    <span class="step-bullet">2</span>
-                    <span>Payment</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <CheckoutProgressBar step={1} />
     <CheckoutForm client:only="react" />
 </MainLayout>

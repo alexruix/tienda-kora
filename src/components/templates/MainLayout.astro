@@ -1,13 +1,15 @@
 ---
 /**
  * MainLayout Template
- * BeautyHome · NODO Studio
+ * KORA · NODO Studio
  */
 import '../../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
-import Navbar     from '../organisms/Navbar.jsx';
-import CartDrawer from '../organisms/CartDrawer.jsx';
-import Footer     from '../organisms/Footer.astro';
+import Navbar        from '../organisms/Navbar.jsx';
+import CartDrawer    from '../organisms/CartDrawer.jsx';
+import BottomNavBar  from '../organisms/BottomNavBar.jsx';
+import Footer        from '../organisms/Footer.astro';
+import Toast         from '../atoms/Toast.jsx';
 import { getCollection } from 'astro:content';
 
 interface Props {
@@ -19,33 +21,32 @@ interface Props {
 }
 
 const {
-  title       = 'BeautyHome — Curated Home Décor',
-  description = 'High-end home objects...',
+  title       = 'KORA — Tu Tienda de Mascotas',
+  description = 'Productos premium para mascotas con envíos a todo el país.',
   ogImage     = '/og-default.jpg',
   noIndex     = false,
   bodyClass   = '',
 } = Astro.props;
 
 const productsData = await getCollection('products');
-// Aseguramos que el mapeo incluya el ID, que es vital para tu lógica de "solo ID"
 const allProducts = productsData.map((p) => ({
   ...p.data,
   id: p.id
 }));
 
-
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://beautyhome.nodo.studio');
-const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://beautyhome.nodo.studio'); // ✅ Fix #5: OG image absoluta
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://kora.com.ar');
+const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://kora.com.ar');
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- viewport-fit=cover para iPhone safe areas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0B3948" />
 
-  <ClientRouter />  <!-- ✅ Fix #1: ClientRouter dentro de <head> -->
+  <ClientRouter />
 
   <title>{title}</title>
   <meta name="description" content={description} />
@@ -56,7 +57,7 @@ const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://beautyhome.nodo.stu
   <meta property="og:url"         content={canonicalURL} />
   <meta property="og:title"       content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:image"       content={ogImageURL} />  <!-- ✅ Fix #5: URL absoluta -->
+  <meta property="og:image"       content={ogImageURL} />
 
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:title"       content={title} />
@@ -66,33 +67,39 @@ const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://beautyhome.nodo.stu
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond..." rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <slot name="head" />
 </head>
 
-<body class={`min-h-screen flex flex-col ${bodyClass}`}>
-<Navbar products={allProducts as any} client:only="react" />
+<!--
+  pb-[56px] en mobile: compensa la BottomNavBar fija de 56px.
+  lg:pb-0: remueve el padding en desktop donde la Navbar no existe.
+-->
+<body class={`min-h-screen flex flex-col pb-[56px] lg:pb-0 ${bodyClass}`}>
+
+  <Navbar products={allProducts as any} client:only="react" />
   
-  <CartDrawer 
-    products={allProducts as any} 
-    client:only="react" 
-  />
+  <CartDrawer products={allProducts as any} client:only="react" />
 
+  <!-- Toast de confirmación de carrito (mobile bottom-[76px], desktop bottom-6) -->
+  <Toast products={allProducts as any} client:only="react" />
 
-  <main id="main-content" class="flex-grow focus:outline-none" tabindex="-1">
+  <!-- Navegación inferior: solo visible en mobile (lg:hidden via CSS) -->
+  <BottomNavBar client:only="react" />
+
+  <main id="main-content" class="grow focus:outline-none" tabindex="-1">
     <slot />
   </main>
 
   <Footer />
 
-  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
+  <!-- Skip-link de accesibilidad -->
   <a
     href="#main-content"
-    class="fixed -top-full left-4 z-[9999] bg-petrol text-white px-5 py-3 rounded-f2-md text-[14px] no-underline transition-[top] duration-200 focus:top-4 focus:outline focus:outline-2 focus:outline-watermelon focus:outline-offset-2"
+    class="fixed -top-full left-4 z-9999 bg-petrol text-white px-5 py-3 rounded-f2-md text-[14px] no-underline transition-[top] duration-200 focus:top-4 focus:outline-2 focus:outline-watermelon focus:outline-offset-2"
   >
-    Skip to main content
+    Ir al contenido principal
   </a>
 
 </body>

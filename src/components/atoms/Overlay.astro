@@ -1,0 +1,32 @@
+---
+/**
+ * Overlay.astro — Atom
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Capa oscura semitransparente con blur (backdrop) 
+ * para modales, sidebars o drawers.
+ */
+
+interface Props {
+  show?: boolean;
+  zIndex?: number;
+  class?: string;
+}
+
+const { 
+  show = false, 
+  zIndex = 40,
+  class: extraClass = '' 
+} = Astro.props;
+---
+
+<div 
+  class:list={[
+    "fixed inset-0 bg-sand-900/40 backdrop-blur-sm transition-opacity duration-300", 
+    show ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none",
+    extraClass
+  ]}
+  style={`z-index: ${zIndex};`}
+  aria-hidden="true"
+  role="presentation"
+></div>

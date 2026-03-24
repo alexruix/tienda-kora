@@ -1,13 +1,15 @@
 ---
 /**
  * /checkout/success — Payment Success
- * BeautyHome · NODO Studio
+ * KORA · NODO Studio
  * * * Arquitectura:
  * - Renderizado en servidor (SSR) para capturar IDs de transacción.
  * - Limpieza de Stores sincronizada con el ciclo de vida de la página.
  * - Feedback personalizado recuperando datos del persistent store antes de borrarlos.
  */
 import MainLayout from "../../components/templates/MainLayout.astro";
+import { CheckoutContent } from "../../data/checkoutContent.ts";
+import { NavContent } from "../../data/navContent.ts";
 
 export const prerender = false;
 
@@ -16,23 +18,23 @@ const paymentId = Astro.url.searchParams.get("payment_id");
 ---
 
 <MainLayout
-  title="Order Confirmed — BeautyHome"
+  title={`${CheckoutContent.success.title} — ${NavContent.logo}`}
   description="Thank you for your purchase. Your order is now being processed."
   noIndex={true}
 >
   <div
-    class="max-w-[700px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center animate-fade-in-up"
+    class="max-w-[700px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center animate-[fadeUp_0.5s_cubic-bezier(0.33,1,0.68,1)_both]"
   >
     <div class="relative mb-10">
       <div
-        class="w-24 h-24 rounded-full bg-[#f0fdf4] flex items-center justify-center relative z-10 border border-[#dcfce7] shadow-sm"
+        class="w-24 h-24 rounded-full bg-sand-100 flex items-center justify-center relative z-10 border border-sand-200 shadow-sm"
       >
         <svg
           width="40"
           height="40"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#059669"
+          stroke="var(--color-petrol)"
           stroke-width="1.5"
         >
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -50,34 +52,32 @@ const paymentId = Astro.url.searchParams.get("payment_id");
     </div>
 
     <p
-      class="font-sans text-[11px] tracking-[0.25em] uppercase text-[#047857] font-bold mb-4"
+      class="font-sans text-[11px] tracking-[0.25em] uppercase text-petrol font-bold mb-4"
     >
-      Payment Successful
+      {CheckoutContent.success.eyebrow}
     </p>
 
     <h1
       class="font-display text-[clamp(40px,6vw,60px)] font-light text-petrol leading-[1.1] mb-6"
-    >
-      Thank you for <em>choosing us</em>
-    </h1>
+      set:html={CheckoutContent.success.displayTitle}
+    />
 
     <div
-      class="bg-white border border-sand-200 rounded-f2-xl p-8 w-full max-w-[480px] shadow-f2-rest mb-12"
+      class="bg-white border border-sand-200 rounded-f2-xl p-8 w-full max-w-[480px] mb-12"
     >
       <p class="font-sans text-[16px] text-sand-900/70 leading-relaxed mb-6">
-        Your artisan pieces are now being prepared. We've sent your order
-        confirmation and digital receipt to:
+        {CheckoutContent.success.messageStart}
         <br />
         <strong id="display-email" class="text-petrol font-medium"
-          >your email</strong
+          >tu correo</strong
         >
       </p>
 
       {
         paymentId && (
           <div class="pt-6 border-t border-sand-100 flex flex-col items-center">
-            <span class="font-sans text-[11px] uppercase tracking-widest text-sand-900/30 mb-2">
-              Transaction ID
+            <span class="font-sans text-[11px] uppercase tracking-widest text-sand-900/40 mb-2">
+              {CheckoutContent.success.transactionId}
             </span>
             <code class="font-mono text-[14px] text-petrol font-semibold bg-sand-50 px-3 py-1 rounded-full border border-sand-200">
               {paymentId}
@@ -88,22 +88,22 @@ const paymentId = Astro.url.searchParams.get("payment_id");
     </div>
 
     <div class="flex flex-col sm:flex-row gap-4 w-full max-w-[440px]">
-      <a href="/collections" class="btn btn-primary btn-lg flex-1 no-underline">
-        Continue Shopping
+      <a href="/collections" class="f2-button-primary flex-1 no-underline text-center">
+        {CheckoutContent.success.btnPrimary}
       </a>
-      <a href="/account" class="btn btn-secondary btn-lg flex-1 no-underline">
-        Track My Order
+      <a href="/account" class="f2-button-outline flex-1 no-underline text-center">
+        {CheckoutContent.success.btnSecondary}
       </a>
     </div>
 
     <div class="mt-16 space-y-2">
-      <p class="text-[12px] text-sand-900/30 font-sans italic">
-        A copy of this confirmation has been sent to your inbox.
+      <p class="text-[12px] text-sand-900/40 font-sans italic">
+        {CheckoutContent.success.note}
       </p>
       <p
-        class="text-[11px] text-sand-900/20 font-sans uppercase tracking-tighter"
+        class="text-[11px] text-sand-900/40 font-sans uppercase tracking-widest"
       >
-        BeautyHome Atelier · NODO Studio
+        {CheckoutContent.success.footer}
       </p>
     </div>
   </div>
@@ -112,7 +112,6 @@ const paymentId = Astro.url.searchParams.get("payment_id");
 <script>
   import { cartItems } from "../../store/cart.ts";
   import { customerInfo, clearCustomerInfo } from "../../store/customer.ts";
-  // Nota: Instala esto para el efecto: npm install canvas-confetti
   import confetti from "canvas-confetti";
 
   document.addEventListener(
@@ -126,20 +125,19 @@ const paymentId = Astro.url.searchParams.get("payment_id");
         emailDisplay.textContent = savedEmail;
       }
 
-      // 2. 🎉 Lanzamos la celebración (Colores de marca: Petrol, Watermelon, Gold)
+      // 2. 🎉 Lanzamos la celebración (Colores KORA: Petrol, Rust, Gold/Sand)
       confetti({
         particleCount: 150,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ["#0b3948", "#ee4266", "#dcc87a"],
-        disableForReducedMotion: true, // Respeto a la accesibilidad
+        colors: ["#0b3948", "#E87C68", "#dcc87a"],
+        disableForReducedMotion: true,
       });
 
       // 3. 🛡️ LIMPIEZA DE SEGURIDAD
-      // Vaciamos el carrito y los datos personales para que el navegador no los retenga.
       cartItems.set({});
       clearCustomerInfo();
     },
     { once: true },
-  ); // Nos aseguramos de que solo ocurra una vez por carga de página
+  ); 
 </script>

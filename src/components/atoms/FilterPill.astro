@@ -1,0 +1,59 @@
+---
+/**
+ * FilterPill.astro — Atom
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Representa un botón de categoría o filtro.
+ * Soporta dos variantes: "light" (usado en index) y "dark" (usado en collections).
+ */
+
+interface Props {
+  href: string;
+  label: string;
+  emoji?: string;
+  count?: number;
+  isActive?: boolean;
+  variant?: "light" | "dark";
+}
+
+const {
+  href,
+  label,
+  emoji,
+  count,
+  isActive = false,
+  variant = "light",
+} = Astro.props;
+
+// Clases base compartidas
+const baseClasses = "inline-flex items-center gap-2 f2-transition no-underline";
+
+// Clases según variante
+const lightClasses = [
+  "filter-pill", // Viene de global.css
+  isActive ? "filter-pill--active" : ""
+].join(" ");
+
+const darkClasses = [
+  "font-sans text-[12px] tracking-[0.08em] uppercase px-4 py-2 rounded-f2-md border",
+  isActive 
+    ? "bg-white/20 text-white border-white/40" 
+    : "bg-white/10 border-white/20 text-white/70 hover:bg-white/20 hover:text-white"
+].join(" ");
+
+const finalClasses = `${baseClasses} ${variant === "light" ? lightClasses : darkClasses}`;
+---
+
+<a
+  href={href}
+  class={finalClasses}
+  aria-current={isActive ? "true" : undefined}
+>
+  {emoji && <span class="text-[15px]" aria-hidden="true">{emoji}</span>}
+  {label}
+  {count !== undefined && (
+    <span class={variant === "light" ? "text-sand-900/40 text-[10px]" : "text-white/40 text-[10px]"}>
+      {count}
+    </span>
+  )}
+</a>

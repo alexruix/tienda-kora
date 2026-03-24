@@ -1,0 +1,27 @@
+{
+  "id": "perfume-textil-kora",
+  "name": "Perfume Textil KORA",
+  "subtitle": "Fragancia Hogar by Mayors",
+  "slug": "perfume-textil-kora",
+  "category": "bienestar",
+  "subcategory": "Estética Premium",
+  "price": 12000,
+  "inStock": true,
+  "leadTime": "24 horas",
+  "rating": 4.9,
+  "reviewCount": 64,
+  "badges": ["new"],
+  "featured": false,
+  "image": "https://images.unsplash.com/photo-1590651812967-df3019b16173?auto=format&fit=crop&q=80&w=800",
+  "description": "Una fragancia suave con notas de lavanda y vainilla, formulada por Laboratorio Mayors. Segura para aplicar sobre las camas de KORA y ambientes. Neutraliza olores sin irritar el olfato de tu perro.",
+  "details": [
+    { "label": "Fragancia", "value": "Lavanda & Vainilla" },
+    { "label": "Formato", "value": "Spray 250ml" },
+    { "label": "Laboratorio", "value": "Mayors (Argentina)" }
+  ],
+  "care": "Rociar a 20cm de la tela. Evitar contacto directo con los ojos de la mascota.",
+  "shipping": "Micro-stock: El complemento ideal para tu cama KORA. Despacho en el día.",
+  "metaDescription": "Perfume textil KORA. Fragancia segura y persistente para el hogar y textiles de mascotas.",
+  "altText": "Botella spray de perfume textil sobre una cama de tela.",
+  "relatedProducts": ["cama-nido-autor", "comedero-elevado-madera"]
+}

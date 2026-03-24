@@ -1,0 +1,38 @@
+---
+/**
+ * TrustBadgeGroup.astro — Molecule
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Versión compacta de los TrustItems de la home, optimizada para
+ * integrarse debajo del botón de Checkout o Add to Cart.
+ */
+
+interface TrustBadge {
+  icon: 'shield' | 'truck' | 'creditCard' | 'rotateCcw';
+  label: string;
+}
+
+interface Props {
+  badges: TrustBadge[];
+  class?: string;
+}
+
+const { badges, class: extraClass = '' } = Astro.props;
+
+// SVG Icons mapping (small versions)
+const icons = {
+  shield: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+  truck: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>`,
+  creditCard: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`,
+  rotateCcw: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>`
+};
+---
+
+<div class:list={["flex flex-wrap items-center justify-center gap-4 py-4 border-t border-sand-200", extraClass]}>
+  {badges.map((b) => (
+    <div class="flex items-center gap-2 text-sand-500">
+      <div set:html={icons[b.icon]} aria-hidden="true" />
+      <span class="font-sans text-[11px] uppercase tracking-[0.05em]">{b.label}</span>
+    </div>
+  ))}
+</div>

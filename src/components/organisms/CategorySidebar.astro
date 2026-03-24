@@ -1,0 +1,45 @@
+---
+/**
+ * CategorySidebar.astro — Organism
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Panel lateral para las vistas de catálogo.
+ * Agrupa filtros (marcas, categorías anidadas, precios) usando FilterSidebarGroup.
+ */
+
+import FilterSidebarGroup from '../molecules/FilterSidebarGroup.astro';
+
+interface Props {
+  class?: string;
+}
+
+const { class: extraClass = '' } = Astro.props;
+
+const categories = [
+  { id: 'camas', label: 'Camas y Colchones', count: 12 },
+  { id: 'comederos', label: 'Comederos', count: 5 },
+  { id: 'juguetes', label: 'Juguetes de Caucho', count: 18 },
+  { id: 'premios', label: 'Snacks y Premios', count: 8 },
+];
+
+const brands = [
+  { id: 'waw-pet', label: 'Waw Pet' },
+  { id: 'don-orione', label: 'Don Orione' },
+  { id: 'mon-ami', label: 'Mon Ami' },
+  { id: 'pet-ros', label: 'Pet-Ros' },
+];
+---
+
+<aside class:list={["w-full lg:w-[260px] shrink-0", extraClass]}>
+  <div class="lg:sticky lg:top-[120px] pr-0 lg:pr-6">
+    <div class="flex items-center justify-between lg:hidden mb-6 pb-4 border-b border-sand-200">
+      <h2 class="font-sans text-[16px] font-semibold text-petrol">Filtros</h2>
+      <button class="text-[12px] uppercase tracking-widest text-sand-500 underline">Limpiar</button>
+    </div>
+
+    <form class="flex flex-col">
+      <FilterSidebarGroup title="Tipos de Producto" options={categories} type="checkbox" />
+      <FilterSidebarGroup title="Nuestros Aliados" options={brands} type="checkbox" />
+    </form>
+  </div>
+</aside>

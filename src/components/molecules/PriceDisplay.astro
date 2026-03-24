@@ -1,0 +1,70 @@
+---
+/**
+ * PriceDisplay.astro — Molecule
+ * KORA · NODO Studio
+ *
+ * Centraliza la visualización de precios en ARS.
+ * Incluye: precio tachado (sale), cuotas sin interés, y discount % badge.
+ */
+
+import { formatCurrency } from '../../utils/formatters';
+
+interface Props {
+  price: number;
+  compareAtPrice?: number;
+  showInstallments?: boolean;
+  installmentsCount?: number;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { 
+  price, 
+  compareAtPrice, 
+  showInstallments = false, 
+  installmentsCount = 6,
+  size = 'md',
+  class: extraClass = '' 
+} = Astro.props;
+
+const isSale            = compareAtPrice && compareAtPrice > price;
+const discountPct       = isSale ? Math.round((1 - price / compareAtPrice) * 100) : null;
+const installmentValue  = Math.ceil(price / installmentsCount);
+
+const sizeClasses = {
+  sm: { price: 'text-[16px]', original: 'text-[12px]', cuotas: 'text-[11px]' },
+  md: { price: 'text-[20px]', original: 'text-[13px]', cuotas: 'text-[12px]' },
+  lg: { price: 'text-[32px] lg:text-[38px]', original: 'text-[15px]', cuotas: 'text-[13px]' },
+};
+
+const sz = sizeClasses[size];
+---
+
+<div class:list={["flex flex-col gap-1", extraClass]}>
+  <!-- Fila principal: precio actual + precio original tachado -->
+  <div class="flex items-baseline gap-3 flex-wrap">
+    <span class:list={["font-sans font-semibold text-petrol leading-none", sz.price]}>
+      {formatCurrency(price)}
+    </span>
+
+    {isSale && (
+      <span class:list={["font-sans text-sand-900/40 line-through", sz.original]}>
+        {formatCurrency(compareAtPrice)}
+      </span>
+    )}
+
+    {discountPct && (
+      <span class="font-sans text-[11px] font-bold text-watermelon bg-watermelon/10 px-2 py-0.5 rounded-full">
+        -{discountPct}%
+      </span>
+    )}
+  </div>
+
+  <!-- Cuotas sin interés (solo si showInstallments y precio > umbral razonable) -->
+  {showInstallments && price > 5000 && (
+    <p class:list={["font-sans text-watermelon font-medium", sz.cuotas]}>
+      <span class="font-bold">{installmentsCount}x {formatCurrency(installmentValue)}</span>
+      {" "}sin interés con MercadoPago
+    </p>
+  )}
+</div>

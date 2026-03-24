@@ -1,0 +1,56 @@
+---
+/**
+ * BrandStorySection.astro — Organism
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Bloque narrativo que conecta el producto con su origen artesanal/proveedor.
+ * Usado en Home o página "Sobre Nosotros".
+ */
+
+import Button from '../atoms/Button.astro';
+import SupplierBadge from '../molecules/SupplierBadge.astro';
+
+interface Props {
+  supplier: string;
+  isLocal: boolean;
+  title: string;
+  description: string;
+  image: string;
+  ctaHref?: string;
+}
+
+const { supplier, isLocal, title, description, image, ctaHref } = Astro.props;
+---
+
+<section class="max-w-[1320px] mx-auto px-5 md:px-8 py-20 lg:py-32">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    
+    <div class="order-2 lg:order-1 flex flex-col items-start pr-0 lg:pr-12">
+      <SupplierBadge supplier={supplier} isLocal={isLocal} class="mb-6" />
+      
+      <h2 class="font-display text-[clamp(40px,5vw,64px)] font-light text-petrol leading-[1.1] mb-6">
+        {title}
+      </h2>
+      
+      <p class="font-sans text-[16px] text-sand-900/70 leading-[1.8] mb-10 max-w-[500px]">
+        {description}
+      </p>
+      
+      {ctaHref && (
+        <Button href={ctaHref} variant="secondary">
+          Descubrir su historia
+        </Button>
+      )}
+    </div>
+
+    <div class="order-1 lg:order-2 w-full h-[60vh] min-h-[400px] lg:h-[80vh] rounded-f2-lg overflow-hidden relative group">
+      <img 
+        src={image} 
+        alt={`Artesanos de ${supplier}`} 
+        class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+        loading="lazy"
+      />
+    </div>
+
+  </div>
+</section>

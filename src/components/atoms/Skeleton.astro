@@ -1,0 +1,38 @@
+---
+/**
+ * Skeleton.astro — Atom
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Placeholder animado para indicar estado de carga (Lazy Loading).
+ */
+
+interface Props {
+  width?: string;
+  height?: string;
+  shape?: 'rect' | 'circle' | 'text';
+  class?: string;
+}
+
+const { 
+  width = '100%', 
+  height = '100%', 
+  shape = 'rect',
+  class: extraClass = '' 
+} = Astro.props;
+
+const shapeClasses = {
+  rect: 'rounded-f2-sm',
+  circle: 'rounded-full aspect-square',
+  text: 'rounded-sm h-4 w-3/4',
+};
+---
+
+<div 
+  class:list={[
+    "bg-sand-200 animate-pulse", 
+    shapeClasses[shape], 
+    extraClass
+  ]}
+  style={`width: ${width}; height: ${shape !== 'text' ? height : undefined};`}
+  aria-hidden="true"
+></div>

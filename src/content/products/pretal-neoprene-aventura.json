@@ -1,0 +1,27 @@
+{
+  "id": "pretal-neoprene-aventura",
+  "name": "Pretal Neoprene Aventura",
+  "subtitle": "Máxima Resistencia Pet-Ros",
+  "slug": "pretal-neoprene-aventura",
+  "category": "workspace",
+  "subcategory": "Paseo Técnico",
+  "price": 28000,
+  "inStock": true,
+  "leadTime": "48 horas",
+  "rating": 4.7,
+  "reviewCount": 89,
+  "badges": ["new"],
+  "featured": true,
+  "image": "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=800",
+  "description": "Diseñado por Pet-Ros para perros activos. El neoprene acolchado evita roces y quemaduras en el pelaje, mientras que las trabas reforzadas garantizan un paseo seguro en cualquier terreno.",
+  "details": [
+    { "label": "Material", "value": "Neoprene Acolchado / Nylon" },
+    { "label": "Hebillas", "value": "Polímero de Alta Densidad" },
+    { "label": "Proveedor", "value": "Pet-Ros (GBA)" }
+  ],
+  "care": "Lavar a mano con agua tibia. Secar a la sombra.",
+  "shipping": "Stock Nacional: Reposición constante. Envío en 48hs hábiles.",
+  "metaDescription": "Pretal de neoprene KORA Aventura. Ergonomía y seguridad para los paseos diarios.",
+  "altText": "Arnés de neoprene negro y ocre colocado en un perro tipo Labrador.",
+  "relatedProducts": ["cama-nido-autor", "mordillo-caucho-natural"]
+}

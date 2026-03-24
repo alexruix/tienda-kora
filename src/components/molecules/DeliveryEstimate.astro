@@ -1,0 +1,114 @@
+---
+/**
+ * DeliveryEstimate.astro — Molecule
+ * KORA · NODO Studio
+ *
+ * Muestra la fecha estimada de entrega calculada en server-time (Astro).
+ * Props:
+ *   leadTime: número de días hábiles para la entrega.
+ *   shippingMode: 'standard' | 'express' | 'pickup'
+ */
+
+interface Props {
+  leadTime?: number;
+  shippingMode?: 'standard' | 'express' | 'pickup';
+  class?: string;
+}
+
+const { leadTime = 3, shippingMode = 'standard', class: extraClass = '' } = Astro.props;
+
+/**
+ * Calcula la próxima fecha de entrega en días hábiles (lunes-viernes).
+ * Se evalúa en build-time / SSR — no necesita cliente.
+ */
+function addBusinessDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  let added = 0;
+  while (added < days) {
+    result.setDate(result.getDate() + 1);
+    const dow = result.getDay();
+    if (dow !== 0 && dow !== 6) added++; // saltar sábado (6) y domingo (0)
+  }
+  return result;
+}
+
+const today = new Date();
+const deliveryDate = addBusinessDays(today, leadTime);
+
+const dayNames = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const monthNames = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+const dayName  = dayNames[deliveryDate.getDay()];
+const dayNum   = deliveryDate.getDate();
+const monthStr = monthNames[deliveryDate.getMonth()];
+
+// Detectar si la entrega es "pronto" (≤2 días hábiles) para mostrar urgencia
+const isExpress = leadTime <= 1;
+const isFast    = leadTime <= 2;
+
+type IconKey = 'express' | 'fast' | 'standard' | 'pickup';
+
+const iconMap: Record<IconKey, string> = {
+  express: 'M13 10V3L4 14h7v7l9-11h-7z',      // bolt
+  fast:    'M5 12h14M12 5l7 7-7 7',            // arrow-right
+  standard:'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', // mail
+  pickup:  'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z', // map-pin
+};
+
+type ColorKey = 'green' | 'petrol' | 'sand';
+
+const iconKey: IconKey = shippingMode === 'pickup' ? 'pickup' : isExpress ? 'express' : isFast ? 'fast' : 'standard';
+const color: ColorKey  = isExpress ? 'green' : isFast ? 'petrol' : 'sand';
+
+const colorMap: Record<ColorKey, string> = {
+  green:  'text-green-600 bg-green-50 border-green-100',
+  petrol: 'text-petrol   bg-petrol/5  border-petrol/10',
+  sand:   'text-sand-900/60 bg-sand-50 border-sand-200',
+};
+
+const labelMap: Record<IconKey, string> = {
+  express:  '¡Llega HOY!',
+  fast:     `Llega el ${dayName} ${dayNum}`,
+  standard: `Llega el ${dayName} ${dayNum} de ${monthStr}`,
+  pickup:   'Retirá hoy en La Plata',
+};
+
+const sublabelMap: Record<string, string> = {
+  express:  'Comprá en las próximas horas',
+  fast:     'Si comprás hoy',
+  standard: 'Días hábiles, a domicilio',
+  pickup:   'Coordinar por DM',
+};
+
+const label    = shippingMode === 'pickup' ? labelMap.pickup    : isExpress ? labelMap.express    : isFast ? labelMap.fast    : labelMap.standard;
+const sublabel = shippingMode === 'pickup' ? sublabelMap.pickup : isExpress ? sublabelMap.express : isFast ? sublabelMap.fast : sublabelMap.standard;
+---
+
+<div class:list={["flex items-start gap-3 rounded-f2-lg border px-4 py-3", colorMap[color], extraClass]}>
+  <!-- Ícono -->
+  <div class="shrink-0 mt-0.5">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d={iconMap[iconKey]} />
+    </svg>
+  </div>
+
+  <!-- Texto -->
+  <div>
+    <p class="font-sans text-[14px] font-semibold leading-snug">
+      {label}
+    </p>
+    <p class="font-sans text-[12px] opacity-70 mt-0.5">
+      {sublabel}
+    </p>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+---
+/**
+ * RecommendGrid.astro — Organism
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Grilla de sugerencias (Upselling / Cross-selling) integrada al final
+ * de la página de categoría o producto.
+ */
+
+import ProductCard from '../molecules/ProductCard.astro';
+import Separator from '../atoms/Separator.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  products: any[];
+  class?: string;
+}
+
+const { title, subtitle, products, class: extraClass = '' } = Astro.props;
+---
+
+<section class:list={["bg-sand-100 py-20", extraClass]}>
+  <div class="max-w-[1320px] mx-auto px-5 md:px-8">
+    <div class="text-center mb-12">
+      <h2 class="font-display text-4xl text-petrol mb-4">{title}</h2>
+      {subtitle && <p class="font-sans text-[15px] text-sand-500">{subtitle}</p>}
+      <Separator class="w-20 mx-auto mt-6" />
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+      {products.slice(0, 4).map((product) => (
+        <ProductCard {...product} />
+      ))}
+    </div>
+  </div>
+</section>

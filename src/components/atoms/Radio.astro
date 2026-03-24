@@ -1,0 +1,50 @@
+---
+/**
+ * Radio.astro — Atom
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Input radio base para formularios y selectores.
+ */
+
+interface Props {
+  id: string;
+  name: string;
+  value: string;
+  label?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const { 
+  id, 
+  name, 
+  value, 
+  label, 
+  checked = false, 
+  disabled = false,
+  class: extraClass = '' 
+} = Astro.props;
+---
+
+<div class:list={["flex items-center gap-2.5", disabled && "opacity-50", extraClass]}>
+  <div class="relative flex items-center justify-center w-4 h-4 rounded-full border border-sand-300 bg-white focus-within:ring-2 focus-within:ring-petrol focus-within:ring-offset-2 transition-colors">
+    <input 
+      type="radio" 
+      id={id}
+      name={name} 
+      value={value} 
+      checked={checked}
+      disabled={disabled}
+      class="peer absolute opacity-0 inset-0 cursor-pointer disabled:cursor-not-allowed"
+    />
+    <div class="absolute inset-0 bg-petrol opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none rounded-full"></div>
+    <div class="absolute w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none z-10"></div>
+  </div>
+  
+  {label && (
+    <label for={id} class="font-sans text-[14px] text-sand-900 cursor-pointer select-none">
+      {label}
+    </label>
+  )}
+</div>

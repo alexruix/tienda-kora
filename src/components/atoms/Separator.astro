@@ -1,0 +1,45 @@
+---
+/**
+ * Separator.astro — Atom
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Línea o espacio divisorio estandarizado para mantener el ritmo visual.
+ */
+
+interface Props {
+  orientation?: 'horizontal' | 'vertical';
+  margin?: 'none' | 'sm' | 'md' | 'lg';
+  color?: 'sand' | 'white' | 'petrol';
+  class?: string;
+}
+
+const { 
+  orientation = 'horizontal', 
+  margin = 'md',
+  color = 'sand',
+  class: extraClass = '' 
+} = Astro.props;
+
+const marginClasses = {
+  none: 'my-0 mx-0',
+  sm: orientation === 'horizontal' ? 'my-4' : 'mx-4',
+  md: orientation === 'horizontal' ? 'my-8' : 'mx-8',
+  lg: orientation === 'horizontal' ? 'my-16' : 'mx-16',
+};
+
+const colorClasses = {
+  sand: 'bg-sand-200',
+  white: 'bg-white/20',
+  petrol: 'bg-petrol/20',
+};
+
+const baseClasses = orientation === 'horizontal' 
+  ? 'w-full h-[1px]' 
+  : 'h-full w-[1px] min-h-[1em]';
+---
+
+<div 
+  class:list={[baseClasses, colorClasses[color], marginClasses[margin], extraClass]} 
+  role="separator" 
+  aria-orientation={orientation}
+></div>

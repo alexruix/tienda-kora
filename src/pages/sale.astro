@@ -14,9 +14,11 @@ import ProductGrid    from "../components/organisms/ProductGrid.astro";
 import SectionHeader  from "../components/molecules/SectionHeader.astro";
 import { getCollection } from "astro:content";
 import { FREE_SHIPPING_THRESHOLD } from "../utils/shipping";
-import { formatPrice } from "../utils/formatters";
+import { formatCurrency } from "../utils/formatters";
+import { SaleContent } from "../data/saleContent";
 
-const freeShippingLabel = formatPrice(FREE_SHIPPING_THRESHOLD);
+const { hero, trust, grid, bottomCta } = SaleContent;
+const freeShippingLabel = formatCurrency(FREE_SHIPPING_THRESHOLD);
 
 const productsData = await getCollection("products");
 const allProducts = productsData.map((p) => ({ ...p.data, id: p.id }));
@@ -44,12 +46,12 @@ const maxDiscountPct = saleProducts.reduce((max, p) => {
   return max;
 }, 0);
 
-const formattedSavings = formatPrice(totalSavings);
+const formattedSavings = formatCurrency(totalSavings);
 ---
 
 <MainLayout
-  title={`Sale — Up to ${maxDiscountPct}% Off · BeautyHome`}
-  description={`Shop our curated sale selection — up to ${maxDiscountPct}% off artisan-crafted home objects. Limited time, limited stock.`}
+  title={`Sale — Hasta ${maxDiscountPct}% OFF · KORA`}
+  description={hero.description}
 >
   {/* ─── SALE HERO ─── */}
   <header class="bg-watermelon relative overflow-hidden">
@@ -62,17 +64,16 @@ const formattedSavings = formatPrice(totalSavings);
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
           <div class="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-4 py-1.5 mb-6">
-            <span class="text-[11px] font-sans tracking-[0.16em] uppercase font-semibold">
-              ✦ Limited Time Offer
+            <span class="text-[11px] font-sans tracking-widest uppercase font-semibold">
+              {hero.eyebrow}
             </span>
           </div>
-          <h1 class="font-display text-[clamp(52px,7vw,96px)] font-light leading-[0.95] mb-4">
-            Up to<br />
-            <em class="italic text-white/80">{maxDiscountPct}% Off</em>
-          </h1>
+          <h1 
+            class="font-display text-[clamp(52px,7vw,96px)] font-light leading-none mb-4"
+            set:html={hero.title.replace("{pct}", maxDiscountPct.toString())}
+          />
           <p class="font-sans text-[15px] text-white/70 leading-relaxed max-w-md">
-            Rare savings on our most celebrated artisan pieces — crafted to last decades,
-            now at exceptional value.
+            {hero.description}
           </p>
         </div>
 
@@ -82,8 +83,8 @@ const formattedSavings = formatPrice(totalSavings);
             <span class="block font-display text-[40px] font-light text-white leading-none mb-1">
               {saleProducts.length}
             </span>
-            <span class="block font-sans text-[11px] tracking-[0.12em] uppercase text-white/50">
-              Pieces on sale
+            <span class="block font-sans text-[11px] tracking-widest uppercase text-white/50">
+              {hero.stats.productsLabel}
             </span>
           </div>
           <div class="w-px bg-white/20 self-stretch" aria-hidden="true" />
@@ -91,8 +92,8 @@ const formattedSavings = formatPrice(totalSavings);
             <span class="block font-display text-[40px] font-light text-white leading-none mb-1">
               {maxDiscountPct}%
             </span>
-            <span class="block font-sans text-[11px] tracking-[0.12em] uppercase text-white/50">
-              Max discount
+            <span class="block font-sans text-[11px] tracking-widest uppercase text-white/50">
+              {hero.stats.maxDiscountLabel}
             </span>
           </div>
         </div>
@@ -107,13 +108,8 @@ const formattedSavings = formatPrice(totalSavings);
   <div class="bg-sand-50 border-b border-sand-200 py-5">
     <div class="ds-container">
       <ul class="flex flex-wrap gap-x-8 gap-y-3 justify-center text-[12px] font-sans text-sand-900/50 tracking-[0.04em]" role="list">
-        {[
-          "🔄  60-day returns on all sale items",
-          `🚚  Free shipping over ${freeShippingLabel}`,
-          "✦  Same artisan quality, lower price",
-          "⚡  Limited stock — no restocking",
-        ].map((item) => (
-          <li role="listitem">{item}</li>
+        {trust.map((item) => (
+          <li role="listitem">{item.replace("{threshold}", freeShippingLabel)}</li>
         ))}
       </ul>
     </div>
@@ -124,8 +120,8 @@ const formattedSavings = formatPrice(totalSavings);
     {saleProducts.length > 0 ? (
       <>
         <SectionHeader
-          eyebrow="Sale Selection"
-          title={`${saleProducts.length} pieces at reduced prices`}
+          eyebrow={grid.eyebrow}
+          title={`${saleProducts.length} ${saleProducts.length === 1 ? "pieza" : "piezas"} a precio reducido`}
           id="sale-heading"
         />
 
@@ -136,18 +132,18 @@ const formattedSavings = formatPrice(totalSavings);
         />
       </>
     ) : (
-      <div class="flex flex-col items-center justify-center py-32 text-center animate-fade-in-up">
+      <div class="flex flex-col items-center justify-center py-32 text-center animate-[fadeInUp_0.6s_ease-out_both]">
         <div class="w-16 h-16 rounded-full bg-sand-100 flex items-center justify-center mb-6">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sand-900/30">
             <circle cx="12" cy="12" r="10" />
             <path d="M12 8v4m0 4h.01" />
           </svg>
         </div>
-        <h2 class="font-display text-3xl font-light text-petrol mb-3">No sale items right now</h2>
+        <h2 class="font-display text-3xl font-light text-petrol mb-3">{grid.empty.title}</h2>
         <p class="font-sans text-[14px] text-sand-900/50 max-w-sm mb-8">
-          Our next sale event is coming soon. Browse our full collection in the meantime.
+          {grid.empty.description}
         </p>
-        <a href="/collections" class="btn btn-primary btn-md no-underline">Browse All Collections</a>
+        <a href="/collections" class="btn btn-primary btn-md no-underline">{grid.empty.cta}</a>
       </div>
     )}
   </section>
@@ -155,15 +151,15 @@ const formattedSavings = formatPrice(totalSavings);
   {/* ─── BOTTOM CTA ─── */}
   {saleProducts.length > 0 && (
     <div class="bg-petrol text-white py-16 text-center">
-      <div class="max-w-[500px] mx-auto px-8 animate-fade-in-up">
+      <div class="max-w-[500px] mx-auto px-8 animate-[fadeInUp_0.8s_ease-out_both]">
         <p class="font-sans text-[11px] tracking-widest uppercase text-white/40 mb-4">
-          Curated for you
+          {bottomCta.eyebrow}
         </p>
         <h2 class="font-display text-[clamp(28px,3vw,40px)] font-light mb-6">
-          Not finding what you need?
+          {bottomCta.title}
         </h2>
-        <a href="/collections" class="btn btn-secondary btn-lg no-underline !bg-white/10 !text-white/80 !border-white/25 hover:!bg-white/20 hover:!text-white">
-          Explore Full Collection →
+        <a href="/collections" class="btn btn-secondary btn-lg no-underline bg-white/10! text-white/80! border-white/25! hover:bg-white/20! hover:text-white!">
+          {bottomCta.cta}
         </a>
       </div>
     </div>

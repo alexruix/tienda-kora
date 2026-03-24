@@ -1,0 +1,68 @@
+---
+/**
+ * HeroGallery.astro — Organism
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Módulo de carrusel/slider para la página de inicio. Muestra los lanzamientos
+ * ("Héroes") con imágenes a pantalla completa y CTA principal.
+ */
+
+import Eyebrow from '../atoms/Eyebrow.astro';
+import Button from '../atoms/Button.astro';
+
+interface Slide {
+  id: string;
+  image: string;
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  ctaLabel: string;
+  ctaHref: string;
+}
+
+interface Props {
+  slides: Slide[];
+}
+
+const { slides } = Astro.props;
+---
+
+<section class="relative w-full h-[85vh] min-h-[600px] overflow-hidden group">
+  {/* Temporary Static Implementation (Solo muestra el primer slide) */}
+  {/* En una iteración futura, esto usaría Swiper.js o scroll-snap css */}
+  {slides.map((slide, i) => (
+    <div class:list={["absolute inset-0 transition-opacity duration-1000", i === 0 ? "opacity-100 z-10" : "opacity-0 z-0"]}>
+      <img 
+        src={slide.image} 
+        alt={slide.title} 
+        class="absolute inset-0 w-full h-full object-cover" 
+        loading={i === 0 ? "eager" : "lazy"} 
+      />
+      
+      <div class="absolute inset-0 bg-black/40"></div>
+
+      <div class="relative z-20 h-full flex flex-col justify-center max-w-[1320px] mx-auto px-5 md:px-8 text-center sm:text-left">
+        <Eyebrow text={slide.eyebrow} class="mb-6 text-watermelon" />
+        <h2 class="font-display text-[clamp(48px,8vw,96px)] font-light text-white leading-[1.05] tracking-tight mb-6 max-w-[800px] mx-auto sm:mx-0" set:html={slide.title} />
+        <p class="font-sans text-base text-white/80 max-w-[480px] leading-relaxed mb-10 mx-auto sm:mx-0">
+          {slide.subtitle}
+        </p>
+        <Button href={slide.ctaHref} variant="primary" class="mx-auto sm:mx-0 bg-white text-petrol hover:bg-sand-100 border-none">
+          {slide.ctaLabel}
+        </Button>
+      </div>
+    </div>
+  ))}
+
+  {/* Slider Controls (Decorative for now) */}
+  {slides.length > 1 && (
+    <div class="absolute bottom-12 right-12 z-30 flex gap-4 max-sm:hidden">
+      <button class="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-petrol transition-colors" aria-label="Anterior">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button class="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-petrol transition-colors" aria-label="Siguiente">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  )}
+</section>

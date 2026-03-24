@@ -1,6 +1,6 @@
 /**
  * WishlistGrid Organism — React Island
- * BeautyHome · NODO Studio
+ * KORA · NODO Studio
  *
  * Recibe todos los productos desde Astro (server-rendered).
  * Filtra por los IDs persistidos en el atom de wishlist.
@@ -15,16 +15,8 @@ import {
   removeWishlistItem,
   clearWishlist,
 } from "../../store/wishlist.ts";
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function formatPrice(amount) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-  }).format(amount);
-}
+import { formatCurrency } from "../../utils/formatters.ts";
+import { WishlistContent } from "../../data/wishlistContent";
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -56,17 +48,17 @@ function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
 
   return (
     <article
-      className="group bg-white rounded-f2-lg overflow-hidden shadow-f2-rest hover:shadow-f2-hover transition-all duration-300 ease-[cubic-bezier(0.33,1,0.68,1)] hover:-translate-y-0.5 animate-[slideUp_0.45s_cubic-bezier(0.33,1,0.68,1)_both]"
+      className="group bg-white rounded-f2-lg overflow-hidden shadow-f2-rest hover:shadow-f2-hover transition-all duration-300 ease-fluent hover:-translate-y-0.5 animate-[slideUp_0.45s_cubic-bezier(0.33,1,0.68,1)_both]"
       style={{ animationDelay: `${animIndex * 65}ms` }}
     >
       {/* Image */}
       <a
         href={`/product/${product.id}`}
-        className="block relative overflow-hidden bg-sand-100 aspect-[4/5]"
+        className="block relative overflow-hidden bg-sand-100 aspect-4/5"
         tabIndex={-1}
         aria-hidden="true"
       >
-        <div className="w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.33,1,0.68,1)] group-hover:scale-[1.04]">
+        <div className="w-full h-full transition-transform duration-700 ease-fluent group-hover:scale-[1.04]">
           {product.image ? (
             <img
               src={product.image}
@@ -93,30 +85,36 @@ function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
           )}
         </div>
 
-        {/* Badges */}
-        {product.badges?.length > 0 && (
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-            {discount && product.badges.includes("sale") && (
-              <span className="badge badge-sale">−{discount}%</span>
-            )}
-            {product.badges.includes("new") && (
-              <span className="badge badge-new">New</span>
-            )}
-            {product.badges.includes("limited") && (
-              <span className="badge badge-limited">Limited</span>
-            )}
-          </div>
-        )}
+        {/* Badges — incluyendo price-drop si bajó desde originalPrice */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+          {product.originalPrice && product.price < product.originalPrice && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-green-600 text-white px-2 py-1 rounded-full">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <path d="M12 19V5M5 12l7-7 7 7"/>
+              </svg>
+              Bajó {formatCurrency(product.originalPrice - product.price)}
+            </span>
+          )}
+          {discount && product.badges?.includes("sale") && (
+            <span className="badge badge-sale">−{discount}%</span>
+          )}
+          {product.badges?.includes("new") && (
+            <span className="badge badge-new">Nuevo</span>
+          )}
+          {product.badges?.includes("limited") && (
+            <span className="badge badge-limited">Últimas unidades</span>
+          )}
+        </div>
 
-        {/* Remove overlay */}
+        {/* Remove button - siempre visible en mobile */}
         <button
           onClick={(e) => {
             e.preventDefault();
             onRemove(product.id);
           }}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-white/60 flex items-center justify-center text-sand-900/50 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 hover:text-watermelon hover:border-watermelon/30 hover:bg-white z-10"
-          aria-label={`Remove ${product.name} from wishlist`}
-          title="Remove from wishlist"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm border border-white/60 flex items-center justify-center text-sand-900/50 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-y-0 transition-all duration-200 hover:text-watermelon hover:border-watermelon/30 hover:bg-white z-10"
+          aria-label={`${WishlistContent.card.remove} ${product.name}`}
+          title={WishlistContent.card.remove}
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="18" y1="6" x2="6" y2="18" />
@@ -131,7 +129,7 @@ function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
           href={`/product/${product.id}`}
           className="block no-underline text-inherit mb-3 group/link"
         >
-          <p className="text-[11px] tracking-[0.1em] uppercase text-sand-900/40 mb-1.5 font-sans">
+          <p className="text-[11px] tracking-widest uppercase text-sand-900/40 mb-1.5 font-sans">
             {product.category}
           </p>
           <h3 className="text-[15px] font-display font-medium text-sand-900 leading-snug transition-colors duration-150 group-hover/link:text-petrol">
@@ -142,11 +140,11 @@ function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
         {/* Pricing */}
         <div className="flex items-baseline gap-2 mb-4">
           <span className="text-[17px] font-medium text-petrol font-sans">
-            {formatPrice(product.price)}
+            {formatCurrency(product.price)}
           </span>
           {product.originalPrice && (
             <span className="text-[13px] text-sand-900/40 line-through">
-              {formatPrice(product.originalPrice)}
+              {formatCurrency(product.originalPrice)}
             </span>
           )}
         </div>
@@ -157,7 +155,7 @@ function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
             <span className="text-gold-400">★</span>
             <span>{product.rating}</span>
             <span className="text-sand-200">·</span>
-            <span>{product.reviewCount} reviews</span>
+            <span>{product.reviewCount} {WishlistContent.card.reviews}</span>
           </div>
         )}
 
@@ -165,19 +163,19 @@ function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
         <button
           onClick={handleAddToCart}
           disabled={adding}
-          className={`w-full h-10 rounded-f2-md font-sans text-[12px] tracking-[0.07em] uppercase font-medium flex items-center justify-center gap-2 border-none cursor-pointer transition-all duration-200 disabled:cursor-not-allowed ${
+          className={`w-full h-10 rounded-f2-md font-sans text-[12px] tracking-[0.07em] uppercase font-bold flex items-center justify-center gap-2 border-none cursor-pointer transition-all duration-200 disabled:cursor-not-allowed ${
             added
               ? "bg-green-600 text-white"
               : "bg-petrol text-white hover:bg-petrol/90 active:scale-[0.98]"
           }`}
-          aria-label={`Add ${product.name} to cart`}
+          aria-label={`Añadir ${product.name} al carrito`}
         >
           {added ? (
             <>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
-              Added
+              {WishlistContent.card.added}
             </>
           ) : adding ? (
             <svg
@@ -198,7 +196,7 @@ function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
-              Add to Bag
+              {WishlistContent.card.addToCart}
             </>
           )}
         </button>
@@ -231,20 +229,20 @@ function EmptyState() {
       </div>
 
       <p className="font-sans text-[11px] tracking-[0.18em] uppercase text-sand-900/40 mb-3">
-        Your Wishlist
+        {WishlistContent.empty.eyebrow}
       </p>
       <h2 className="font-display text-[clamp(28px,4vw,38px)] font-light text-petrol leading-[1.1] mb-4">
-        Nothing saved yet
+        {WishlistContent.empty.title}
       </h2>
       <p className="font-sans text-[15px] text-sand-900/50 max-w-[340px] leading-relaxed mb-10">
-        Tap the heart on any piece you love. It'll wait for you here.
+        {WishlistContent.empty.description}
       </p>
 
       <a
         href="/collections"
         className="f2-button-primary inline-flex items-center gap-2 px-7 py-3 text-[12px] tracking-[0.08em] uppercase no-underline"
       >
-        Browse Collection
+        {WishlistContent.empty.cta}
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <line x1="5" y1="12" x2="19" y2="12" />
           <path d="M12 5l7 7-7 7" />
@@ -278,8 +276,10 @@ export default function WishlistGrid({ products = [] }) {
 
     const url = `${window.location.origin}/wishlist?items=${ids.join(",")}`;
     const shareData = {
-      title: "My BeautyHome Wishlist",
-      text: `I'm in love with these ${count} piece${count !== 1 ? "s" : ""} from BeautyHome`,
+      title: WishlistContent.share.title,
+      text: WishlistContent.share.text
+        .replace("{count}", count.toString())
+        .replace("{unit}", count === 1 ? "pieza" : "piezas"),
       url,
     };
 
@@ -322,14 +322,14 @@ export default function WishlistGrid({ products = [] }) {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-8 border-b border-sand-200">
         <div>
           <p className="font-sans text-[11px] tracking-[0.18em] uppercase text-sand-900/40 mb-2">
-            Your Collection
+            {WishlistContent.header.eyebrow}
           </p>
-          <h1 className="font-display text-[clamp(36px,5vw,52px)] font-light text-petrol leading-[1.0] mb-2">
-            Wishlist
+          <h1 className="font-display text-[clamp(36px,5vw,52px)] font-light text-petrol leading-none mb-2">
+            {WishlistContent.header.title}
           </h1>
           {count > 0 && (
             <p className="font-sans text-[14px] text-sand-900/50">
-              {count} piece{count !== 1 ? "s" : ""} saved
+              {count} {count === 1 ? WishlistContent.header.countSingular : WishlistContent.header.countPlural}
             </p>
           )}
         </div>
@@ -348,7 +348,7 @@ export default function WishlistGrid({ products = [] }) {
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  Link copied
+                  {WishlistContent.actions.shareSuccess}
                 </>
               ) : (
                 <>
@@ -359,7 +359,7 @@ export default function WishlistGrid({ products = [] }) {
                     <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
                     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                   </svg>
-                  Share
+                  {WishlistContent.actions.share}
                 </>
               )}
             </button>
@@ -380,7 +380,7 @@ export default function WishlistGrid({ products = [] }) {
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
-              Add All to Bag
+              {WishlistContent.actions.addAll}
             </button>
 
             {/* Clear */}
@@ -391,9 +391,9 @@ export default function WishlistGrid({ products = [] }) {
                   ? "border-watermelon text-watermelon bg-watermelon/5"
                   : "border-sand-200 text-sand-900/40 bg-transparent hover:border-sand-900/30 hover:text-sand-900/60"
               }`}
-              aria-label={clearConfirm ? "Confirm clear wishlist" : "Clear wishlist"}
+              aria-label={clearConfirm ? WishlistContent.actions.clearConfirm : WishlistContent.actions.clear}
             >
-              {clearConfirm ? "Confirm?" : "Clear all"}
+              {clearConfirm ? WishlistContent.actions.clearConfirm : WishlistContent.actions.clear}
             </button>
           </div>
         )}
@@ -424,13 +424,13 @@ export default function WishlistGrid({ products = [] }) {
           {/* Subtle prompt to keep browsing */}
           <div className="mt-16 pt-10 border-t border-sand-200 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="font-display text-[22px] font-light text-petrol/50 italic">
-              Keep exploring...
+              {WishlistContent.footer.title}
             </p>
             <a
               href="/collections"
               className="inline-flex items-center gap-2 font-sans text-[12px] tracking-[0.07em] uppercase text-sand-900/60 hover:text-petrol transition-colors duration-150 no-underline group"
             >
-              View all collections
+              {WishlistContent.footer.cta}
               <svg
                 className="transition-transform duration-200 group-hover:translate-x-1"
                 width="12"

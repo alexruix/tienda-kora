@@ -1,0 +1,28 @@
+{
+  "id": "snacks-articulaciones",
+  "name": "Snacks Articulaciones Mon Ami",
+  "subtitle": "Salud en cada bocado",
+  "slug": "snacks-articulaciones",
+  "category": "bienestar",
+  "subcategory": "Suplementos Naturales",
+  "price": 7500,
+  "inStock": true,
+  "leadTime": "24 horas",
+  "rating": 4.9,
+  "reviewCount": 210,
+  "badges": ["sale"],
+  "featured": false,
+  "newArrival": false,
+  "image": "https://images.unsplash.com/photo-1589924691106-073b318d9cc9?auto=format&fit=crop&q=80&w=800",
+  "description": "Snacks funcionales de Mon Ami formulados con glucosamina y condroitín. Ideales para premiar su lealtad mientras cuidas su movilidad. Packaging premium que conserva la frescura.",
+  "details": [
+    { "label": "Contenido", "value": "150g" },
+    { "label": "Ingredientes", "value": "Hígado de Pollo, Glucosamina" },
+    { "label": "Fabricante", "value": "Mon Ami (Argentina)" }
+  ],
+  "care": "Mantener en lugar fresco y seco. Consumir dentro de los 30 días de abierto.",
+  "shipping": "Micro-stock: Despacho rápido. Ideal para sumar a tu pedido principal.",
+  "metaDescription": "Snacks Mon Ami para articulaciones. Premios saludables y nutritivos para tu perro en KORA.",
+  "altText": "Bolsa de snacks premium de Mon Ami sobre fondo neutro.",
+  "relatedProducts": ["mordillo-caucho-natural", "cama-nido-autor"]
+}

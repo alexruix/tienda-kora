@@ -1,0 +1,54 @@
+---
+/**
+ * Avatar.astro — Atom
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Imagen circular para reseñas, testimonios o perfiles de usuario.
+ * Auto-genera iniciales si la imagen falla o no se provee.
+ */
+
+interface Props {
+  src?: string;
+  name: string;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { 
+  src, 
+  name, 
+  size = 'md',
+  class: extraClass = '' 
+} = Astro.props;
+
+const sizeClasses = {
+  sm: 'w-8 h-8 text-[11px]',
+  md: 'w-12 h-12 text-[14px]',
+  lg: 'w-16 h-16 text-[18px]',
+};
+
+// Generar iniciales (ej. "Juan Pérez" -> "JP")
+const initials = name
+  .split(' ')
+  .map(n => n.charAt(0))
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+---
+
+<div class:list={[
+  "relative inline-flex items-center justify-center rounded-full overflow-hidden bg-sand-200 text-petrol font-sans font-medium select-none shrink-0 border border-sand-300/50",
+  sizeClasses[size],
+  extraClass
+]}>
+  {src ? (
+    <img 
+      src={src} 
+      alt={`Avatar of ${name}`} 
+      class="absolute inset-0 w-full h-full object-cover"
+      loading="lazy"
+      onerror="this.style.display='none';" 
+    />
+  ) : null}
+  <span aria-hidden="true">{initials}</span>
+</div>

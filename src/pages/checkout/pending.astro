@@ -1,11 +1,13 @@
 ---
 /**
  * /checkout/pending — Payment Pending
- * BeautyHome · NODO Studio
+ * KORA · NODO Studio
  * * Esta página se muestra cuando el usuario elige métodos de pago offline
  * (Rapipago, Pagofácil, Transferencia, etc.) o cuando la pasarela demora.
  */
 import MainLayout from "../../components/templates/MainLayout.astro";
+import { CheckoutContent } from "../../data/checkoutContent.ts";
+import { NavContent } from "../../data/navContent.ts";
 
 export const prerender = false;
 
@@ -13,57 +15,54 @@ export const prerender = false;
 const paymentId = Astro.url.searchParams.get("payment_id");
 ---
 
-<MainLayout title="Order Pending — BeautyHome" noIndex={true}>
+<MainLayout title={`${CheckoutContent.pending.title} — ${NavContent.logo}`} noIndex={true}>
     <div
-        class="max-w-[800px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center animate-fade-in-up"
+        class="max-w-[800px] mx-auto px-5 md:px-8 py-20 flex flex-col items-center text-center animate-[fadeUp_0.5s_cubic-bezier(0.33,1,0.68,1)_both]"
     >
         <div class="relative mb-8">
             <div
-                class="w-20 h-20 rounded-full bg-gold-100 flex items-center justify-center relative z-10 border border-gold-400/20"
+                class="w-20 h-20 rounded-full bg-sand-100 flex items-center justify-center relative z-10 border border-sand-200"
             >
                 <svg
                     width="32"
                     height="32"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="currentColor"
+                    stroke="var(--color-rust)"
                     stroke-width="1.5"
-                    class="text-gold-700"
                 >
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
             </div>
             <div
-                class="absolute inset-0 w-20 h-20 rounded-full bg-gold-400/10 animate-ping opacity-20"
+                class="absolute inset-0 w-20 h-20 rounded-full bg-sand-200 animate-ping opacity-20"
             >
             </div>
         </div>
 
         <p
-            class="font-sans text-[11px] tracking-[0.2em] uppercase text-gold-700 font-bold mb-3"
+            class="font-sans text-[11px] tracking-[0.2em] uppercase text-rust font-bold mb-3"
         >
-            Waiting for confirmation
+            {CheckoutContent.pending.eyebrow}
         </p>
 
         <h1
             class="font-display text-[clamp(36px,5vw,52px)] font-light text-petrol leading-[1.1] mb-6"
-        >
-            Your pieces are <em>reserved</em>
-        </h1>
+            set:html={CheckoutContent.pending.displayTitle}
+        />
 
         <p
             class="font-sans text-[16px] text-sand-900/60 leading-relaxed mb-8 max-w-[480px] text-balance"
         >
-            We've received your order request. Once your payment is confirmed,
-            we'll begin the artisan preparation of your items.
+            {CheckoutContent.pending.message}
         </p>
 
         {
             paymentId && (
                 <div class="mb-10 px-4 py-2 bg-sand-100 rounded-full inline-flex items-center gap-3 border border-sand-200">
                     <span class="font-sans text-[11px] uppercase tracking-wider text-sand-900/40">
-                        Order Reference
+                        {CheckoutContent.pending.transactionId}
                     </span>
                     <code class="font-mono text-[13px] text-petrol font-semibold">
                         {paymentId}
@@ -73,42 +72,40 @@ const paymentId = Astro.url.searchParams.get("payment_id");
         }
 
         <div
-            class="w-full max-w-[500px] bg-white border border-sand-200 rounded-f2-xl p-8 text-left shadow-f2-rest mb-12"
+            class="w-full max-w-[500px] bg-white border border-sand-200 rounded-f2-xl p-8 text-left mb-12"
         >
             <h2
                 class="font-display text-xl text-petrol mb-6 border-b border-sand-100 pb-4"
             >
-                Next Steps
+                {CheckoutContent.pending.nextSteps.title}
             </h2>
 
             <ul class="space-y-6">
                 <li class="flex gap-4">
                     <span
-                        class="w-6 h-6 rounded-full bg-sand-50 text-gold-700 flex shrink-0 items-center justify-center text-[11px] font-bold border border-gold-200"
+                        class="w-6 h-6 rounded-full bg-sand-50 text-sand-900/60 flex shrink-0 items-center justify-center text-[11px] font-bold border border-sand-200"
                         >1</span
                     >
                     <div class="space-y-1">
                         <p class="text-[14px] font-medium text-sand-900">
-                            Check your inbox
+                            {CheckoutContent.pending.nextSteps.step1.title}
                         </p>
                         <p class="text-[13px] text-sand-900/50 leading-relaxed">
-                            Instructions and the payment voucher have been sent
-                            to your email address.
+                            {CheckoutContent.pending.nextSteps.step1.desc}
                         </p>
                     </div>
                 </li>
                 <li class="flex gap-4">
                     <span
-                        class="w-6 h-6 rounded-full bg-sand-50 text-gold-700 flex shrink-0 items-center justify-center text-[11px] font-bold border border-gold-200"
+                        class="w-6 h-6 rounded-full bg-sand-50 text-sand-900/60 flex shrink-0 items-center justify-center text-[11px] font-bold border border-sand-200"
                         >2</span
                     >
                     <div class="space-y-1">
                         <p class="text-[14px] font-medium text-sand-900">
-                            Processing time
+                            {CheckoutContent.pending.nextSteps.step2.title}
                         </p>
                         <p class="text-[13px] text-sand-900/50 leading-relaxed">
-                            Once paid, it may take up to 48 business hours for
-                            the artisan studios to receive the confirmation.
+                            {CheckoutContent.pending.nextSteps.step2.desc}
                         </p>
                     </div>
                 </li>
@@ -118,23 +115,19 @@ const paymentId = Astro.url.searchParams.get("payment_id");
         <div class="flex flex-col sm:flex-row gap-4 w-full max-w-[400px]">
             <a
                 href="/collections"
-                class="btn btn-primary btn-lg flex-1 no-underline"
+                class="f2-button-primary flex-1 no-underline text-center"
             >
-                Keep Shopping
+                {CheckoutContent.pending.btnPrimary}
             </a>
             <a
                 href="/account"
-                class="btn btn-secondary btn-lg flex-1 no-underline"
+                class="f2-button-outline flex-1 no-underline text-center"
             >
-                View Order Status
+                {CheckoutContent.pending.btnSecondary}
             </a>
         </div>
 
-        <p class="mt-12 text-[12px] text-sand-900/30 font-sans italic">
-            Questions? Contact our atelier at <span
-                class="border-b border-sand-200">support@beautyhome.com</span
-            >
-        </p>
+        <p class="mt-12 text-[12px] text-sand-900/40 font-sans italic" set:html={CheckoutContent.pending.footer} />
     </div>
 </MainLayout>
 

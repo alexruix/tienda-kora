@@ -1,0 +1,51 @@
+---
+/**
+ * TextLink.astro — Atom
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Enlace de texto estilizado para llamadas a la acción en copy,
+ * con la micro-animación de línea inferior característica.
+ */
+
+interface Props {
+  href: string;
+  label: string;
+  icon?: boolean;
+  class?: string;
+}
+
+const { 
+  href, 
+  label, 
+  icon = false,
+  class: extraClass = '' 
+} = Astro.props;
+---
+
+<a 
+  href={href} 
+  class:list={[
+    "group inline-flex items-center gap-1.5 font-sans font-semibold text-[14px] text-petrol transition-colors hover:text-watermelon relative no-underline",
+    extraClass
+  ]}
+>
+  <span class="relative">
+    {label}
+    <span class="absolute -bottom-0.5 left-0 w-full h-[1.5px] bg-sand-300 transition-all origin-left group-hover:bg-watermelon group-hover:scale-x-100 scale-x-0" aria-hidden="true"></span>
+  </span>
+
+  {icon && (
+    <svg 
+      width="14" 
+      height="14" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      stroke-width="2.5" 
+      class="transition-transform group-hover:translate-x-1"
+      aria-hidden="true"
+    >
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  )}
+</a>

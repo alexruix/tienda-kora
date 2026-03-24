@@ -17,9 +17,13 @@ import Eyebrow        from "../components/atoms/Eyebrow.astro";
 import StatCounter    from "../components/atoms/StatCounter.astro";
 import TrustItem      from "../components/atoms/TrustItem.astro";
 import CategoryCard   from "../components/molecules/CategoryCard.astro";
+import CategoryNav    from "../components/molecules/CategoryNav.astro";
 import { getCollection } from "astro:content";
-import { FREE_SHIPPING_THRESHOLD } from "../utils/shipping";
-import { formatPrice } from "../utils/formatters";
+import { HomeContent } from "../data/homeContent";
+import HeroGallery from "../components/organisms/HeroGallery.astro";
+import BrandStorySection from "../components/organisms/BrandStorySection.astro";
+import NewsletterSection from "../components/organisms/NewsletterSection.astro";
+import { formatCurrency } from "../utils/formatters";
 
 // ── 1. Colección validada ─────────────────────────────────────────────────────
 const productsCollection = await getCollection("products");
@@ -36,12 +40,11 @@ const categories     = [...new Set(allProducts.map((p) => p.category))];
 const totalStudios   = categories.length; // Una categoría ≈ una familia curada
 
 // ── 3. Hero dinámico ──────────────────────────────────────────────────────────
-const heroProduct       = allProducts.find((p) => p.id === "sokaku-sofa") ?? allProducts[0];
+const heroProduct       = allProducts.find((p) => p.id === "cama-nido-autor") ?? allProducts[0];
 // Fix #5 — variante dinámica desde el propio producto
 const heroVariantLabel  = heroProduct.variants?.[0]?.label ?? "Standard";
-// Fix #7 — usa formatPrice en lugar de Intl inline
-const heroFormattedPrice = formatPrice(heroProduct.price);
-const freeShippingLabel  = formatPrice(FREE_SHIPPING_THRESHOLD);
+// Fix #7 — usa formatCurrency en lugar de Intl inline
+const heroFormattedPrice = formatCurrency(heroProduct.price);
 
 // ── 4. Filtrado por ?category= ────────────────────────────────────────────────
 // Fix #4 — el query param ahora filtra de verdad en build-time (Prerendering)
@@ -58,9 +61,10 @@ const featuredProducts =
 // ── 5. Category Cards — conteos reales ───────────────────────────────────────
 // Fix #2 + Fix #5 (hrefs y conteos reales desde la colección)
 const CATEGORY_CARDS = [
-  { id: "living",    label: "Space", name: "Living",    href: "/category/living" },
-  { id: "dining",    label: "Space", name: "Dining",    href: "/category/dining" },
-  { id: "workspace", label: "Space", name: "Workspace", href: "/category/workspace" },
+  { id: "living",    label: "Categoría", name: "Descanso",      href: "/category/living" },
+  { id: "dining",    label: "Categoría", name: "Alimentación",  href: "/category/dining" },
+  { id: "workspace", label: "Categoría", name: "Juego y Paseo", href: "/category/workspace" },
+  { id: "bienestar", label: "Categoría", name: "Bienestar",     href: "/category/bienestar" },
 ].map((cat) => ({
   ...cat,
   count: allProducts.filter((p) => p.category === cat.id).length,
@@ -68,146 +72,50 @@ const CATEGORY_CARDS = [
 
 // ── 6. Category Pills  ────────────────────────────────────────────────────────
 const CATEGORY_PILLS = [
-  { emoji: "✦",  label: "All Pieces", value: "all" },
-  { emoji: "🛋️", label: "Seating",    value: "seating" },
-  { emoji: "💡", label: "Lighting",   value: "lighting" },
-  { emoji: "🪵", label: "Tables",     value: "tables" },
-  { emoji: "🗄️", label: "Storage",    value: "storage" },
-  { emoji: "🪴", label: "Décor",      value: "decor" },
-  { emoji: "🪞", label: "Mirrors",    value: "mirrors" },
-  { emoji: "🖼️", label: "Art",        value: "art" },
-  { emoji: "🛏️", label: "Bedroom",    value: "bedroom" },
+  { emoji: "✦",  label: "Todo",          value: "all" },
+  { emoji: "🛏️", label: "Descanso",      value: "living" },
+  { emoji: "🥩", label: "Alimentación",  value: "dining" },
+  { emoji: "🎾", label: "Juego y Paseo", value: "workspace" },
+  { emoji: "🧼", label: "Bienestar",     value: "bienestar" },
 ];
 ---
 
 <MainLayout
-  title="BeautyHome — Curated High-End Home Décor by NODO Studio"
-  description="Objects at the intersection of Scandinavian restraint and Japanese wabi-sabi. Shop curated pieces from artisan studios."
+  title="KORA — Diseño para ellos, armonía para vos."
+  description="Piezas de confort para tu compañero que conviven en armonía con el diseño de interiores. Orgullo platense."
 >
 
   {/* ─── HERO SECTION ─── */}
-  <section class="min-h-screen grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden" aria-labelledby="hero-headline">
-    <div class="flex flex-col justify-center px-5 md:px-8 lg:px-16 pt-[100px] lg:pt-[120px] pb-20 relative z-10 animate-fade-in-up">
+  <HeroGallery slides={HomeContent.heroSlides} />
 
-      <Eyebrow text="New Collection 2026" withLine class="mb-6" />
-
-      <h1
-        class="font-display text-[clamp(52px,6vw,88px)] font-light leading-[1.05] text-petrol mb-6 tracking-[-0.01em]"
-        id="hero-headline"
-      >
-        Spaces that<br />
-        <em class="italic text-sand-900/70">breathe</em><br />
-        with you.
-      </h1>
-
-      <p class="font-sans text-base text-sand-900/70 leading-[1.7] max-w-[420px] mb-10">
-        Curated home objects at the intersection of Scandinavian restraint and
-        Japanese wabi-sabi — for homes that tell stories.
-      </p>
-
-      <div class="flex items-center gap-4 flex-wrap">
-        {/* Fix #2 — /new-arrivals no existe; apuntamos a /collections */}
-        <Button variant="primary" href="/collections" size="lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          Shop New Arrivals
-        </Button>
-        <Button variant="secondary" href="/collections" size="lg">
-          View Collections
-        </Button>
-      </div>
-
-      {/* Fix #3 — Stats computados desde la colección real */}
-      <div class="flex gap-6 md:gap-10 mt-16 pt-8 border-t border-sand-200" aria-label="Store highlights">
-        <StatCounter value={`${totalProducts}`}   label="Curated pieces" />
-        <StatCounter value={`${totalStudios}`}    label="Design families" />
-        <StatCounter value={`${avgRating}★`}      label="Avg. rating" />
-      </div>
+  {/* ─── STATS STRIP ─── */}
+  <div class="bg-white py-12 border-b border-sand-200">
+    <div class="max-w-[1320px] mx-auto px-8 flex justify-center gap-12 md:gap-24">
+      <StatCounter value={`${totalProducts}`}   label={HomeContent.stats.productsLabel} />
+      <StatCounter value={`${totalStudios}`}    label={HomeContent.stats.studiosLabel} />
+      <StatCounter value={`${avgRating}★`}      label={HomeContent.stats.ratingLabel} />
     </div>
-
-    {/* Fix #6 — imagen real del heroProduct si existe, fallback a SVG */}
-    <div class="relative overflow-hidden bg-sand-100 h-[60vw] min-h-[320px] lg:h-auto animate-fade-in" aria-hidden="true">
-      {heroProduct.image ? (
-        <img
-          src={heroProduct.image}
-          alt={heroProduct.name}
-          class="absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-          decoding="async"
-        />
-      ) : (
-        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 700 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-          <rect width="700" height="800" fill="#F2EFE9"></rect>
-          <path d="M0 620 L700 550 L700 800 L0 800 Z" fill="#E5DFD3"></path>
-        </svg>
-      )}
-
-      {/* Hero Product — Acrylic Card */}
-      {/* Fix #5 — variante dinámica */}
-      <div class="absolute bottom-8 left-6 fluent-acrylic rounded-f2-lg px-5 py-4 flex items-center gap-4 min-w-[240px]">
-        <div class="w-[52px] h-[52px] rounded-f2-md bg-sand-200 overflow-hidden shrink-0" aria-hidden="true">
-          {heroProduct.image ? (
-            <img src={heroProduct.image} alt="" class="w-full h-full object-cover" />
-          ) : (
-            <svg viewBox="0 0 52 58" fill="none" width="100%" height="100%">
-              <rect width="52" height="58" fill="#E5DFD3"></rect>
-              <rect x="6" y="28" width="40" height="18" rx="4" fill="#CEC5B5"></rect>
-            </svg>
-          )}
-        </div>
-        <div>
-          <p class="font-sans text-[13px] font-medium text-sand-900">
-            {heroProduct.name} · {heroVariantLabel}
-          </p>
-          <p class="font-sans text-[15px] font-medium text-petrol mt-0.5">
-            {heroFormattedPrice}
-          </p>
-        </div>
-        <button
-          class="ml-auto w-8 h-8 rounded-f2-md bg-watermelon flex items-center justify-center cursor-pointer border-none f2-transition hover:bg-watermelon-hover hover:scale-110 active:scale-95 shrink-0"
-          data-hero-add-to-cart={heroProduct.id}
-          data-hero-variant={heroVariantLabel}
-          aria-label={`Add ${heroProduct.name} to cart`}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </section>
+  </div>
 
   {/* ─── TRUST BAND ─── */}
   {/* Fix #8 — TrustItem atom con SVG accesible en lugar de emojis sin a11y */}
   <div class="bg-sand-100 border-y border-sand-200 py-8" role="list" aria-label="Our promises">
     <div class="max-w-[1320px] mx-auto px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <TrustItem icon="shipping"    title="Free Shipping"    sub={`On orders over ${freeShippingLabel}`} />
-      <TrustItem icon="returns"     title="60-Day Returns"   sub="No questions asked" />
-      <TrustItem icon="artisan"     title="Artisan Sourced"  sub="Direct from craftspeople" />
-      <TrustItem icon="sustainable" title="Sustainably Made" sub="Certified materials only" />
+      {HomeContent.trust.map(item => (
+        <TrustItem icon={item.icon as any} title={item.title} sub={item.sub} />
+      ))}
     </div>
   </div>
 
   {/* ─── CATEGORY PILLS ─── */}
   {/* Fix #4 — los pills ahora generan URLs que realmente filtran la grilla */}
-  <nav
-    class="max-w-[1320px] mx-auto px-8 flex gap-3 overflow-x-auto py-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-    aria-label="Browse by type"
-  >
-    {CATEGORY_PILLS.map((pill) => (
-      <a
-        href={`/?category=${pill.value}`}
-        class:list={["filter-pill", activeCategory === pill.value ? "filter-pill--active" : ""]}
-        aria-current={activeCategory === pill.value ? "true" : undefined}
-      >
-        <span class="text-[15px]" aria-hidden="true">{pill.emoji}</span>
-        {pill.label}
-      </a>
-    ))}
-  </nav>
+  <CategoryNav
+    items={CATEGORY_PILLS.map(p => ({ id: p.value, label: p.label, emoji: p.emoji }))}
+    activeId={activeCategory}
+    variant="light"
+    useHashRoute={false}
+    ariaLabel="Buscar por categoría"
+  />
 
   {/* ─── PRODUCT GRID ─── */}
   <section class="py-16" aria-labelledby="featured-heading">
@@ -215,51 +123,34 @@ const CATEGORY_PILLS = [
       <ProductGrid
         products={featuredProducts as any}
         layout="featured"
-        label="Featured Picks"
-        title="New <em>arrivals</em>"
-        subtitle="Pieces chosen for their quiet confidence and lasting character."
+        label={HomeContent.featured.label}
+        title={HomeContent.featured.title}
+        subtitle={HomeContent.featured.subtitle}
         showFilters={true}
         showSort={true}
-        ctaLabel="View All"
+        ctaLabel={HomeContent.featured.ctaLabel}
         ctaHref="/collections"
       />
     </div>
   </section>
 
-  {/* ─── BRAND STRIP ─── */}
-  {/* Fix #9 — <div> → <section> con landmark semántico */}
-  <section class="bg-petrol py-16 lg:py-32 relative overflow-hidden" aria-label="Our philosophy">
-    <div class="absolute -top-[100px] -right-[100px] w-[400px] h-[400px] bg-white/5 rounded-full pointer-events-none"></div>
-    <div class="absolute -bottom-[80px] -left-[80px] w-[300px] h-[300px] bg-watermelon/10 rounded-full pointer-events-none"></div>
-
-    <div class="max-w-[1320px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-8 relative z-10 text-center lg:text-left">
-      <p class="font-sans text-white/50 text-sm tracking-[0.02em] leading-[1.8] max-w-md mx-auto lg:mx-0">
-        Each piece in our collection passes through a rigorous curation process
-        — we work directly with artisan studios in Japan, Denmark, and Portugal.
-      </p>
-
-      <h2 class="font-display text-[clamp(32px,4vw,56px)] font-light text-white leading-[1.2]">
-        Objects made<br />
-        to be <span class="text-watermelon">loved</span><br />
-        for decades.
-      </h2>
-
-      <div class="flex justify-center lg:justify-end">
-        <Button variant="ghost" href="/about" class="!bg-white/10 !text-white/80 !border-white/20 hover:!bg-white/20">
-          Our Philosophy →
-        </Button>
-      </div>
-    </div>
-  </section>
+  {/* ─── BRAND STORY ─── */}
+  <BrandStorySection 
+    supplier={HomeContent.brandStory.supplier}
+    isLocal={HomeContent.brandStory.isLocal}
+    title={HomeContent.brandStory.title}
+    description={HomeContent.brandStory.description}
+    image={HomeContent.brandStory.image}
+    ctaHref={HomeContent.brandStory.ctaHref}
+  />
 
   {/* ─── CATEGORY SHOWCASE ─── */}
-  {/* Fix #1 + Fix #12 — hrefs corregidos, conteos reales, CategoryCard molecule */}
-  <section class="py-16" aria-labelledby="categories-heading">
+  <section class="py-16 md:py-24" aria-labelledby="categories-heading">
     <div class="max-w-[1320px] mx-auto px-8">
       <div class="mb-10">
-        <Eyebrow text="Shop by Space" color="sand" class="mb-2" />
+        <Eyebrow text={HomeContent.categories.eyebrow} color="sand" class="mb-2" />
         <h2 class="font-display text-4xl font-light text-petrol" id="categories-heading">
-          Find your<br /><em class="italic text-sand-900/70">sanctuary</em>
+          {HomeContent.categories.titleLine1}<br /><em class="italic text-sand-900/70">{HomeContent.categories.titleLine2}</em>
         </h2>
       </div>
 
@@ -277,6 +168,9 @@ const CATEGORY_PILLS = [
       </div>
     </div>
   </section>
+
+  {/* ─── NEWSLETTER ─── */}
+  <NewsletterSection />
 
 </MainLayout>
 

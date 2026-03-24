@@ -1,0 +1,28 @@
+{
+  "id": "mordillo-caucho-natural",
+  "name": "Mordillo de Caucho Natural",
+  "subtitle": "Esencial de Alta Rotación",
+  "slug": "mordillo-caucho-natural",
+  "category": "workspace",
+  "subcategory": "Juego Resistente",
+  "price": 18500,
+  "inStock": true,
+  "leadTime": "24 horas",
+  "rating": 4.8,
+  "reviewCount": 156,
+  "badges": ["new"],
+  "featured": false,
+  "newArrival": true,
+  "image": "https://images.unsplash.com/photo-1576201836106-cf1758af1c62?auto=format&fit=crop&q=80&w=800",
+  "description": "El aliado número uno para la ansiedad de tu perro. Fabricado por Don Orione en La Plata con caucho natural de grado alimenticio. Diseño ergonómico que ayuda a la limpieza dental mientras juegan.",
+  "details": [
+    { "label": "Material", "value": "Caucho Natural No Tóxico" },
+    { "label": "Durabilidad", "value": "Alta Resistencia" },
+    { "label": "Proveedor", "value": "Don Orione (La Plata)" }
+  ],
+  "care": "Lavar con agua y jabón neutro después de cada jornada de juego.",
+  "shipping": "Micro-stock: Despacho hoy mismo desde La Plata. Llega en 24-48hs.",
+  "metaDescription": "Mordillo de caucho natural KORA. Flexible, resistente y seguro. Calidad Don Orione La Plata.",
+  "altText": "Juguete mordillo de caucho color arcilla para perros.",
+  "relatedProducts": ["cama-nido-autor", "snacks-articulaciones"]
+}

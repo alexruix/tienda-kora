@@ -12,12 +12,14 @@
 import MainLayout     from "../components/templates/MainLayout.astro";
 import ProductGrid    from "../components/organisms/ProductGrid.astro";
 import SectionHeader  from "../components/molecules/SectionHeader.astro";
+import CategoryNav    from "../components/molecules/CategoryNav.astro";
 import { getCollection } from "astro:content";
+import { CategoryContent } from "../data/categoryContent";
 
 const productsData = await getCollection("products");
 const allProducts = productsData.map((p) => ({ ...p.data, id: p.id }));
 
-// Agrupar por categoría principal (antes del " · ")
+// Agrupar por categoría principal
 const categoriesMap = new Map<string, { label: string; products: typeof allProducts }>();
 
 for (const product of allProducts) {
@@ -33,18 +35,12 @@ const categories = Array.from(categoriesMap.entries())
   .map(([id, data]) => ({ id, ...data }))
   .sort((a, b) => a.label.localeCompare(b.label));
 
-const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-  living: "Sofas, lighting, tables, and objects for a living room with quiet, confident character.",
-  dining: "Tables and seating designed for the ritual of shared meals and conversation.",
-  workspace: "Objects chosen for focus, clarity, and the feeling of a mind at ease.",
-};
-
 const totalCount = allProducts.length;
 ---
 
 <MainLayout
-  title="All Collections — BeautyHome"
-  description="Browse our complete catalog of curated artisan home objects. Organized by space — Living, Dining, Workspace, and beyond."
+  title={`${CategoryContent.collections.title.replace('<em>', '').replace('</em>', '')} — KORA`}
+  description={CategoryContent.collections.description}
 >
   {/* ─── PAGE HEADER ─── */}
   <header class="bg-petrol text-white relative overflow-hidden">
@@ -55,77 +51,78 @@ const totalCount = allProducts.length;
 
     <div class="ds-container py-20 lg:py-28 relative z-10 animate-fade-in-up">
       <p class="font-sans text-[11px] tracking-[0.3em] uppercase text-watermelon mb-4 flex items-center gap-3 before:content-[''] before:w-8 before:h-px before:bg-watermelon before:shrink-0">
-        Curated Catalog
+        {CategoryContent.collections.eyebrow}
       </p>
-      <h1 class="font-display text-[clamp(48px,6vw,80px)] font-light leading-[1.05] mb-6 text-white">
-        All <em class="italic text-sand-200/80">Collections</em>
-      </h1>
+      <h1 class="font-display text-[clamp(48px,6vw,80px)] font-light leading-[1.05] mb-6 text-white" set:html={CategoryContent.collections.title} />
       <p class="font-sans text-base text-white/60 leading-[1.8] max-w-[480px] mb-10">
-        {totalCount}+ carefully chosen pieces from {categories.length} collections —
-        each one selected for its quiet confidence and lasting character.
+        {totalCount}+ {CategoryContent.common.pieces} seleccionadas —
+        {CategoryContent.collections.description}
       </p>
 
       {/* Category Navigation Pills */}
-      <nav class="flex gap-2 flex-wrap" aria-label="Jump to collection">
-        {categories.map((cat) => (
-          <a
-            href={`#collection-${cat.id}`}
-            class="inline-flex items-center gap-2 font-sans text-[12px] tracking-[0.08em] uppercase px-4 py-2 rounded-f2-md bg-white/10 border border-white/20 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-200 no-underline"
-          >
-            {cat.label}
-            <span class="text-white/40 text-[10px]">{cat.products.length}</span>
-          </a>
-        ))}
-      </nav>
+      <CategoryNav
+        items={categories.map(cat => {
+          const catInfo = CategoryContent.categories[cat.id as keyof typeof CategoryContent.categories];
+          return {
+            id: cat.id,
+            label: catInfo?.name || cat.label,
+            count: cat.products.length
+          }
+        })}
+        variant="dark"
+        useHashRoute={true}
+        ariaLabel={CategoryContent.common.jumpTo}
+      />
     </div>
   </header>
 
   {/* ─── COLLECTION SECTIONS ─── */}
-  {categories.map((cat) => (
-    <section
-      id={`collection-${cat.id}`}
-      class="py-16 lg:py-24 border-b border-sand-200 last:border-none scroll-mt-[88px]"
-      aria-labelledby={`heading-${cat.id}`}
-    >
-      <div class="ds-container">
-        {/* Section Header */}
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-8 border-b border-sand-200">
-            <SectionHeader
-              eyebrow={`Collection · ${cat.products.length} pieces`}
-              title={cat.label}
-              subtitle={CATEGORY_DESCRIPTIONS[cat.id]}
-              id={`heading-${cat.id}`}
-            />
-          <a
-            href={`/category/${cat.id}`}
-            class="btn btn-secondary btn-md shrink-0 no-underline"
-            aria-label={`View all ${cat.label} pieces`}
-          >
-            View all {cat.label} →
-          </a>
-        </div>
+  {categories.map((cat) => {
+    const catInfo = CategoryContent.categories[cat.id as keyof typeof CategoryContent.categories];
+    return (
+      <section
+        id={`collection-${cat.id}`}
+        class="py-16 lg:py-24 border-b border-sand-200 last:border-none scroll-mt-[88px]"
+        aria-labelledby={`heading-${cat.id}`}
+      >
+        <div class="ds-container">
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-8 border-b border-sand-200">
+              <SectionHeader
+                eyebrow={`${CategoryContent.common.collection} · ${cat.products.length} ${CategoryContent.common.pieces}`}
+                title={catInfo?.name || cat.label}
+                subtitle={catInfo?.description || ""}
+                id={`heading-${cat.id}`}
+              />
+            <a
+              href={`/category/${cat.id}`}
+              class="btn btn-secondary btn-md shrink-0 no-underline"
+              aria-label={`${CategoryContent.common.all} ${catInfo?.name || cat.label}`}
+            >
+              {CategoryContent.common.all} {catInfo?.name || cat.label} →
+            </a>
+          </div>
 
-        {/* Product Grid */}
-        <ProductGrid
-          products={cat.products as any}
-          layout="default"
-        />
-      </div>
-    </section>
-  ))}
+          <ProductGrid
+            products={cat.products as any}
+            layout="default"
+          />
+        </div>
+      </section>
+    );
+  })}
 
   {/* ─── BOTTOM CTA ─── */}
   <div class="bg-sand-100 border-t border-sand-200 py-20 text-center">
     <div class="max-w-[600px] mx-auto px-8 animate-fade-in-up">
       <SectionHeader
-        eyebrow="Looking for something specific?"
+        eyebrow="¿Buscás algo específico?"
         eyebrowColor="sand"
-        title="Our concierge is here"
-        subtitle="Can't find what you're looking for? Our team of interior specialists can source any piece and advise on curation for your space."
+        title={CategoryContent.collections.conciergeTitle}
+        subtitle={CategoryContent.collections.conciergeSub}
         align="center"
       />
       <div class="mt-8">
-        <a href="mailto:concierge@beautyhome.com" class="btn btn-primary btn-lg no-underline">Contact Concierge</a>
+        <a href="mailto:hola@kora.com.ar" class="btn btn-primary btn-lg no-underline">{CategoryContent.collections.contactBtn}</a>
       </div>
     </div>
   </div>

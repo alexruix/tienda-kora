@@ -1,0 +1,50 @@
+---
+/**
+ * EmptyState.astro — Molecule
+ * BeautyHome / KORA · NODO Studio
+ *
+ * Pantalla o bloque de error amigable cuando un carrito, 
+ * wishlist o filtro está vacío.
+ */
+
+import Button from '../atoms/Button.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  icon?: 'cart' | 'heart' | 'search';
+  actionLabel?: string;
+  actionHref?: string;
+  class?: string;
+}
+
+const { 
+  title, 
+  description, 
+  icon = 'cart', 
+  actionLabel = "Seguir explorando", 
+  actionHref = "/collections",
+  class: extraClass = '' 
+} = Astro.props;
+
+const icons = {
+  cart: `<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>`,
+  heart: `<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>`,
+  search: `<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>`
+};
+---
+
+<div class:list={["flex flex-col items-center justify-center text-center py-16 px-5", extraClass]}>
+  <div class="w-16 h-16 rounded-full bg-sand-200 flex items-center justify-center text-petrol/60 mb-6" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <Fragment set:html={icons[icon]} />
+    </svg>
+  </div>
+  
+  <h3 class="font-display text-2xl lg:text-3xl font-light text-petrol mb-3">{title}</h3>
+  <p class="font-sans text-[15px] text-sand-900/60 max-w-[320px] mb-8">{description}</p>
+  
+  <Button href={actionHref} variant="primary">
+    {actionLabel}
+  </Button>
+</div>
