@@ -109,8 +109,17 @@ export function CartDrawer({ products = [] }) {
 
   // Lock scroll del body cuando el drawer esté abierto
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = "15px"; // Prevent layout shift if scrollbar disappears
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
+    return () => { 
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    };
   }, [isOpen]);
 
   // ── Swipe Handlers (Bottom Sheet) ─────────────────────────────────────────

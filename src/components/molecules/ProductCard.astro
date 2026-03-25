@@ -10,6 +10,7 @@
  */
 import PriceDisplay from './PriceDisplay.astro';
 import Badge from '../atoms/Badge.astro';
+import { formatCurrency } from '../../utils/formatters.ts';
 
 interface Props {
   id:              string;
@@ -42,19 +43,21 @@ const {
 } = Astro.props;
 
 const discount = originalPrice ? Math.round((1 - price / originalPrice) * 100) : null;
-const formattedPrice = price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-const formattedOriginal = originalPrice?.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+const formattedPrice = formatCurrency(price);
+const formattedOriginal = originalPrice ? formatCurrency(originalPrice) : null;
 ---
 
 <article
   class:list={[
-    "group relative bg-white rounded-f2-lg overflow-hidden shadow-f2-rest cursor-pointer animate-card-in f2-transition hover:-translate-y-1 hover:shadow-f2-hover",
+    "group relative bg-white rounded-f2-lg overflow-hidden shadow-f2-rest animate-card-in f2-transition hover:-translate-y-1 hover:shadow-f2-hover",
     featured ? "product-card--featured" : ""
   ]}
   style={`animation-delay: ${animationDelay}ms`}
   data-product-id={id}
 >
-  <div class="relative overflow-hidden bg-sand-100" style={`aspect-ratio: ${aspectRatio}`}>
+  <a href={`/product/${id}`} class="absolute inset-0 z-0 select-none cursor-pointer" aria-label={`Ver detalles de ${name}`}></a>
+
+  <div class="relative overflow-hidden bg-sand-100 pointer-events-none" style={`aspect-ratio: ${aspectRatio}`}>
     <div class="w-full h-full flex items-center justify-center transition-transform duration-600 ease-fluent group-hover:scale-105">
       {image ? (
         <img src={image} alt={name} loading="lazy" width="400" height="500" class="w-full h-full object-cover" />
@@ -132,25 +135,27 @@ const formattedOriginal = originalPrice?.toLocaleString('es-AR', { style: 'curre
     </div>
   </div>
 
-  <div class="p-4 pt-4 pb-5 flex flex-col h-full">
-    <a href={`/product/${id}`} class="block no-underline text-inherit mb-2 group/link grow">
+  <div class="p-4 pt-4 pb-5 flex flex-col h-full pointer-events-none">
+    <div class="mb-2 grow">
       <p class="text-[10px] tracking-widest uppercase text-sand-900/50 mb-1 font-sans">{category}</p>
-      <h3 class="text-[14px] font-display font-medium text-sand-900 leading-snug transition-colors duration-150 group-hover/link:text-petrol line-clamp-2">{name}</h3>
-    </a>
+      <h3 class="text-[14px] font-display font-medium text-sand-900 leading-snug transition-colors duration-150 group-hover:text-petrol line-clamp-2">{name}</h3>
+    </div>
     <div class="mt-auto pt-2 flex flex-col gap-1">
       <PriceDisplay 
         price={price} 
         compareAtPrice={originalPrice} 
         showInstallments={true} 
-        installmentsCount={6} 
+        installmentsCount={price > 15000 ? 6 : 3} 
         size="sm" 
       />
-      <span class="text-[11px] font-semibold text-petrol mt-1 flex items-center gap-1">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="text-green-600">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-        </svg>
-        Llega gratis mañana
-      </span>
+      {price > 20000 && (
+        <span class="text-[11px] font-semibold text-petrol mt-1 flex items-center gap-1">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="text-green-600">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          Llega gratis mañana
+        </span>
+      )}
     </div>
   </div>
 </article>

@@ -14,6 +14,7 @@ import {
 import { wishlistCount } from "../../store/wishlist.ts";
 import SearchBar from "../molecules/SearchBar.jsx";
 import { NavContent } from "../../data/navContent.ts";
+import { formatCurrency } from "../../utils/formatters.ts";
 
 export default function Navbar({ products = [] }) {
   const [scrolled, setScrolled] = useState(false);
@@ -103,7 +104,7 @@ export default function Navbar({ products = [] }) {
       {promoBanner && (
         <div className="relative z-1001 bg-watermelon text-white text-center py-[9px] px-4 font-sans text-[13px] tracking-[0.04em]">
           <span>
-            {NavContent.promo.prefix} ${FREE_SHIPPING_THRESHOLD} {NavContent.promo.suffix} <strong>{PROMO_CODE}</strong>
+            {NavContent.promo.prefix} {formatCurrency(FREE_SHIPPING_THRESHOLD)} {NavContent.promo.suffix} <strong>{PROMO_CODE}</strong>
           </span>
           <button
             className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-f2-sm opacity-70 hover:opacity-100 hover:bg-white/15 transition-all cursor-pointer border-none"
@@ -131,8 +132,8 @@ export default function Navbar({ products = [] }) {
         role="banner"
         className={`fixed top-0 left-0 right-0 z-1000 h-[68px] animate-slide-down transition-all duration-300 ease-fluent ${
           scrolled
-            ? "bg-sand-50/95 backdrop-blur-xl backdrop-saturate-150 border-b border-transparent shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3),0_2px_16px_rgba(0,0,0,0.06)]"
-            : "bg-sand-50/80 backdrop-blur-xl backdrop-saturate-150 border-b border-sand-200/60 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3),0_1px_0_rgba(229,223,211,0.8)]"
+            ? "bg-sand-50/98 backdrop-blur-xl backdrop-saturate-150 border-b border-transparent shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3),0_2px_16px_rgba(0,0,0,0.06)]"
+            : "bg-sand-50/90 backdrop-blur-xl backdrop-saturate-150 border-b border-sand-200/60 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3),0_1px_0_rgba(229,223,211,0.8)]"
         }`}
       >
         <div className="max-w-[1320px] mx-auto px-5 md:px-8 h-full flex items-center gap-4 lg:gap-8">
@@ -161,7 +162,7 @@ export default function Navbar({ products = [] }) {
                 className={`relative flex items-center gap-1 font-sans text-[13px] tracking-[0.06em] uppercase px-3 py-1.5 rounded-f2-md transition-colors duration-150 cursor-pointer border-none bg-transparent ${
                   activeMenu === cat.id
                     ? "text-petrol font-medium bg-sand-100 after:absolute after:-bottom-[19px] after:left-1/2 after:-translate-x-1/2 after:w-5 after:h-[2px] after:bg-watermelon after:rounded-[1px]"
-                    : "text-sand-900/70 hover:text-sand-900 hover:bg-sand-100 font-normal"
+                    : "text-sand-900/90 hover:text-sand-900 hover:bg-sand-100 font-normal"
                 }`}
                 onClick={() => toggleMenu(cat.id)}
                 aria-expanded={activeMenu === cat.id}

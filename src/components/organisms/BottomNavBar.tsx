@@ -53,7 +53,7 @@ export function BottomNavBar() {
     {
       id: "search",
       label: "Buscar",
-      href: "/collections",
+      href: "/search",
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8"/>
@@ -111,7 +111,7 @@ export function BottomNavBar() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-1000 lg:hidden bg-white border-t border-sand-200 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]"
+      className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-white border-t border-sand-200 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       aria-label="Navegación principal"
     >

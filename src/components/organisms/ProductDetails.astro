@@ -19,6 +19,7 @@ import StockBadge       from '../atoms/StockBadge.astro';
 import Separator        from '../atoms/Separator.astro';
 import { QuantitySelector } from '../molecules/QuantitySelector.jsx';
 import Button from '../atoms/Button.astro';
+import { formatCurrency } from '../../utils/formatters.ts';
 
 interface Props {
   product: any;
@@ -47,9 +48,7 @@ const leadTimeDays = (() => {
 
 const shippingMode = product.shipping?.toLowerCase().includes('retiro') ? 'pickup' : 'standard';
 
-const formattedPrice = product.price.toLocaleString('es-AR', {
-  style: 'currency', currency: 'ARS', minimumFractionDigits: 0,
-});
+const formattedPrice = formatCurrency(product.price);
 ---
 
 <div class:list={["grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[1320px] mx-auto px-5 md:px-8 py-12 pb-[100px] lg:pb-12", extraClass]}>
@@ -59,7 +58,11 @@ const formattedPrice = product.price.toLocaleString('es-AR', {
     <ProductGallery 
       images={[
         { id: 'img-1', src: product.image, alt: product.name },
-        { id: 'img-2', src: 'https://images.unsplash.com/photo-1591584250647-39e77ee836f0?w=800&q=80', alt: 'Detalle' },
+        ...(product.gallery || []).map((img: string, i: number) => ({
+          id: `img-extra-${i}`,
+          src: img,
+          alt: `${product.name} - Detalle ${i + 1}`
+        }))
       ]} 
     />
   </div>
@@ -99,7 +102,7 @@ const formattedPrice = product.price.toLocaleString('es-AR', {
       price={product.price}
       compareAtPrice={product.originalPrice}
       showInstallments={true}
-      installmentsCount={6}
+      installmentsCount={product.price > 15000 ? 6 : 3}
       size="lg"
       class="mb-5"
     />
@@ -121,12 +124,14 @@ const formattedPrice = product.price.toLocaleString('es-AR', {
     />
 
     {/* ── Envío gratis ── */}
-    <div class="flex items-center gap-2 text-[13px] text-petrol font-medium mb-6 bg-petrol/5 border border-petrol/10 rounded-f2-md px-4 py-2.5">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-      </svg>
-      Envío gratis a todo el país en este producto
-    </div>
+    {product.price > 20000 && (
+      <div class="flex items-center gap-2 text-[13px] text-petrol font-medium mb-6 bg-petrol/5 border border-petrol/10 rounded-f2-md px-4 py-2.5">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        Envío gratis a todo el país en este producto
+      </div>
+    )}
 
     {/* ── CTA Principal ── */}
     <div id="pdp-cta-anchor" class="flex items-center gap-3 mb-6">

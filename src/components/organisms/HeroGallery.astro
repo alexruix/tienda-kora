@@ -47,7 +47,11 @@ const { slides } = Astro.props;
         <p class="font-sans text-base text-white/80 max-w-[480px] leading-relaxed mb-10 mx-auto sm:mx-0">
           {slide.subtitle}
         </p>
-        <Button href={slide.ctaHref} variant="primary" class="mx-auto sm:mx-0 bg-white text-petrol hover:bg-sand-100 border-none">
+        <Button 
+          href={slide.ctaHref} 
+          variant="primary" 
+          class="mx-auto sm:mx-0 bg-white text-petrol hover:bg-white/90 border-none px-10 h-14 min-w-[220px] rounded-full text-[13px] tracking-[0.1em]"
+        >
           {slide.ctaLabel}
         </Button>
       </div>

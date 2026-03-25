@@ -124,7 +124,7 @@ export default function CartItem({
             className="text-[10px] tracking-widest uppercase text-sand-900/30 cursor-pointer bg-none border-none p-0 transition-colors duration-150 font-sans hover:text-watermelon font-bold"
             onClick={() => onRemove?.()}
           >
-            Remove
+            Quitar
           </button>
         </div>
       </div>
@@ -136,7 +136,7 @@ export default function CartItem({
         </div>
         {itemQuantity > 1 && (
           <div className="text-[10px] text-sand-900/40">
-            {formatPrice(itemPrice)} ea.
+            {formatPrice(itemPrice)} c/u
           </div>
         )}
       </div>

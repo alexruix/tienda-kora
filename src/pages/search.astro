@@ -1,0 +1,69 @@
+---
+/**
+ * /search — Search Results Page
+ * KORA · NODO Studio
+ *
+ * Realiza el filtrado de productos basado en el query 'q'.
+ */
+
+import MainLayout from "../components/templates/MainLayout.astro";
+import ProductGrid from "../components/organisms/ProductGrid.astro";
+import { getCollection } from "astro:content";
+
+export const prerender = false;
+
+const query = Astro.url.searchParams.get("q") || "";
+const productsData = await getCollection("products");
+const allProducts = productsData.map((p) => ({ ...p.data, id: p.id }));
+
+// Filtrado simple por nombre o categoría
+const filteredProducts = allProducts.filter((p) => 
+  p.name.toLowerCase().includes(query.toLowerCase()) || 
+  p.category?.toLowerCase().includes(query.toLowerCase())
+);
+
+---
+
+<MainLayout 
+  title={`Resultados para "${query}" — KORA`}
+  description={`Buscando "${query}" en KORA.`}
+  noIndex={true}
+>
+  <div class="ds-container py-16 lg:py-24">
+    <header class="mb-12">
+      <p class="font-sans text-[11px] tracking-[0.2em] uppercase text-sand-900/40 mb-3">
+        Resultados de búsqueda
+      </p>
+      <h1 class="font-display text-4xl lg:text-5xl font-light text-petrol">
+        Mostrando resultados para <span class="italic">"{query}"</span>
+      </h1>
+      <p class="font-sans text-sand-900/60 mt-4">
+        Hemos encontrado {filteredProducts.length} coincidencias para tu búsqueda.
+      </p>
+    </header>
+
+    {filteredProducts.length > 0 ? (
+      <ProductGrid 
+        products={filteredProducts as any} 
+        showFilters={true} 
+        showSort={true}
+      />
+    ) : (
+      <div class="py-20 text-center bg-sand-100 rounded-f2-xl border border-sand-200">
+        <div class="w-16 h-16 rounded-full bg-sand-200 flex items-center justify-center mx-auto mb-6">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sand-900/30">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+        </div>
+        <h2 class="font-display text-2xl font-light text-petrol mb-4">No encontramos lo que buscás</h2>
+        <p class="font-sans text-sand-900/60 mb-8 max-w-sm mx-auto">
+          Intentá con otros términos o explorá nuestras categorías principales.
+        </p>
+        <a href="/collections" class="btn btn-primary btn-md no-underline">
+          Explorar Catálogo
+        </a>
+      </div>
+    )}
+  </div>
+</MainLayout>

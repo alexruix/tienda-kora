@@ -107,15 +107,6 @@ const CATEGORY_PILLS = [
     </div>
   </div>
 
-  {/* ─── CATEGORY PILLS ─── */}
-  {/* Fix #4 — los pills ahora generan URLs que realmente filtran la grilla */}
-  <CategoryNav
-    items={CATEGORY_PILLS.map(p => ({ id: p.value, label: p.label, emoji: p.emoji }))}
-    activeId={activeCategory}
-    variant="light"
-    useHashRoute={false}
-    ariaLabel="Buscar por categoría"
-  />
 
   {/* ─── PRODUCT GRID ─── */}
   <section class="py-16" aria-labelledby="featured-heading">
