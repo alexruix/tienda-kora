@@ -15,5 +15,3 @@ export function formatCurrency(
     }).format(amount);
 }
 
-/** @deprecated Use formatCurrency */
-export const formatPrice = formatCurrency;

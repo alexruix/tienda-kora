@@ -85,8 +85,7 @@ const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://kora.com.ar');
   <!-- Toast de confirmación de carrito (mobile bottom-[76px], desktop bottom-6) -->
   <Toast products={allProducts as any} client:only="react" />
 
-  <!-- Navegación inferior: solo visible en mobile (lg:hidden via CSS) -->
-  <BottomNavBar client:only="react" />
+  <!-- Navegación inferior: movida al final para evitar solapamientos -->
 
   <main id="main-content" class="grow focus:outline-none" tabindex="-1">
     <slot />
@@ -101,6 +100,8 @@ const ogImageURL   = new URL(ogImage, Astro.site ?? 'https://kora.com.ar');
   >
     Ir al contenido principal
   </a>
+  
+  <BottomNavBar client:only="react" />
 
 </body>
 </html>

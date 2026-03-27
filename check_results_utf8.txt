@@ -1,0 +1,252 @@
+﻿[2m19:54:03[22m [34m[content][39m Syncing content
+[2m19:54:03[22m [34m[content][39m Synced content
+[2m19:54:03[22m [34m[types][39m Generated [2m292ms[22m
+[2m19:54:03[22m [34m[check][39m Getting diagnostics for Astro files in C:\Users\alexr\github\tienda-kora...
+[96mscripts/report-waw.ts[0m:[93m10[0m:[93m16[0m - [93mwarning[0m[90m ts(6133): [0m'runReport' is declared but its value is never read.
+
+[7m10[0m async function runReport() {
+[7m  [0m [93m               ~~~~~~~~~[0m
+
+[96msrc/components/molecules/CartItem.jsx[0m:[93m139[0m:[93m14[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m139[0m             {formatPrice(itemPrice)} c/u
+[7m   [0m [93m             ~~~~~~~~~~~[0m
+[96msrc/components/molecules/CartItem.jsx[0m:[93m135[0m:[93m12[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m135[0m           {formatPrice(lineTotalValue)}
+[7m   [0m [93m           ~~~~~~~~~~~[0m
+[96msrc/components/molecules/CartItem.jsx[0m:[93m6[0m:[93m10[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m6[0m import { formatPrice } from "../../utils/formatters.ts";
+[7m [0m [93m         ~~~~~~~~~~~[0m
+
+[96msrc/components/molecules/CartSummary.jsx[0m:[93m49[0m:[93m74[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m49[0m         <span className="text-xl lg:text-2xl font-semibold text-petrol">{formatPrice(finalTotal)}</span>
+[7m  [0m [93m                                                                         ~~~~~~~~~~~[0m
+[96msrc/components/molecules/CartSummary.jsx[0m:[93m34[0m:[93m43[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m34[0m           <span className="font-medium">-{formatPrice(discount)}</span>
+[7m  [0m [93m                                          ~~~~~~~~~~~[0m
+[96msrc/components/molecules/CartSummary.jsx[0m:[93m27[0m:[93m54[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m27[0m         <span className="text-sand-900 font-medium">{formatPrice(subtotal)}</span>
+[7m  [0m [93m                                                     ~~~~~~~~~~~[0m
+[96msrc/components/molecules/CartSummary.jsx[0m:[93m14[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'shippingOptions' is declared but its value is never read.
+
+[7m14[0m   shippingOptions = [],
+[7m  [0m [93m  ~~~~~~~~~~~~~~~[0m
+[96msrc/components/molecules/CartSummary.jsx[0m:[93m9[0m:[93m10[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m9[0m import { formatPrice } from '../../utils/formatters';
+[7m [0m [93m         ~~~~~~~~~~~[0m
+[96msrc/components/molecules/CartSummary.jsx[0m:[93m8[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m8[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/molecules/CategoryCard.astro[0m:[93m21[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'id' is declared but its value is never read.
+
+[7m21[0m   id,
+[7m  [0m [93m  ~~[0m
+
+[96msrc/components/molecules/NewsletterBox.astro[0m:[93m33[0m:[93m81[0m - [93mwarning[0m[90m ts(6385): [0m'event' is deprecated.
+
+[7m33[0m   <form class="flex flex-col sm:flex-row gap-4 max-w-[500px] mx-auto" onsubmit="event.preventDefault();">
+[7m  [0m [93m                                                                                ~~~~~[0m
+
+[96msrc/components/molecules/PDPAddToCart.jsx[0m:[93m7[0m:[93m43[0m - [93mwarning[0m[90m ts(6133): [0m'productName' is declared but its value is never read.
+
+[7m7[0m export function PDPAddToCart({ productId, productName }) {
+[7m [0m [93m                                          ~~~~~~~~~~~[0m
+[96msrc/components/molecules/PDPAddToCart.jsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useEffect } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/molecules/ProductCard.astro[0m:[93m47[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'formattedOriginal' is declared but its value is never read.
+
+[7m47[0m const formattedOriginal = originalPrice ? formatCurrency(originalPrice) : null;
+[7m  [0m [93m      ~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/molecules/ProductCard.astro[0m:[93m46[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'formattedPrice' is declared but its value is never read.
+
+[7m46[0m const formattedPrice = formatCurrency(price);
+[7m  [0m [93m      ~~~~~~~~~~~~~~[0m
+[96msrc/components/molecules/ProductCard.astro[0m:[93m37[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'reviewCount' is declared but its value is never read.
+
+[7m37[0m   reviewCount    = 0,
+[7m  [0m [93m  ~~~~~~~~~~~[0m
+[96msrc/components/molecules/ProductCard.astro[0m:[93m36[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'rating' is declared but its value is never read.
+
+[7m36[0m   rating         = 0,
+[7m  [0m [93m  ~~~~~~[0m
+
+[96msrc/components/molecules/QuantitySelector.jsx[0m:[93m9[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m9[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/molecules/SearchBar.jsx[0m:[93m149[0m:[93m34[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m149[0m                                 {formatPrice(product.price)}
+[7m   [0m [93m                                 ~~~~~~~~~~~[0m
+[96msrc/components/molecules/SearchBar.jsx[0m:[93m10[0m:[93m10[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m10[0m import { formatPrice } from '../../utils/formatters.ts';
+[7m  [0m [93m         ~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/AuthModule.jsx[0m:[93m9[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m9[0m import React, { useState } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/organisms/CartDrawer.jsx[0m:[93m366[0m:[93m90[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m366[0m                     <span className="font-display text-[26px] text-petrol leading-none">{formatPrice(totalWithPromo)}</span>
+[7m   [0m [93m                                                                                         ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CartDrawer.jsx[0m:[93m362[0m:[93m88[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m362[0m                     <span className="text-[13px] text-success font-sans font-medium">ÔêÆ{formatPrice(discount)}</span>
+[7m   [0m [93m                                                                                       ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CartDrawer.jsx[0m:[93m322[0m:[93m44[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m322[0m                         Ahorro de <strong>{formatPrice(discount)}</strong>
+[7m   [0m [93m                                           ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CartDrawer.jsx[0m:[93m251[0m:[93m54[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m251[0m                     <strong className="text-petrol">{formatPrice(remainingForFree)}</strong>{" "}
+[7m   [0m [93m                                                     ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CartDrawer.jsx[0m:[93m32[0m:[93m10[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m32[0m import { formatPrice } from "../../utils/formatters.ts";
+[7m  [0m [93m         ~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m442[0m:[93m177[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m442[0m                       <p className="font-sans text-[13px] text-success" dangerouslySetInnerHTML={{ __html: CheckoutContent.promo.appliedTemplate.replace("{amount}", `<strong>${formatPrice(discount)}</strong>`) }} />
+[7m   [0m [93m                                                                                                                                                                                ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m342[0m:[93m14[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m342[0m             {formatPrice(total)}
+[7m   [0m [93m             ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m176[0m:[93m14[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m176[0m             {formatPrice(total)}
+[7m   [0m [93m             ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m170[0m:[93m58[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m170[0m             <span className="text-success font-medium">ÔêÆ{formatPrice(discount)}</span>
+[7m   [0m [93m                                                         ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m162[0m:[93m65[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m162[0m             {content.shippingToFreeTemplate.replace("{amount}", formatPrice(remaining))}
+[7m   [0m [93m                                                                ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m157[0m:[93m54[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m157[0m             {isFreeShipping ? content.freeShipping : formatPrice(SHIPPING_COST)}
+[7m   [0m [93m                                                     ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m150[0m:[93m18[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m150[0m           <span>{formatPrice(subtotal)}</span>
+[7m   [0m [93m                 ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m141[0m:[93m16[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m141[0m               {formatPrice(item.price * item.quantity)}
+[7m   [0m [93m               ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m21[0m:[93m10[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m21[0m import { formatPrice } from "../../utils/formatters.ts";
+[7m  [0m [93m         ~~~~~~~~~~~[0m
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m17[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'cartCount' is declared but its value is never read.
+
+[7m17[0m   cartCount,
+[7m  [0m [93m  ~~~~~~~~~[0m
+
+[96msrc/components/organisms/OrderCardList.jsx[0m:[93m61[0m:[93m16[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m61[0m               {formatPrice(order.total)}
+[7m  [0m [93m               ~~~~~~~~~~~[0m
+[96msrc/components/organisms/OrderCardList.jsx[0m:[93m10[0m:[93m10[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m10[0m import { formatPrice } from '../../utils/formatters';
+[7m  [0m [93m         ~~~~~~~~~~~[0m
+[96msrc/components/organisms/OrderCardList.jsx[0m:[93m8[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m8[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/ProductDetails.astro[0m:[93m21[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Button' is declared but its value is never read.
+
+[7m21[0m import Button from '../atoms/Button.astro';
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/organisms/ProductDetails.astro[0m:[93m17[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'TrustBadgeGroup' is declared but its value is never read.
+
+[7m17[0m import TrustBadgeGroup  from '../molecules/TrustBadgeGroup.astro';
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/ProductGrid.astro[0m:[93m172[0m:[93m13[0m - [93mwarning[0m[90m ts(6133): [0m'fastShippingToggle' is declared but its value is never read.
+
+[7m172[0m       const fastShippingToggle = container.querySelector('input[type="checkbox"]') as HTMLInputElement;
+[7m   [0m [93m            ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/WishlistGrid.jsx[0m:[93m23[0m:[93m44[0m - [93mwarning[0m[90m ts(6133): [0m'onAddToCart' is declared but its value is never read.
+
+[7m23[0m function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
+[7m  [0m [93m                                           ~~~~~~~~~~~[0m
+
+[96msrc/pages/index.astro[0m:[93m74[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'CATEGORY_PILLS' is declared but its value is never read.
+
+[7m74[0m const CATEGORY_PILLS = [
+[7m  [0m [93m      ~~~~~~~~~~~~~~[0m
+[96msrc/pages/index.astro[0m:[93m47[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'heroFormattedPrice' is declared but its value is never read.
+
+[7m47[0m const heroFormattedPrice = formatCurrency(heroProduct.price);
+[7m  [0m [93m      ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/index.astro[0m:[93m45[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'heroVariantLabel' is declared but its value is never read.
+
+[7m45[0m const heroVariantLabel  = heroProduct.variants?.[0]?.label ?? "Standard";
+[7m  [0m [93m      ~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/index.astro[0m:[93m20[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'CategoryNav' is declared but its value is never read.
+
+[7m20[0m import CategoryNav    from "../components/molecules/CategoryNav.astro";
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/index.astro[0m:[93m15[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Button' is declared but its value is never read.
+
+[7m15[0m import Button         from "../components/atoms/Button.astro";
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/sale.astro[0m:[93m49[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'formattedSavings' is declared but its value is never read.
+
+[7m49[0m const formattedSavings = formatCurrency(totalSavings);
+[7m  [0m [93m      ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/api/checkout/create-preference.ts[0m:[93m3[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'FREE_SHIPPING_THRESHOLD' is declared but its value is never read.
+
+[7m3[0m import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST, calculateShipping } from "../../../utils/shipping";
+[7m [0m [93m         ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/checkout/success.astro[0m:[93m115[0m:[93m24[0m - [91merror[0m[90m ts(7016): [0mCould not find a declaration file for module 'canvas-confetti'. 'C:/Users/alexr/github/tienda-kora/node_modules/canvas-confetti/src/confetti.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/canvas-confetti` if it exists or add a new declaration (.d.ts) file containing `declare module 'canvas-confetti';`
+
+[7m115[0m   import confetti from "canvas-confetti";
+[7m   [0m [91m                       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/product/[id].astro[0m:[93m40[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'formattedPrice' is declared but its value is never read.
+
+[7m40[0m const formattedPrice = formatCurrency(product.price);
+[7m  [0m [93m      ~~~~~~~~~~~~~~[0m
+
+[96msrc/store/cart.ts[0m:[93m91[0m:[93m3[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m91[0m   formatPrice(total),
+[7m  [0m [93m  ~~~~~~~~~~~[0m
+[96msrc/store/cart.ts[0m:[93m10[0m:[93m10[0m - [93mwarning[0m[90m ts(6385): [0m'formatPrice' is deprecated.
+
+[7m10[0m import { formatPrice } from "../utils/formatters";
+[7m  [0m [93m         ~~~~~~~~~~~[0m
+
+Result (103 files): 
+- 1 error
+- 0 warnings
+- 54 hints
+

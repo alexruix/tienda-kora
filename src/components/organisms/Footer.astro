@@ -45,19 +45,19 @@ const NAV_COLUMNS = [
 ];
 ---
 
-<footer class="bg-petrol-dark text-white/55 pt-16 pb-8">
-  <div class="max-w-[1320px] mx-auto px-5 md:px-8">
+<footer class="bg-petrol-dark text-white/55 pt-16 pb-8 font-sans">
+  <div class="ds-container">
 
     <div class="grid grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-8 lg:gap-12 pb-12 border-b border-white/10">
 
       <div class="col-span-2 lg:col-span-1">
-        <p class="font-display text-[30px] font-light tracking-widest text-white uppercase mb-4">{FooterContent.brand.name}</p>
+        <p class="font-display text-[30px] font-medium tracking-widest text-white uppercase mb-4">{FooterContent.brand.name}</p>
         <p class="text-[14px] leading-[1.7] text-white/40 max-w-[300px] mb-6">
           {FooterContent.brand.description}
         </p>
 
         <div class="mb-6">
-          <p class="text-[11px] tracking-[0.14em] uppercase text-white/35 mb-3">{FooterContent.newsletter.title}</p>
+          <p class="text-[11px] tracking-widest uppercase text-white/35 mb-3 font-bold">{FooterContent.newsletter.title}</p>
           {/* NOTA: Cambia el action a tu proveedor real (Mailchimp/Formspree) o crea un endpoint SSR en Astro */}
           <form class="flex h-10 mb-6" action="#" method="POST" id="newsletter-form">
             <input
@@ -103,7 +103,7 @@ const NAV_COLUMNS = [
 
       {NAV_COLUMNS.map((col) => (
         <nav aria-label={col.title}>
-          <p class="text-[11px] tracking-[0.16em] uppercase text-white/35 mb-5 font-medium">{col.title}</p>
+          <p class="text-[11px] tracking-widest uppercase text-white/35 mb-5 font-bold">{col.title}</p>
           <ul class="flex flex-col gap-3 list-none p-0 m-0">
             {col.links.map((link) => (
               <li>

@@ -43,8 +43,26 @@ const {
   ctaHref     = '#',
 } = Astro.props;
 
-const uniqueCategories = [...new Set(products.map(p => p.category?.split(' · ')[0] || p.category))].filter(Boolean);
-const FILTERS = ['Todos', ...uniqueCategories];
+// Funciones auxiliares para determinar categorías y subcategorías
+const getMainCat = (p: Product) => p.category?.split(' · ')[0].toLowerCase() || p.category?.toLowerCase();
+const getSubCat  = (p: Product) => (p as any).subcategory || p.category?.split(' · ')[1];
+
+const mainCategories = [...new Set(products.map(getMainCat))].filter(Boolean);
+const isSingleCategoryContext = mainCategories.length === 1;
+
+let FILTERS = ['Todos'];
+if (isSingleCategoryContext) {
+  const subCategories = [...new Set(products.map(getSubCat))].filter(Boolean);
+  // Solo mostramos subcategorías si hay más de una para filtrar
+  if (subCategories.length > 0) {
+    FILTERS.push(...subCategories);
+  } else {
+    FILTERS.push(...mainCategories.map(c => c.charAt(0).toUpperCase() + c.slice(1)));
+  }
+} else {
+  // Capitalizar categorías principales para los filtros
+  FILTERS.push(...mainCategories.map(c => c.charAt(0).toUpperCase() + c.slice(1)));
+}
 
 const SORT_OPTIONS = [
   { value: 'featured',   label: 'Ordenar: Destacados'    },
@@ -59,7 +77,7 @@ const SORT_OPTIONS = [
   {(title || label) && (
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
       <div>
-        {label && <p class="text-xs tracking-[0.2em] uppercase text-sand-900/50 mb-2">{label}</p>}
+        {label && <p class="text-xs tracking-widest uppercase text-sand-900/50 mb-2">{label}</p>}
         {title && <h2 class="font-sans text-4xl font-light text-petrol" set:html={title} />}
         {subtitle && <p class="text-base text-sand-900/70 mt-3 max-w-2xl">{subtitle}</p>}
       </div>
@@ -76,19 +94,6 @@ const SORT_OPTIONS = [
       {/* Top Toolbar: Switch + Sort + Mobile Filter Btn */}
       <div class="flex items-center justify-between gap-4 py-3 border-y border-sand-200 flex-wrap" role="toolbar" aria-label="Product filters">
         
-        {/* Fast Shipping Switch (Llega Mañana) */}
-        <label class="flex items-center gap-3 cursor-pointer group">
-          <div class="relative inline-flex items-center">
-            <input type="checkbox" class="sr-only peer" />
-            <div class="w-10 h-6 bg-sand-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-petrol/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 f2-transition"></div>
-          </div>
-          <span class="font-sans text-[13px] font-bold text-petrol group-hover:text-green-600 f2-transition flex items-center gap-1.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-green-600">
-              <path d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            Llega mañana
-          </span>
-        </label>
 
         {/* Category Filter Pills (Desktop & Tablet) */}
         <div class="hidden md:flex flex-wrap gap-2 items-center" role="group" aria-label="Categorías">
@@ -159,11 +164,10 @@ const SORT_OPTIONS = [
       <div 
         role="listitem" 
         class="product-item" 
-        data-category={product.category?.split(' · ')[0] || product.category}
+        data-category={isSingleCategoryContext ? (getSubCat(product) || getMainCat(product)) : getMainCat(product)}
         data-price={product.price}
         data-rating={product.rating || 0}
         data-index={index}
-        data-fast-shipping={product.price > 20000 ? "true" : "false"}
       >
         <ProductCard
           {...product}
@@ -189,17 +193,13 @@ const SORT_OPTIONS = [
       const categoryPills = container.querySelectorAll('.filter-pill');
       
       let currentCategory = 'Todos';
-      let fastShippingOnly = false;
 
       const filterProducts = () => {
         items.forEach((item: any) => {
           const cat = item.dataset.category;
-          const isFast = item.dataset.fastShipping === "true";
-          
           const matchesCat = currentCategory === 'Todos' || cat === currentCategory;
-          const matchesFast = !fastShippingOnly || isFast;
 
-          item.style.display = (matchesCat && matchesFast) ? 'block' : 'none';
+          item.style.display = (matchesCat) ? 'block' : 'none';
         });
 
         // Update pills UI
@@ -210,23 +210,42 @@ const SORT_OPTIONS = [
         });
 
         if (clearBtn) {
-          clearBtn.style.display = (currentCategory !== 'Todos' || fastShippingOnly) ? 'block' : 'none';
+          clearBtn.style.display = (currentCategory !== 'Todos') ? 'block' : 'none';
         }
       };
 
-      // Filter by category
+      // Filter by category (Pills)
       categoryPills.forEach((pill) => {
         pill.addEventListener('click', () => {
           currentCategory = (pill as HTMLElement).dataset.filter || 'Todos';
           filterProducts();
+          
+          // Sync with sidebar if exists (uncheck others)
+          const sidebarCheckboxes = document.querySelectorAll('aside input[type="checkbox"]');
+          sidebarCheckboxes.forEach((cb: any) => {
+            cb.checked = cb.value === currentCategory;
+          });
         });
       });
 
-      // Filter by fast shipping
-      fastShippingToggle?.addEventListener('change', (e) => {
-        fastShippingOnly = (e.target as HTMLInputElement).checked;
-        filterProducts();
+      // Filter by category (Sidebar Checkboxes)
+      const sidebarInputs = document.querySelectorAll('aside input[type="checkbox"]');
+      sidebarInputs.forEach((input: any) => {
+        input.addEventListener('change', () => {
+          if (input.checked) {
+            currentCategory = input.value;
+            // Uncheck other checkboxes in the same group to behave like a radio for now
+            // (Standard Kora behavior for single category filter)
+            sidebarInputs.forEach((other: any) => {
+              if (other !== input) other.checked = false;
+            });
+          } else {
+            currentCategory = 'Todos';
+          }
+          filterProducts();
+        });
       });
+
 
       // Sort logic
       sortSelect?.addEventListener('change', (e) => {
@@ -247,8 +266,6 @@ const SORT_OPTIONS = [
       // Clear all
       clearBtn?.addEventListener('click', () => {
         currentCategory = 'Todos';
-        fastShippingOnly = false;
-        if (fastShippingToggle) fastShippingToggle.checked = false;
         filterProducts();
       });
 

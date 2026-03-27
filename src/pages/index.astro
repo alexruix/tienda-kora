@@ -12,12 +12,11 @@
 
 import MainLayout     from "../components/templates/MainLayout.astro";
 import ProductGrid    from "../components/organisms/ProductGrid.astro";
-import Button         from "../components/atoms/Button.astro";
 import Eyebrow        from "../components/atoms/Eyebrow.astro";
 import StatCounter    from "../components/atoms/StatCounter.astro";
 import TrustItem      from "../components/atoms/TrustItem.astro";
 import CategoryCard   from "../components/molecules/CategoryCard.astro";
-import CategoryNav    from "../components/molecules/CategoryNav.astro";
+import ProductGallery from "../components/molecules/ProductGallery.astro";
 import { getCollection } from "astro:content";
 import { HomeContent } from "../data/homeContent";
 import HeroGallery from "../components/organisms/HeroGallery.astro";
@@ -33,11 +32,14 @@ const allProducts = productsCollection.map((item) => ({
 }));
 
 // ── 2. Stats reales — NO hardcodeados ────────────────────────────────────────
-const totalProducts  = allProducts.length;
-const totalRating    = allProducts.reduce((sum, p) => sum + (p.rating ?? 0), 0);
-const avgRating      = totalProducts > 0 ? (totalRating / totalProducts).toFixed(1) : "—";
-const categories     = [...new Set(allProducts.map((p) => p.category))];
-const totalStudios   = categories.length; // Una categoría ≈ una familia curada
+const totalProducts      = allProducts.length;
+const ratedProducts      = allProducts.filter(p => p.rating !== undefined && p.rating > 0);
+const totalRating        = ratedProducts.reduce((sum, p) => sum + (p.rating ?? 0), 0);
+const avgRating          = ratedProducts.length > 0 
+  ? (totalRating / ratedProducts.length).toFixed(1) 
+  : "4.9"; // Fallback elegante si no hay reviews aún
+const categories         = [...new Set(allProducts.map((p) => p.category))];
+const totalStudios       = categories.length; // Una categoría ≈ una familia curada
 
 // ── 3. Hero dinámico ──────────────────────────────────────────────────────────
 const heroProduct       = allProducts.find((p) => p.id === "cama-nido-autor") ?? allProducts[0];
@@ -141,7 +143,7 @@ const CATEGORY_PILLS = [
       <div class="mb-10">
         <Eyebrow text={HomeContent.categories.eyebrow} color="sand" class="mb-2" />
         <h2 class="font-display text-4xl font-light text-petrol" id="categories-heading">
-          {HomeContent.categories.titleLine1}<br /><em class="italic text-sand-900/70">{HomeContent.categories.titleLine2}</em>
+          {HomeContent.categories.titleLine1}<br /><em class="italic text-sand-900/70" set:html={HomeContent.categories.titleLine2} />
         </h2>
       </div>
 

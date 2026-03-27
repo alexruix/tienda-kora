@@ -15,23 +15,67 @@
   "newArrival": false,
   "description": "Hoshi (星, 'star') traces a long, unhurried arc over the space it inhabits. The weighted Carrara marble base needs no anchoring — its density alone holds the 180 cm brass arm steady. The hand-spun aluminium shade directs light downward in a precise warm pool, ideal for reading chairs and conversation corners.",
   "details": [
-    { "label": "Height",      "value": "180 cm" },
-    { "label": "Arm Reach",   "value": "120 cm" },
-    { "label": "Shade",       "value": "Hand-spun Aluminium, Matte Gold Interior" },
-    { "label": "Arm",         "value": "Solid Brass, Brushed" },
-    { "label": "Base",        "value": "Honed Carrara Marble" },
-    { "label": "Bulb",        "value": "E27, max 60W" },
-    { "label": "LED Ready",   "value": "Yes" },
-    { "label": "Origin",      "value": "Designed in Copenhagen, assembled in Portugal" }
+    {
+      "label": "Height",
+      "value": "180 cm"
+    },
+    {
+      "label": "Arm Reach",
+      "value": "120 cm"
+    },
+    {
+      "label": "Shade",
+      "value": "Hand-spun Aluminium, Matte Gold Interior"
+    },
+    {
+      "label": "Arm",
+      "value": "Solid Brass, Brushed"
+    },
+    {
+      "label": "Base",
+      "value": "Honed Carrara Marble"
+    },
+    {
+      "label": "Bulb",
+      "value": "E27, max 60W"
+    },
+    {
+      "label": "LED Ready",
+      "value": "Yes"
+    },
+    {
+      "label": "Origin",
+      "value": "Designed in Copenhagen, assembled in Portugal"
+    }
   ],
   "variants": [
-    { "label": "Brass + White Marble", "value": "brass-white", "color": "#C8A96E", "available": true  },
-    { "label": "Black + Black Marble", "value": "black-black", "color": "#2D2926", "available": true  },
-    { "label": "Brass + Black Marble", "value": "brass-black", "color": "#8B6914", "available": false }
+    {
+      "label": "Brass + White Marble",
+      "value": "brass-white",
+      "color": "#C8A96E",
+      "available": true
+    },
+    {
+      "label": "Black + Black Marble",
+      "value": "black-black",
+      "color": "#2D2926",
+      "available": true
+    },
+    {
+      "label": "Brass + Black Marble",
+      "value": "brass-black",
+      "color": "#8B6914",
+      "available": false
+    }
   ],
   "care": "Wipe marble base with a dry cloth only. Polish brass arm with a soft brass cloth occasionally. Do not use chemical cleaners on either surface.",
   "shipping": "Shipped in two separate boxes — base and arm. Standard delivery 5–7 business days. White-glove assembly available at checkout.",
   "metaDescription": "Hoshi Arc Floor Lamp — solid brass arm, honed Carrara marble base. Hand-spun aluminium shade. From $420 — BeautyHome by NODO Studio.",
   "altText": "Hoshi arc floor lamp with brushed brass arm and Carrara marble base, casting a warm pool of light over a reading chair",
-  "relatedProducts": ["hana-pendant", "sokaku-sofa", "nori-desk"]
+  "relatedProducts": [
+    "hana-pendant",
+    "sokaku-sofa",
+    "nori-desk"
+  ],
+  "image": "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&q=80&w=800"
 }

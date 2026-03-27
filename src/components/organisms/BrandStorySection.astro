@@ -28,9 +28,7 @@ const { supplier, isLocal, title, description, image, ctaHref } = Astro.props;
     <div class="order-2 lg:order-1 flex flex-col items-start pr-0 lg:pr-12">
       <SupplierBadge supplier={supplier} isLocal={isLocal} class="mb-6" />
       
-      <h2 class="font-display text-[clamp(40px,5vw,64px)] font-light text-petrol leading-[1.1] mb-6">
-        {title}
-      </h2>
+      <h2 class="font-display text-[clamp(40px,5vw,64px)] font-light text-petrol leading-[1.1] mb-6" set:html={title} />
       
       <p class="font-sans text-[16px] text-sand-900/70 leading-[1.8] mb-10 max-w-[500px]">
         {description}

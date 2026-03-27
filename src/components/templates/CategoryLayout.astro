@@ -9,10 +9,11 @@ import Breadcrumb from '../molecules/Breadcrumb.astro';
 import { CategoryContent } from '../../data/categoryContent';
 
 interface Props {
-  category:      'living' | 'dining' | 'workspace' | 'bienestar';
+  category:      'living' | 'dining' | 'workspace' | 'bienestar' | 'ropa' | 'accesorios';
   title?:        string;
   description?:  string;
   productCount?: number;
+  filters?: Array<{ label: string; options: string[] }>;
 }
 
 const {
@@ -20,11 +21,12 @@ const {
   title        = CategoryContent.categories[category]?.name || category,
   description  = CategoryContent.categories[category]?.description || '',
   productCount = 0,
+  filters: customFilters,
 } = Astro.props;
 
 const hero = CategoryContent.categories[category] || CategoryContent.categories.living;
-const filters = [
-  { label: CategoryContent.filters.category, options: [CategoryContent.categories.living.name, CategoryContent.categories.dining.name, CategoryContent.categories.workspace.name, CategoryContent.categories.bienestar.name] },
+const filters = customFilters || [
+  { label: CategoryContent.filters.category, options: [CategoryContent.categories.living.name, CategoryContent.categories.dining.name, CategoryContent.categories.workspace.name, CategoryContent.categories.bienestar.name, CategoryContent.categories.ropa.name, CategoryContent.categories.accesorios.name] },
   { label: CategoryContent.filters.material, options: CategoryContent.filters.options.materials },
   { label: CategoryContent.filters.style,    options: CategoryContent.filters.options.styles },
 ];

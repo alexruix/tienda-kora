@@ -1,0 +1,35 @@
+{
+  "sheetName": "INFO ",
+  "data": [
+    [
+      "LEER ANTES         COMO HACER TU COMPRA:"
+    ],
+    [
+      "RECOMENDAMOS VER DESDE UNA COMPUTADORA"
+    ],
+    [
+      "1 Guardá el archivo\r\nAntes de empezar, guardá esta lista en tu computadora con el nombre de tu pet shop o veterinaria y la fecha.  Así podremos identificar tu pedido cuando nos lo envíes."
+    ],
+    [
+      "2 Conocé la estructura del archivo\r\nEn la segunda hoja llamada PRESUPUESTO vas a ver el resumen total de tu pedido (¡no tenés que completar nada ahí!).\r\nLuego, en las siguientes hojas encontrarás nuestros productos separados por ancho de collar y pretal."
+    ],
+    [
+      "3 Completá tu pedido\r\nEn cada hoja en el recuadro VIOLETA escribí la cantidad de unidades que querés de cada modelo. Podés detallar los colores que preferís. En SUBTOTAL se calculará automáticamente cuánto suma cada producto que elijas."
+    ],
+    [
+      "4 Volvemos a la hoja PRESUPUESTO\r\nAl terminar de completar todas las hojas, en la hoja inicial PRESUPUESTO vas a ver el resumen por anchos. COMPRA TOTAL: suma total de todos los productos que elegiste."
+    ],
+    [
+      "5 Datos de contacto\r\nRecordá completar tus datos en el recuadro de abajo del presupuesto, arriba nos ocupamos nosotros."
+    ],
+    [
+      "6 Envianos tu pedido\r\nCuando termines, enviá esta planilla a nuestro WhatsApp: 1161214064 (Yael y Matías)\r\n"
+    ],
+    [
+      "7 Confirmacion del pedido\r\nNos vamos a contactar con vos para confirmar que lo recibimos enviandote nuestros datos para el envio del 50% del total del pedido, una vez enviado eso comenzamos a realizar el mismo.\r\n"
+    ],
+    [
+      "8 Dudas?\r\nEscribinos al WhatsApp: 1161214064 (Yael y Matías) — ¡Estamos para ayudarte!\r\n"
+    ]
+  ]
+}

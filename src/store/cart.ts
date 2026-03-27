@@ -7,7 +7,7 @@ import { atom, computed } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "../utils/shipping";
 import { PROMO_CODE, PROMO_DISCOUNT_PCT, calculatePromoDiscount } from "../utils/promo";
-import { formatPrice } from "../utils/formatters";
+import { formatCurrency } from "../utils/formatters";
 
 /* ── Types ───────────────────────────────────────────────── */
 export type CartItem = {
@@ -43,6 +43,7 @@ export const cartItems = persistentAtom<CartMap>(
 );
 
 export const isCartOpen = atom<boolean>(false);
+export const pdpQuantity = atom<number>(1);
 
 /**
  * Código promo aplicado — persistido en localStorage.
@@ -85,9 +86,9 @@ export const cartTotalWithPromo = computed(
   (total, discount) => total - discount,
 );
 
-/** Formateador global — usa formatPrice de utils/formatters.ts (sin duplicación) */
+/** Formateador global — usa formatCurrency de utils/formatters.ts (sin duplicación) */
 export const cartTotalFormatted = computed(cartTotal, (total) =>
-  formatPrice(total),
+  formatCurrency(total),
 );
 
 /* ── Actions ─────────────────────────────────────────────── */

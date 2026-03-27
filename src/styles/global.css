@@ -24,6 +24,12 @@
   --color-sand-200: #dbd3c2;
   --color-sand-900: #1A1A1A; /* Carbón */
 
+  /* Semantic Status Colors (Audit Fix) */
+  --color-success: #16a34a; /* green-600 */
+  --color-success-light: #f0fdf4; /* green-50 */
+  --color-danger: var(--color-watermelon-pressed);
+  --color-danger-light: var(--color-watermelon-light);
+
   /* Fluent 2: Depth & Elevation */
   --shadow-f2-rest: 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 2px rgba(0, 0, 0, 0.06);
   --shadow-f2-hover:
@@ -38,7 +44,7 @@
   --radius-f2-xl: 20px;
 
   /* Typography */
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Fraunces", ui-serif, Georgia, serif;
 
   /* Animations */
@@ -112,9 +118,6 @@
     }
   }
 
-  /* Animación CartItem */
-  --animate-slide-right: slideRight 0.3s var(--ease-fluent) both;
-
   @keyframes slideRight {
     from {
       opacity: 0;
@@ -126,6 +129,9 @@
       transform: translateX(0);
     }
   }
+
+  /* Custom Tracking as per Brand Rules */
+  --tracking-widest: 0.2em;
 }
 
 /* Definición de Keyframes fuera del bloque @theme para mayor compatibilidad */
@@ -158,7 +164,7 @@
 
   body {
     /* La opacidad con '/' funciona perfecto en v4 */
-    @apply selection:bg-watermelon/30 selection:text-watermelon-pressed;
+    @apply selection:bg-watermelon/30 selection:text-watermelon-pressed font-sans font-medium leading-relaxed;
   }
 
   :root {
@@ -169,6 +175,11 @@
     --space-4: 16px;
     --space-5: 20px;
     --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
   }
 
   /* =========================================
@@ -352,12 +363,12 @@
 
     /* Default: auto-fill responsive */
     .product-grid--default {
-      @apply grid-cols-2;
+      @apply grid-cols-2 md:grid-cols-3 xl:grid-cols-4;
     }
 
     /* Featured: Primer elemento ocupa más espacio */
     .product-grid--featured {
-      @apply grid-cols-2 lg:grid-cols-[2fr_1fr_1fr];
+      @apply grid-cols-2 md:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr];
     }
 
     /* Selectores complejos para el layout Featured y vista de Lista */

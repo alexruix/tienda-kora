@@ -1,0 +1,34 @@
+{
+  "id": "waw-7302-40",
+  "name": "Buzo rayado con bolsillo canguro - Talle 40",
+  "slug": "waw-7302-40",
+  "brand": "Waw Pets",
+  "category": "ropa",
+  "subcategory": "Buzos",
+  "price": 31050,
+  "inStock": true,
+  "leadTime": "24-72 hs",
+  "variants": [
+    {
+      "label": "Rayado",
+      "value": "rayado",
+      "color": "RAYADO",
+      "available": true
+    }
+  ],
+  "details": [
+    {
+      "label": "Largo Lomo",
+      "value": "40 cm"
+    },
+    {
+      "label": "Cont. Pecho",
+      "value": "52 cm"
+    },
+    {
+      "label": "Cont. Cuello",
+      "value": "38 cm"
+    }
+  ],
+  "image": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=800"
+}

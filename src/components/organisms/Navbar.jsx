@@ -101,8 +101,8 @@ export default function Navbar({ products = [] }) {
   return (
     <>
       {/* Promo Banner Dinámico */}
-      {promoBanner && (
-        <div className="relative z-1001 bg-watermelon text-white text-center py-[9px] px-4 font-sans text-[13px] tracking-[0.04em]">
+      {/* {promoBanner && (
+        <div className="relative z-1001 bg-watermelon text-white text-center py-[9px] px-4 font-sans text-[11px] font-bold tracking-widest uppercase">
           <span>
             {NavContent.promo.prefix} {formatCurrency(FREE_SHIPPING_THRESHOLD)} {NavContent.promo.suffix} <strong>{PROMO_CODE}</strong>
           </span>
@@ -124,29 +124,29 @@ export default function Navbar({ products = [] }) {
             </svg>
           </button>
         </div>
-      )}
+      )} */}
 
       {/* Navbar Shell */}
       <header
         ref={navRef}
         role="banner"
-        className={`fixed top-0 left-0 right-0 z-1000 h-[68px] animate-slide-down transition-all duration-300 ease-fluent ${
+        className={`sticky flex justify-center top-0 z-1000 h-[68px] animate-slide-down transition-all duration-300 ease-fluent ${
           scrolled
             ? "bg-sand-50/98 backdrop-blur-xl backdrop-saturate-150 border-b border-transparent shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3),0_2px_16px_rgba(0,0,0,0.06)]"
             : "bg-sand-50/90 backdrop-blur-xl backdrop-saturate-150 border-b border-sand-200/60 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3),0_1px_0_rgba(229,223,211,0.8)]"
         }`}
       >
-        <div className="max-w-[1320px] mx-auto px-5 md:px-8 h-full flex items-center gap-4 lg:gap-8">
+        <div className="ds-container h-full flex items-center gap-4 lg:gap-8">
           {/* Logo */}
           <a
             href="/"
-            className="flex flex-col items-start leading-none shrink-0 gap-[2px] no-underline"
-            aria-label="BeautyHome by NODO — Home"
+            className="flex flex-col items-start leading-none shrink-0 gap-[2px] no-underline group/logo"
+            aria-label="Kora by NODO — Home"
           >
-            <span className="font-display text-[22px] font-normal tracking-[0.12em] text-petrol uppercase">
+            <span className="font-display text-[22px] font-bold tracking-widest text-petrol uppercase transition-colors group-hover/logo:text-watermelon">
               {NavContent.brand.name}
             </span>
-            <span className="font-sans text-[9px] tracking-[0.22em] uppercase text-sand-900/50">
+            <span className="font-sans text-[8px] tracking-[0.3em] uppercase text-sand-900/40">
               {NavContent.brand.tagline}
             </span>
           </a>
@@ -159,10 +159,10 @@ export default function Navbar({ products = [] }) {
             {menuTree.map((cat) => (
               <button
                 key={cat.id}
-                className={`relative flex items-center gap-1 font-sans text-[13px] tracking-[0.06em] uppercase px-3 py-1.5 rounded-f2-md transition-colors duration-150 cursor-pointer border-none bg-transparent ${
+                className={`relative flex items-center gap-1 font-sans text-[12px] tracking-widest uppercase px-3 py-1.5 rounded-f2-md transition-colors duration-150 cursor-pointer border-none bg-transparent ${
                   activeMenu === cat.id
-                    ? "text-petrol font-medium bg-sand-100 after:absolute after:-bottom-[19px] after:left-1/2 after:-translate-x-1/2 after:w-5 after:h-[2px] after:bg-watermelon after:rounded-[1px]"
-                    : "text-sand-900/90 hover:text-sand-900 hover:bg-sand-100 font-normal"
+                    ? "text-petrol font-bold bg-sand-100 after:absolute after:-bottom-[19px] after:left-1/2 after:-translate-x-1/2 after:w-5 after:h-[2px] after:bg-watermelon after:rounded-[1px]"
+                    : "text-sand-900/90 hover:text-sand-900 hover:bg-sand-100 font-medium"
                 }`}
                 onClick={() => toggleMenu(cat.id)}
                 aria-expanded={activeMenu === cat.id}
@@ -300,7 +300,7 @@ export default function Navbar({ products = [] }) {
             <div className="max-w-[1320px] mx-auto px-8 py-8 grid lg:grid-cols-[2fr_1fr] gap-12">
               {/* Columna de Enlaces */}
               <div>
-                <p className="font-sans text-[10px] tracking-[0.16em] uppercase text-sand-900/50 font-medium mb-6 border-b border-sand-200/60 pb-2">
+                <p className="font-sans text-[9px] tracking-widest uppercase text-sand-900/40 font-bold mb-6 border-b border-sand-200/60 pb-2">
                   {NavContent.links.shopByCategory}
                 </p>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-3">

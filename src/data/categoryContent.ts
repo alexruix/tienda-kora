@@ -47,6 +47,22 @@ export const CategoryContent = {
       headline: "Bienestar <em>Integral</em>",
       sub: "Snacks naturales de Mon Ami y fragancias textiles de Mayors. Para un hogar que huele a perfume y no a 'perro'.",
       description: "Cuidado estético, higiene premium y premios saludables con ingredientes reales."
+    },
+    ropa: {
+      id: "ropa",
+      name: "Moda Pet",
+      eyebrow: "Estilo & Abrigo",
+      headline: "La posta del <em>invierno</em>",
+      sub: "Buzos de friza, capas impermeables y prendas de diseño para que tu compañero no pase frío con toda la onda.",
+      description: "Ropa premium para perros y gatos: buzitos, capas y accesorios textiles de alta calidad."
+    },
+    accesorios: {
+      id: "accesorios",
+      name: "Accesorios",
+      eyebrow: "Detalles que Suman",
+      headline: "Equipamiento <em>Pro</em>",
+      sub: "Collares, pretales y correas reforzadas de Waw Pets. Seguridad y diseño en cada paseo.",
+      description: "Colección de collares, correas y pretales de diseño para paseos seguros y con estilo."
     }
   },
   // Filters configuration

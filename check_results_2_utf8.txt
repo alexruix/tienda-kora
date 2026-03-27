@@ -1,0 +1,120 @@
+﻿[2m20:04:11[22m [34m[content][39m Syncing content
+[2m20:04:11[22m [34m[content][39m Synced content
+[2m20:04:11[22m [34m[types][39m Generated [2m303ms[22m
+[2m20:04:11[22m [34m[check][39m Getting diagnostics for Astro files in C:\Users\alexr\github\tienda-kora...
+[96mscripts/report-waw.ts[0m:[93m10[0m:[93m16[0m - [93mwarning[0m[90m ts(6133): [0m'runReport' is declared but its value is never read.
+
+[7m10[0m async function runReport() {
+[7m  [0m [93m               ~~~~~~~~~[0m
+
+[96msrc/components/molecules/CartSummary.jsx[0m:[93m14[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'shippingOptions' is declared but its value is never read.
+
+[7m14[0m   shippingOptions = [],
+[7m  [0m [93m  ~~~~~~~~~~~~~~~[0m
+[96msrc/components/molecules/CartSummary.jsx[0m:[93m8[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m8[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/molecules/CategoryCard.astro[0m:[93m21[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'id' is declared but its value is never read.
+
+[7m21[0m   id,
+[7m  [0m [93m  ~~[0m
+
+[96msrc/components/molecules/PDPAddToCart.jsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useEffect } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/molecules/ProductCard.astro[0m:[93m13[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'formatCurrency' is declared but its value is never read.
+
+[7m13[0m import { formatCurrency } from '../../utils/formatters.ts';
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/molecules/QuantitySelector.jsx[0m:[93m9[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m9[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/AuthModule.jsx[0m:[93m9[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m9[0m import React, { useState } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/organisms/CheckoutForm.jsx[0m:[93m17[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'cartCount' is declared but its value is never read.
+
+[7m17[0m   cartCount,
+[7m  [0m [93m  ~~~~~~~~~[0m
+
+[96msrc/components/organisms/OrderCardList.jsx[0m:[93m8[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m8[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/ProductDetails.astro[0m:[93m145[0m:[93m56[0m - [91merror[0m[90m ts(2322): [0mType '{ "client:load": true; productId: any; productName: any; }' is not assignable to type 'IntrinsicAttributes & { productId: any; }'.
+  Property 'productName' does not exist on type 'IntrinsicAttributes & { productId: any; }'.
+
+[7m145[0m       <PDPAddToCart client:load productId={product.id} productName={product.name} />
+[7m   [0m [91m                                                       ~~~~~~~~~~~[0m
+[96msrc/components/organisms/ProductDetails.astro[0m:[93m21[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Button' is declared but its value is never read.
+
+[7m21[0m import Button from '../atoms/Button.astro';
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/organisms/ProductDetails.astro[0m:[93m17[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'TrustBadgeGroup' is declared but its value is never read.
+
+[7m17[0m import TrustBadgeGroup  from '../molecules/TrustBadgeGroup.astro';
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/ProductGrid.astro[0m:[93m172[0m:[93m13[0m - [93mwarning[0m[90m ts(6133): [0m'fastShippingToggle' is declared but its value is never read.
+
+[7m172[0m       const fastShippingToggle = container.querySelector('input[type="checkbox"]') as HTMLInputElement;
+[7m   [0m [93m            ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/organisms/WishlistGrid.jsx[0m:[93m23[0m:[93m44[0m - [93mwarning[0m[90m ts(6133): [0m'onAddToCart' is declared but its value is never read.
+
+[7m23[0m function WishlistCard({ product, onRemove, onAddToCart, animIndex }) {
+[7m  [0m [93m                                           ~~~~~~~~~~~[0m
+
+[96msrc/pages/index.astro[0m:[93m73[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'CATEGORY_PILLS' is declared but its value is never read.
+
+[7m73[0m const CATEGORY_PILLS = [
+[7m  [0m [93m      ~~~~~~~~~~~~~~[0m
+[96msrc/pages/index.astro[0m:[93m46[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'heroFormattedPrice' is declared but its value is never read.
+
+[7m46[0m const heroFormattedPrice = formatCurrency(heroProduct.price);
+[7m  [0m [93m      ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/index.astro[0m:[93m44[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'heroVariantLabel' is declared but its value is never read.
+
+[7m44[0m const heroVariantLabel  = heroProduct.variants?.[0]?.label ?? "Standard";
+[7m  [0m [93m      ~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/index.astro[0m:[93m19[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'ProductGallery' is declared but its value is never read.
+
+[7m19[0m import ProductGallery from "../components/molecules/ProductGallery.astro";
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/sale.astro[0m:[93m49[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'formattedSavings' is declared but its value is never read.
+
+[7m49[0m const formattedSavings = formatCurrency(totalSavings);
+[7m  [0m [93m      ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/api/checkout/create-preference.ts[0m:[93m3[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'FREE_SHIPPING_THRESHOLD' is declared but its value is never read.
+
+[7m3[0m import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST, calculateShipping } from "../../../utils/shipping";
+[7m [0m [93m         ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/checkout/success.astro[0m:[93m115[0m:[93m24[0m - [91merror[0m[90m ts(7016): [0mCould not find a declaration file for module 'canvas-confetti'. 'C:/Users/alexr/github/tienda-kora/node_modules/canvas-confetti/src/confetti.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/canvas-confetti` if it exists or add a new declaration (.d.ts) file containing `declare module 'canvas-confetti';`
+
+[7m115[0m   import confetti from "canvas-confetti";
+[7m   [0m [91m                       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/product/[id].astro[0m:[93m15[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'formatCurrency' is declared but its value is never read.
+
+[7m15[0m import { formatCurrency } from "../../utils/formatters.ts";
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+Result (103 files): 
+- 2 errors
+- 0 warnings
+- 21 hints
+

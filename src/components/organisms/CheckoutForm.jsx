@@ -18,7 +18,7 @@ import {
   hasFreeShipping,
 } from "../../store/cart.ts";
 import { customerInfo, updateCustomerField } from "../../store/customer.ts";
-import { formatPrice } from "../../utils/formatters.ts";
+import { formatCurrency } from "../../utils/formatters.ts";
 import {
   validateEmail,
   validateDNI,
@@ -48,10 +48,10 @@ function Field({ label, id, error, required, children, helper }) {
     <div className="flex flex-col gap-1.5">
       <label
         htmlFor={id}
-        className="font-sans text-[12px] font-medium tracking-[0.06em] uppercase text-sand-900/60"
+        className="font-sans text-[11px] font-bold tracking-widest uppercase text-sand-900/60 mb-1"
       >
         {label}
-        {required && <span className="text-watermelon ml-0.5" aria-hidden="true">*</span>}
+        {required && <span className="text-danger ml-0.5" aria-hidden="true">*</span>}
       </label>
       {children}
       {helper && !error && (
@@ -60,7 +60,7 @@ function Field({ label, id, error, required, children, helper }) {
         </p>
       )}
       {error && (
-        <p className="font-sans text-[11px] text-watermelon mt-0.5" role="alert" aria-live="polite">
+        <p className="font-sans text-[11px] text-danger mt-0.5" role="alert" aria-live="polite">
           {error}
         </p>
       )}
@@ -72,7 +72,7 @@ function Input({ id, error, ...props }) {
   return (
     <input
       id={id}
-      className={`f2-input font-sans text-[14px] text-sand-900 placeholder:text-sand-900/30 transition-colors ${error ? "border-b-watermelon/60 focus:border-b-watermelon" : ""
+      className={`f2-input font-sans text-[14px] text-sand-900 placeholder:text-sand-900/30 transition-colors ${error ? "border-b-danger/60 focus:border-b-danger" : ""
         }`}
       aria-invalid={!!error}
       {...props}
@@ -117,7 +117,7 @@ function OrderSummary({ items, subtotal, isFreeShipping, discount, isMobile = fa
     <div className={`bg-white rounded-f2-lg border border-sand-200 overflow-hidden ${isMobile ? 'border-none shadow-none bg-transparent' : ''}`}>
       {!isMobile && (
         <div className="px-6 py-4 border-b border-sand-200 bg-sand-50">
-          <h2 className="font-display text-[20px] font-light text-petrol">{content.title}</h2>
+          <h2 className="font-display text-[20px] font-bold text-petrol uppercase tracking-tight">{content.title}</h2>
         </div>
       )}
 
@@ -138,7 +138,7 @@ function OrderSummary({ items, subtotal, isFreeShipping, discount, isMobile = fa
               <p className="font-sans text-[11px] text-sand-900/40 mt-0.5">{content.qty}: {item.quantity}</p>
             </div>
             <p className="font-sans text-[13px] font-medium text-petrol shrink-0">
-              {formatPrice(item.price * item.quantity)}
+              {formatCurrency(item.price * item.quantity)}
             </p>
           </div>
         ))}
@@ -147,33 +147,33 @@ function OrderSummary({ items, subtotal, isFreeShipping, discount, isMobile = fa
       <div className={`py-5 border-t border-sand-200 space-y-3 ${isMobile ? '' : 'px-6'}`}>
         <div className="flex justify-between text-[13px] font-sans text-sand-900/60">
           <span>{content.subtotal}</span>
-          <span>{formatPrice(subtotal)}</span>
+          <span>{formatCurrency(subtotal)}</span>
         </div>
         <div className="flex justify-between text-[13px] font-sans">
-          <span className={isFreeShipping ? "text-green-600 font-medium" : "text-sand-900/60"}>
+          <span className={isFreeShipping ? "text-success font-medium" : "text-sand-900/60"}>
             {content.shipping}
           </span>
-          <span className={isFreeShipping ? "text-green-600 font-medium" : "text-sand-900/60"}>
-            {isFreeShipping ? content.freeShipping : formatPrice(SHIPPING_COST)}
+          <span className={isFreeShipping ? "text-success font-medium" : "text-sand-900/60"}>
+            {isFreeShipping ? content.freeShipping : formatCurrency(SHIPPING_COST)}
           </span>
         </div>
         {!isFreeShipping && remaining > 0 && (
           <p className="text-[11px] font-sans text-sand-900/40">
-            {content.shippingToFreeTemplate.replace("{amount}", formatPrice(remaining))}
+            {content.shippingToFreeTemplate.replace("{amount}", formatCurrency(remaining))}
           </p>
         )}
         {discount > 0 && (
           <div className="flex justify-between text-[13px] font-sans">
-            <span className="text-green-600 font-medium">
+            <span className="text-success font-medium">
               {content.promoRowTemplate.replace("{pct}", PROMO_DISCOUNT_PCT.toString())}
             </span>
-            <span className="text-green-600 font-medium">−{formatPrice(discount)}</span>
+            <span className="text-success font-medium">−{formatCurrency(discount)}</span>
           </div>
         )}
         <div className="pt-3 border-t border-sand-200 flex justify-between items-baseline">
-          <span className="font-sans text-[14px] font-medium text-sand-900">{content.total}</span>
-          <span className="font-display text-[28px] font-light text-petrol leading-none">
-            {formatPrice(total)}
+          <span className="font-sans text-[14px] font-bold uppercase tracking-wide text-sand-900">{content.total}</span>
+          <span className="font-display text-[32px] font-bold text-petrol leading-none tracking-tighter">
+            {formatCurrency(total)}
           </span>
         </div>
         <p className="text-[10px] font-sans text-sand-900/30 text-right">
@@ -288,8 +288,8 @@ export default function CheckoutForm() {
 
   if (!isMounted) {
     return (
-      <div className="max-w-[1100px] mx-auto px-5 md:px-8 py-10 lg:py-14">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-10 lg:gap-14 items-start">
+      <div className="ds-container--narrow py-12 lg:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-10 lg:gap-16 items-start">
           <FormSkeleton />
           <div className="bg-white rounded-f2-lg border border-sand-200 overflow-hidden animate-pulse hidden lg:block">
             <div className="px-6 py-4 border-b border-sand-200">
@@ -320,7 +320,7 @@ export default function CheckoutForm() {
   const total = subtotal + calculateShipping(subtotal) - discount;
 
   return (
-    <div className="max-w-[1100px] mx-auto px-5 md:px-8 py-10 lg:py-14">
+    <div className="ds-container--narrow py-12 lg:py-16">
       
       {/* ── Mobile Summary Toggle ── */}
       <div className="lg:hidden mb-8 border border-sand-200 rounded-f2-lg overflow-hidden bg-sand-50">
@@ -339,7 +339,7 @@ export default function CheckoutForm() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`text-sand-900/40 transition-transform duration-200 ${mobileSummaryOpen ? "rotate-180" : ""}`}><path d="M6 9l6 6 6-6" /></svg>
           </span>
           <span className="font-sans text-[15px] font-bold">
-            {formatPrice(total)}
+            {formatCurrency(total)}
           </span>
         </button>
         {mobileSummaryOpen && (
@@ -354,10 +354,10 @@ export default function CheckoutForm() {
         {/* Left: Buyer Form */}
         <div>
           <div className="mb-8">
-            <p className="font-sans text-[11px] tracking-[0.18em] uppercase text-sand-900/40 mb-2">
+            <p className="font-sans text-[10px] tracking-widest uppercase text-sand-900/40 mb-3">
               {CheckoutContent.form.eyebrow}
             </p>
-            <h1 className="font-display text-[clamp(32px,4vw,44px)] font-light text-petrol leading-[1.1]">
+            <h1 className="font-display text-[clamp(32px,5vw,52px)] font-bold text-petrol leading-[1.05] tracking-tight">
               {CheckoutContent.form.title}
             </h1>
             <p className="font-sans text-[14px] text-sand-900/50 mt-2">
@@ -365,9 +365,24 @@ export default function CheckoutForm() {
             </p>
           </div>
 
+          {/* Batching Alert */}
+          {items.some(i => i.id?.startsWith('waw-')) && (
+            <div className="mb-8 p-4 bg-petrol/5 border border-petrol/20 rounded-2xl flex gap-3 items-start animate-fade-in">
+              <div className="text-petrol mt-0.5">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              </div>
+              <p className="text-[13px] text-sand-700 leading-relaxed font-medium">
+                Tu pedido contiene <span className="text-petrol font-bold">piezas de autor (Waw Pets)</span>. 
+                Se procesan en tandas semanales para garantizar su calidad artesanal. El próximo despacho es el <span className="underline decoration-petrol/30 underline-offset-4">lunes</span>.
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} noValidate aria-label="Checkout form">
-            <fieldset className="border-none p-0 m-0 mb-8">
-              <legend className="font-sans text-[11px] tracking-[0.12em] uppercase text-sand-900/40 mb-5 pb-2 border-b border-sand-200 w-full">
+            <fieldset className="border-none p-0 m-0 mb-10">
+              <legend className="font-sans text-[11px] font-bold tracking-widest uppercase text-sand-900/50 mb-6 pb-2 border-b border-sand-200 w-full">
                 {CheckoutContent.form.legend}
               </legend>
 
@@ -412,7 +427,7 @@ export default function CheckoutForm() {
               >
                 <span className="font-sans text-[13px] text-sand-900/70">
                   {promoCode
-                    ? <span className="text-green-600 font-medium flex items-center gap-2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+                    ? <span className="text-success font-medium flex items-center gap-2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
                         <span dangerouslySetInnerHTML={{ __html: CheckoutContent.promo.labelTemplate.replace("{code}", `<strong>${promoCode}</strong>`).replace("{pct}", PROMO_DISCOUNT_PCT.toString()) }} />
                       </span>
                     : CheckoutContent.promo.title}
@@ -424,9 +439,9 @@ export default function CheckoutForm() {
                 <div className="px-4 py-4 border-t border-sand-200 bg-white">
                   {promoCode ? (
                     <div className="flex items-center justify-between">
-                      <p className="font-sans text-[13px] text-green-600" dangerouslySetInnerHTML={{ __html: CheckoutContent.promo.appliedTemplate.replace("{amount}", `<strong>${formatPrice(discount)}</strong>`) }} />
+                      <p className="font-sans text-[13px] text-success" dangerouslySetInnerHTML={{ __html: CheckoutContent.promo.appliedTemplate.replace("{amount}", `<strong>${formatCurrency(discount)}</strong>`) }} />
                       <button type="button" onClick={handleRemovePromo}
-                        className="font-sans text-[12px] text-watermelon hover:opacity-70 bg-transparent border-none cursor-pointer">
+                        className="font-sans text-[12px] text-danger hover:opacity-70 bg-transparent border-none cursor-pointer">
                         {CheckoutContent.promo.removeBtn}
                       </button>
                     </div>
@@ -448,16 +463,16 @@ export default function CheckoutForm() {
                     </div>
                   )}
                   {promoError && (
-                    <p id="promo-error" role="alert" className="font-sans text-[12px] text-watermelon mt-2">{promoError}</p>
+                    <p id="promo-error" role="alert" className="font-sans text-[12px] text-danger mt-2">{promoError}</p>
                   )}
                 </div>
               )}
             </div>
 
             {apiError && (
-              <div className="bg-watermelon/5 border border-watermelon/30 rounded-f2-md px-4 py-3 mb-6" role="alert">
-                <p className="font-sans text-[13px] text-watermelon flex items-center gap-2">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+              <div className="bg-danger/5 border border-danger/30 rounded-f2-md px-4 py-3 mb-6" role="alert">
+                <p className="font-sans text-[13px] text-danger flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
                   {apiError}
                 </p>
               </div>

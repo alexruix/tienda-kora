@@ -15,22 +15,63 @@
   "newArrival": false,
   "description": "The Nori desk is designed around the ritual of writing. A subtly raised rear shelf organises objects without cluttering the main work surface. The solid oak top is jointed from book-matched planks; the powder-coated steel frame is welded and ground by hand in our Lisbon atelier. A desk for those who understand that the objects around you shape the quality of your thinking.",
   "details": [
-    { "label": "Dimensions",    "value": "W140 × D65 × H75 cm" },
-    { "label": "Top",           "value": "Book-matched Solid Oak" },
-    { "label": "Finish",        "value": "Natural Hardwax Oil" },
-    { "label": "Frame",         "value": "Powder-coated Steel, Black" },
-    { "label": "Rear Shelf",    "value": "H8 cm, full width" },
-    { "label": "Weight",        "value": "34 kg" },
-    { "label": "Origin",        "value": "Crafted in Portugal" }
+    {
+      "label": "Dimensions",
+      "value": "W140 × D65 × H75 cm"
+    },
+    {
+      "label": "Top",
+      "value": "Book-matched Solid Oak"
+    },
+    {
+      "label": "Finish",
+      "value": "Natural Hardwax Oil"
+    },
+    {
+      "label": "Frame",
+      "value": "Powder-coated Steel, Black"
+    },
+    {
+      "label": "Rear Shelf",
+      "value": "H8 cm, full width"
+    },
+    {
+      "label": "Weight",
+      "value": "34 kg"
+    },
+    {
+      "label": "Origin",
+      "value": "Crafted in Portugal"
+    }
   ],
   "variants": [
-    { "label": "Oak + Black Steel", "value": "oak-black", "color": "#C8B89A", "available": true  },
-    { "label": "Walnut + Brass",    "value": "wal-brass",  "color": "#8B6914", "available": true  },
-    { "label": "Ash + White Steel", "value": "ash-white",  "color": "#E5DFD3", "available": false }
+    {
+      "label": "Oak + Black Steel",
+      "value": "oak-black",
+      "color": "#C8B89A",
+      "available": true
+    },
+    {
+      "label": "Walnut + Brass",
+      "value": "wal-brass",
+      "color": "#8B6914",
+      "available": true
+    },
+    {
+      "label": "Ash + White Steel",
+      "value": "ash-white",
+      "color": "#E5DFD3",
+      "available": false
+    }
   ],
   "care": "Clean with a dry cloth. Apply furniture oil annually. Avoid placing hot items or liquids directly on the surface.",
   "shipping": "Flat-pack delivery with illustrated assembly guide and all hardware included. Assembly time approximately 45 minutes.",
   "metaDescription": "Nori Writing Desk — solid oak and powder-coated steel. Book-matched top, raised rear shelf. Crafted in Portugal. From $1,240 — BeautyHome.",
   "altText": "Nori writing desk with book-matched solid oak top on blackened steel frame, minimal workspace styling",
-  "relatedProducts": ["hoshi-lamp", "yuki-shelf", "shiro-chair"]
+  "relatedProducts": [
+    "hoshi-lamp",
+    "yuki-shelf",
+    "shiro-chair"
+  ],
+  "image": "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&q=80&w=800"
 }

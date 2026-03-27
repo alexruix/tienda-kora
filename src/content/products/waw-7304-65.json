@@ -1,0 +1,58 @@
+{
+  "id": "waw-7304-65",
+  "name": "Buzo friza converse con capucha - Talle 65",
+  "slug": "waw-7304-65",
+  "brand": "Waw Pets",
+  "category": "ropa",
+  "subcategory": "Buzos",
+  "price": 45080,
+  "inStock": false,
+  "leadTime": "24-72 hs",
+  "variants": [
+    {
+      "label": "Rojo",
+      "value": "rojo",
+      "color": "Rojo",
+      "available": false
+    },
+    {
+      "label": "Verde",
+      "value": "verde",
+      "color": "Verde",
+      "available": false
+    },
+    {
+      "label": "Beige",
+      "value": "beige",
+      "color": "Beige",
+      "available": false
+    },
+    {
+      "label": "Violeta",
+      "value": "violeta",
+      "color": "Violeta",
+      "available": false
+    },
+    {
+      "label": "Negro",
+      "value": "negro",
+      "color": "Negro",
+      "available": false
+    }
+  ],
+  "details": [
+    {
+      "label": "Largo Lomo",
+      "value": "65 cm"
+    },
+    {
+      "label": "Cont. Pecho",
+      "value": "86 cm"
+    },
+    {
+      "label": "Cont. Cuello",
+      "value": "62 cm"
+    }
+  ],
+  "image": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=800"
+}

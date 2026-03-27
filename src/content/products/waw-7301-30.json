@@ -1,0 +1,46 @@
+{
+  "id": "waw-7301-30",
+  "name": "Buzo peluche camuflado con capucha - Talle 30",
+  "slug": "waw-7301-30",
+  "brand": "Waw Pets",
+  "category": "ropa",
+  "subcategory": "Buzos",
+  "price": 26910,
+  "inStock": true,
+  "leadTime": "24-72 hs",
+  "variants": [
+    {
+      "label": "Camuflado verde",
+      "value": "camuflado-verde",
+      "color": "CAMUFLADO VERDE",
+      "available": true
+    },
+    {
+      "label": "Camuflado gris",
+      "value": "camuflado-gris",
+      "color": "CAMUFLADO GRIS",
+      "available": false
+    },
+    {
+      "label": "Rayado  fucsia",
+      "value": "rayado-fucsia",
+      "color": "RAYADO  FUCSIA",
+      "available": false
+    }
+  ],
+  "details": [
+    {
+      "label": "Largo Lomo",
+      "value": "30 cm"
+    },
+    {
+      "label": "Cont. Pecho",
+      "value": "40 cm"
+    },
+    {
+      "label": "Cont. Cuello",
+      "value": "28 cm"
+    }
+  ],
+  "image": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=800"
+}

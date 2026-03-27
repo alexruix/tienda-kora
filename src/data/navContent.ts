@@ -33,5 +33,7 @@ export const NavContent = {
     { value: "dining", label: "Alimentación", emoji: "🥩" },
     { value: "workspace", label: "Juego y Paseo", emoji: "🎾" },
     { value: "bienestar", label: "Bienestar", emoji: "🧼" },
+    { value: "ropa", label: "Indumentaria", emoji: "👕" },
+    { value: "accesorios", label: "Accesorios", emoji: "🎗️" },
   ],
 };

@@ -15,14 +15,38 @@
   "newArrival": false,
   "description": "Yuki (雪, 'snow') is an open shelving system with the unhurried proportions of Japanese tansu craft. Four shelves at generous intervals allow objects to breathe — books beside ceramics beside nothing at all. The solid ash frame is jointed without visible hardware, held together by the precision of the fit itself.",
   "details": [
-    { "label": "Dimensions", "value": "W90 × D28 × H180 cm" },
-    { "label": "Shelves", "value": "4 fixed shelves" },
-    { "label": "Spacing", "value": "36 cm between shelves" },
-    { "label": "Material", "value": "Solid European Ash" },
-    { "label": "Finish", "value": "White Pigment Oil" },
-    { "label": "Weight", "value": "28 kg" },
-    { "label": "Load", "value": "Max 20 kg per shelf" },
-    { "label": "Origin", "value": "Crafted in Lithuania" }
+    {
+      "label": "Dimensions",
+      "value": "W90 × D28 × H180 cm"
+    },
+    {
+      "label": "Shelves",
+      "value": "4 fixed shelves"
+    },
+    {
+      "label": "Spacing",
+      "value": "36 cm between shelves"
+    },
+    {
+      "label": "Material",
+      "value": "Solid European Ash"
+    },
+    {
+      "label": "Finish",
+      "value": "White Pigment Oil"
+    },
+    {
+      "label": "Weight",
+      "value": "28 kg"
+    },
+    {
+      "label": "Load",
+      "value": "Max 20 kg per shelf"
+    },
+    {
+      "label": "Origin",
+      "value": "Crafted in Lithuania"
+    }
   ],
   "variants": [
     {
@@ -48,5 +72,10 @@
   "shipping": "Flat-pack delivery. All hardware included. Assembly approximately 30 minutes with two people.",
   "metaDescription": "Yuki Shelving Unit — solid ash open frame, 4 shelves, no visible hardware. Crafted in Lithuania. From $890 — BeautyHome by NODO Studio.",
   "altText": "Yuki open shelving unit in white ash with four generous shelves, styled with ceramics and books",
-  "relatedProducts": ["nori-desk", "kuro-table", "sokaku-sofa"]
+  "relatedProducts": [
+    "nori-desk",
+    "kuro-table",
+    "sokaku-sofa"
+  ],
+  "image": "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&q=80&w=800"
 }

@@ -40,17 +40,17 @@ const { slides } = Astro.props;
       />
       
       <div class="absolute inset-0 bg-black/40"></div>
-
-      <div class="relative z-20 h-full flex flex-col justify-center max-w-[1320px] mx-auto px-5 md:px-8 text-center sm:text-left">
-        <Eyebrow text={slide.eyebrow} class="mb-6 text-watermelon" />
-        <h2 class="font-display text-[clamp(48px,8vw,96px)] font-light text-white leading-[1.05] tracking-tight mb-6 max-w-[800px] mx-auto sm:mx-0" set:html={slide.title} />
-        <p class="font-sans text-base text-white/80 max-w-[480px] leading-relaxed mb-10 mx-auto sm:mx-0">
+      
+      <div class="ds-container relative z-20 h-full flex flex-col justify-center align-middle text-center sm:text-left">
+        <Eyebrow text={slide.eyebrow} class="mb-5 text-white/90" />
+        <h2 class="font-display text-[clamp(44px,7vw,88px)] font-bold text-white leading-[1.05] tracking-tight mb-6 mx-auto sm:mx-0" set:html={slide.title} />
+        <p class="font-sans text-base text-white/80 leading-relaxed mb-6 sm:mx-0">
           {slide.subtitle}
         </p>
         <Button 
           href={slide.ctaHref} 
           variant="primary" 
-          class="mx-auto sm:mx-0 bg-white text-petrol hover:bg-white/90 border-none px-10 h-14 min-w-[220px] rounded-full text-[13px] tracking-[0.1em]"
+          class="mx-auto sm:mx-0 bg-white text-petrol hover:bg-white/90 border-none px-12 h-14 min-w-[240px] rounded-full text-[13px] tracking-widest font-bold"
         >
           {slide.ctaLabel}
         </Button>

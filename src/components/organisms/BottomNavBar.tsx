@@ -111,7 +111,7 @@ export function BottomNavBar() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-white border-t border-sand-200 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]"
+      className="fixed bottom-0 inset-x-0 z-9999 lg:hidden bg-white border-t border-sand-200 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       aria-label="Navegación principal"
     >

@@ -61,23 +61,23 @@ const iconKey: IconKey = shippingMode === 'pickup' ? 'pickup' : isExpress ? 'exp
 const color: ColorKey  = isExpress ? 'green' : isFast ? 'petrol' : 'sand';
 
 const colorMap: Record<ColorKey, string> = {
-  green:  'text-green-600 bg-green-50 border-green-100',
+  green:  'text-success bg-success-light border-success/20',
   petrol: 'text-petrol   bg-petrol/5  border-petrol/10',
   sand:   'text-sand-900/60 bg-sand-50 border-sand-200',
 };
 
 const labelMap: Record<IconKey, string> = {
-  express:  '¡Llega HOY!',
+  express:  `Llega el ${dayName} ${dayNum}`,
   fast:     `Llega el ${dayName} ${dayNum}`,
-  standard: `Llega el ${dayName} ${dayNum} de ${monthStr}`,
-  pickup:   'Retirá hoy en La Plata',
+  standard: `Entrega estimada: ${dayNum} de ${monthStr}`,
+  pickup:   'Retiro en La Plata (24-48 hs)',
 };
 
 const sublabelMap: Record<string, string> = {
-  express:  'Comprá en las próximas horas',
-  fast:     'Si comprás hoy',
-  standard: 'Días hábiles, a domicilio',
-  pickup:   'Coordinar por DM',
+  express:  'Procesamiento prioritario',
+  fast:     'Si comprás ahora',
+  standard: 'Envío estándar a domicilio',
+  pickup:   'Coordinar retiro por WhatsApp',
 };
 
 const label    = shippingMode === 'pickup' ? labelMap.pickup    : isExpress ? labelMap.express    : isFast ? labelMap.fast    : labelMap.standard;

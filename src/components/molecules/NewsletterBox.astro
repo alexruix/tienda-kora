@@ -30,7 +30,7 @@ const {
   <h3 class="font-display text-3xl font-light text-white mb-2">{title}</h3>
   <p class="font-sans text-[14px] text-white/70 mb-8 max-w-[400px] mx-auto">{description}</p>
   
-  <form class="flex flex-col sm:flex-row gap-4 max-w-[500px] mx-auto" onsubmit="event.preventDefault();">
+  <form class="flex flex-col sm:flex-row gap-4 max-w-[500px] mx-auto" onsubmit="event => event.preventDefault();">
     <div class="flex-1 text-left">
       <Input 
         type="email" 

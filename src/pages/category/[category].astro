@@ -41,6 +41,15 @@ const { category } = Astro.params;
 const { products } = Astro.props;
 
 const content = CategoryContent.categories[category as keyof typeof CategoryContent.categories] || CategoryContent.categories.living;
+
+// Extraer subcategorías específicas para los filtros laterales si estamos en una sola categoría
+const subCategories = [...new Set(products.map(p => (p as any).subcategory || p.category?.split(' · ')[1]))].filter(Boolean) as string[];
+
+const customFilters = subCategories.length > 0 ? [
+  { label: category === 'ropa' ? 'Tipo de Prenda' : 'Subcategoría', options: subCategories },
+  { label: CategoryContent.filters.material, options: CategoryContent.filters.options.materials },
+  { label: CategoryContent.filters.style,    options: CategoryContent.filters.options.styles },
+] : undefined;
 ---
 
 <CategoryLayout
@@ -48,9 +57,12 @@ const content = CategoryContent.categories[category as keyof typeof CategoryCont
   title={`${content.name} — KORA`}
   description={content.description}
   productCount={products.length}
+  filters={customFilters}
 >
   <ProductGrid
     products={products as any} 
     layout="default"
+    showFilters={true}
+    showSort={true}
   />
 </CategoryLayout>

@@ -7,7 +7,7 @@
   "subcategory": "Juego Resistente",
   "price": 18500,
   "inStock": true,
-  "leadTime": "24 horas",
+  "leadTime": "48 hs",
   "rating": 4.8,
   "reviewCount": 156,
   "badges": ["new"],
@@ -21,7 +21,7 @@
     { "label": "Proveedor", "value": "Don Orione (La Plata)" }
   ],
   "care": "Lavar con agua y jabón neutro después de cada jornada de juego.",
-  "shipping": "Micro-stock: Despacho hoy mismo desde La Plata. Llega en 24-48hs.",
+  "shipping": "Despacho centralizado en 24-48hs. Envío a domicilio a todo el país.",
   "metaDescription": "Mordillo de caucho natural KORA. Flexible, resistente y seguro. Calidad Don Orione La Plata.",
   "altText": "Juguete mordillo de caucho color arcilla para perros.",
   "relatedProducts": ["cama-nido-autor", "snacks-articulaciones"]

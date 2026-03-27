@@ -7,7 +7,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 
 // Formateador de moneda (puedes ajustarlo a ARS si prefieres)
-import { formatPrice } from '../../utils/formatters.ts';
+import { formatCurrency } from '../../utils/formatters.ts';
 
 
 export default function SearchBar({
@@ -146,7 +146,7 @@ export default function SearchBar({
                                 <div className="text-[11px] text-sand-900/50 mt-0.5 tracking-wide uppercase truncate">{product.category}</div>
                             </div>
                             <div className="text-[13px] font-medium text-petrol shrink-0">
-                                {formatPrice(product.price)}
+                                {formatCurrency(product.price)}
                             </div>
                         </a>
                     ))}

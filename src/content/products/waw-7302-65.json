@@ -1,0 +1,34 @@
+{
+  "id": "waw-7302-65",
+  "name": "Buzo rayado con bolsillo canguro - Talle 65",
+  "slug": "waw-7302-65",
+  "brand": "Waw Pets",
+  "category": "ropa",
+  "subcategory": "Buzos",
+  "price": 42550,
+  "inStock": false,
+  "leadTime": "24-72 hs",
+  "variants": [
+    {
+      "label": "Rayado",
+      "value": "rayado",
+      "color": "RAYADO",
+      "available": false
+    }
+  ],
+  "details": [
+    {
+      "label": "Largo Lomo",
+      "value": "65 cm"
+    },
+    {
+      "label": "Cont. Pecho",
+      "value": "86 cm"
+    },
+    {
+      "label": "Cont. Cuello",
+      "value": "62 cm"
+    }
+  ],
+  "image": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=800"
+}

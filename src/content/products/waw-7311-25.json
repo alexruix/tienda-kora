@@ -1,0 +1,58 @@
+{
+  "id": "waw-7311-25",
+  "name": "Buzo friza 3 tiras  con capucha - Talle 25",
+  "slug": "waw-7311-25",
+  "brand": "Waw Pets",
+  "category": "ropa",
+  "subcategory": "Buzos",
+  "price": 28980,
+  "inStock": true,
+  "leadTime": "24-72 hs",
+  "variants": [
+    {
+      "label": "Bordó",
+      "value": "bordo",
+      "color": "Bordó",
+      "available": true
+    },
+    {
+      "label": "Gris claro",
+      "value": "gris-claro",
+      "color": "Gris Claro",
+      "available": true
+    },
+    {
+      "label": "Marino",
+      "value": "marino",
+      "color": "Marino",
+      "available": true
+    },
+    {
+      "label": "Violeta",
+      "value": "violeta",
+      "color": "Violeta",
+      "available": true
+    },
+    {
+      "label": "Negro",
+      "value": "negro",
+      "color": "Negro",
+      "available": true
+    }
+  ],
+  "details": [
+    {
+      "label": "Largo Lomo",
+      "value": "25 cm"
+    },
+    {
+      "label": "Cont. Pecho",
+      "value": "34 cm"
+    },
+    {
+      "label": "Cont. Cuello",
+      "value": "24 cm"
+    }
+  ],
+  "image": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=800"
+}

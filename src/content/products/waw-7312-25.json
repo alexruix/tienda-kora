@@ -1,0 +1,58 @@
+{
+  "id": "waw-7312-25",
+  "name": "Buzo friza adidog redondo con capucha - Talle 25",
+  "slug": "waw-7312-25",
+  "brand": "Waw Pets",
+  "category": "ropa",
+  "subcategory": "Remeras",
+  "price": 26680,
+  "inStock": true,
+  "leadTime": "24-72 hs",
+  "variants": [
+    {
+      "label": "Rojo",
+      "value": "rojo",
+      "color": "Rojo",
+      "available": true
+    },
+    {
+      "label": "Verde",
+      "value": "verde",
+      "color": "Verde",
+      "available": true
+    },
+    {
+      "label": "Beige",
+      "value": "beige",
+      "color": "Beige",
+      "available": true
+    },
+    {
+      "label": "Violeta",
+      "value": "violeta",
+      "color": "Violeta",
+      "available": true
+    },
+    {
+      "label": "Negro",
+      "value": "negro",
+      "color": "Negro",
+      "available": true
+    }
+  ],
+  "details": [
+    {
+      "label": "Largo Lomo",
+      "value": "25 cm"
+    },
+    {
+      "label": "Cont. Pecho",
+      "value": "34 cm"
+    },
+    {
+      "label": "Cont. Cuello",
+      "value": "24 cm"
+    }
+  ],
+  "image": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=800"
+}

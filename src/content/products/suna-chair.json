@@ -15,13 +15,34 @@
   "newArrival": false,
   "description": "Suna (砂, 'sand') takes a Shaker simplicity and softens it with a hand-woven rush seat from the Loire Valley. Each seat is unique — the rush pattern tightened by a single craftsperson over two hours. The solid white oak frame is steam-bent to allow a subtle backward lean that makes long dinners comfortable.",
   "details": [
-    { "label": "Dimensions", "value": "W46 × D50 × H82 cm" },
-    { "label": "Seat Height", "value": "45 cm" },
-    { "label": "Frame", "value": "Steam-bent Solid White Oak" },
-    { "label": "Seat", "value": "Hand-woven Loire Rush" },
-    { "label": "Weight", "value": "4.2 kg" },
-    { "label": "Sold as", "value": "Single chair or set of 2 / 4 / 6" },
-    { "label": "Origin", "value": "Frame: Denmark · Seat: France" }
+    {
+      "label": "Dimensions",
+      "value": "W46 × D50 × H82 cm"
+    },
+    {
+      "label": "Seat Height",
+      "value": "45 cm"
+    },
+    {
+      "label": "Frame",
+      "value": "Steam-bent Solid White Oak"
+    },
+    {
+      "label": "Seat",
+      "value": "Hand-woven Loire Rush"
+    },
+    {
+      "label": "Weight",
+      "value": "4.2 kg"
+    },
+    {
+      "label": "Sold as",
+      "value": "Single chair or set of 2 / 4 / 6"
+    },
+    {
+      "label": "Origin",
+      "value": "Frame: Denmark · Seat: France"
+    }
   ],
   "variants": [
     {
@@ -41,5 +62,10 @@
   "shipping": "Shipped flat-pack. Minimal assembly (legs attach in under 10 minutes). Pair or set options at checkout.",
   "metaDescription": "Suna Dining Chair — hand-woven rush seat on steam-bent white oak frame. Crafted in Denmark and France. From $420 — BeautyHome.",
   "altText": "Suna dining chair with hand-woven rush seat and steam-bent white oak frame, shown at a walnut dining table",
-  "relatedProducts": ["mori-table", "hana-pendant", "shiro-chair"]
+  "relatedProducts": [
+    "mori-table",
+    "hana-pendant",
+    "shiro-chair"
+  ],
+  "image": "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&q=80&w=800"
 }

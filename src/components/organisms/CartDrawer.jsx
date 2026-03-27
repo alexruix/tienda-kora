@@ -29,7 +29,7 @@ import {
   setCartQuantity,
   toggleCart,
 } from "../../store/cart.ts";
-import { formatPrice } from "../../utils/formatters.ts";
+import { formatCurrency } from "../../utils/formatters.ts";
 
 // ── Constantes de Swipe ───────────────────────────────────────────────────────
 const SWIPE_CLOSE_THRESHOLD = 80; // px para cerrar
@@ -90,7 +90,7 @@ export function CartDrawer({ products = [] }) {
   // Agregar items al carrito via CustomEvent
   useEffect(() => {
     const handleAddToCart = (e) => {
-      const { id, variant } = e.detail;
+      const { id, variant, quantity } = e.detail;
       if (!id) return;
       const productData = products.find((p) => p.id === id);
       if (productData) {
@@ -100,6 +100,7 @@ export function CartDrawer({ products = [] }) {
           price: productData.price,
           image: productData.image ?? "",
           variant: variant || "Standard",
+          quantity: quantity || 1,
         });
       }
     };
@@ -247,7 +248,7 @@ export function CartDrawer({ products = [] }) {
                 <div className="bg-white rounded-f2-md py-3 px-4 mb-4 border border-sand-100">
                   <p className="font-sans text-[12px] text-sand-900/70 mb-2">
                     Agregá{" "}
-                    <strong className="text-petrol">{formatPrice(remainingForFree)}</strong>{" "}
+                    <strong className="text-petrol">{formatCurrency(remainingForFree)}</strong>{" "}
                     más para envío gratis
                   </p>
                   <div className="h-[4px] bg-sand-100 rounded-full overflow-hidden">
@@ -302,7 +303,7 @@ export function CartDrawer({ products = [] }) {
                     <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
                   </svg>
                   {promoCode ? (
-                    <span className="text-green-600 font-medium">
+                    <span className="text-success font-medium">
                       {promoCode} — {PROMO_DISCOUNT_PCT}% off
                     </span>
                   ) : "¿Tenés un código de descuento?"}
@@ -317,11 +318,11 @@ export function CartDrawer({ products = [] }) {
                 <div className="px-3 py-3 border-t border-sand-100 bg-white">
                   {promoCode ? (
                     <div className="flex items-center justify-between">
-                      <p className="font-sans text-[12px] text-green-600">
-                        Ahorro de <strong>{formatPrice(discount)}</strong>
+                      <p className="font-sans text-[12px] text-success">
+                        Ahorro de <strong>{formatCurrency(discount)}</strong>
                       </p>
                       <button type="button" onClick={handleRemovePromo}
-                        className="font-sans text-[11px] text-watermelon hover:opacity-70 bg-transparent border-none cursor-pointer">
+                        className="font-sans text-[11px] text-danger hover:opacity-70 bg-transparent border-none cursor-pointer">
                         Quitar
                       </button>
                     </div>
@@ -342,7 +343,7 @@ export function CartDrawer({ products = [] }) {
                     </div>
                   )}
                   {promoError && (
-                    <p role="alert" className="font-sans text-[11px] text-watermelon mt-1.5">{promoError}</p>
+                    <p role="alert" className="font-sans text-[11px] text-danger mt-1.5">{promoError}</p>
                   )}
                 </div>
               )}
@@ -357,12 +358,12 @@ export function CartDrawer({ products = [] }) {
                     <span className="text-[13px] text-sand-900/40 font-sans line-through">{totalStr}</span>
                   </div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-[12px] text-green-600 font-sans font-medium">Descuento ({promoCode})</span>
-                    <span className="text-[13px] text-green-600 font-sans font-medium">−{formatPrice(discount)}</span>
+                    <span className="text-[12px] text-success font-sans font-medium">Descuento ({promoCode})</span>
+                    <span className="text-[13px] text-success font-sans font-medium">−{formatCurrency(discount)}</span>
                   </div>
                   <div className="flex justify-between items-center pt-2 border-t border-sand-100">
                     <span className="text-[14px] font-medium text-sand-900 font-sans">Total</span>
-                    <span className="font-display text-[26px] text-petrol leading-none">{formatPrice(totalWithPromo)}</span>
+                    <span className="font-display text-[26px] text-petrol leading-none">{formatCurrency(totalWithPromo)}</span>
                   </div>
                 </>
               ) : (

@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { formatPrice } from '../../utils/formatters';
+import { formatCurrency } from '../../utils/formatters';
 
 export function CartSummary({ 
   subtotal, 
@@ -24,14 +24,14 @@ export function CartSummary({
       {/* Subtotal */}
       <div className="flex justify-between items-center font-sans text-[14px] text-sand-900/60">
         <span>Subtotal</span>
-        <span className="text-sand-900 font-medium">{formatPrice(subtotal)}</span>
+        <span className="text-sand-900 font-medium">{formatCurrency(subtotal)}</span>
       </div>
 
       {/* Descuentos (si los hay) */}
       {discount > 0 && (
         <div className="flex justify-between items-center font-sans text-[14px] text-watermelon">
           <span>Descuento</span>
-          <span className="font-medium">-{formatPrice(discount)}</span>
+          <span className="font-medium">-{formatCurrency(discount)}</span>
         </div>
       )}
 
@@ -46,7 +46,7 @@ export function CartSummary({
       {/* Total Final */}
       <div className="flex justify-between items-end font-sans">
         <span className="text-base font-semibold text-petrol">Total</span>
-        <span className="text-xl lg:text-2xl font-semibold text-petrol">{formatPrice(finalTotal)}</span>
+        <span className="text-xl lg:text-2xl font-semibold text-petrol">{formatCurrency(finalTotal)}</span>
       </div>
 
       {/* Checkout Button */}

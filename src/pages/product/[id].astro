@@ -37,8 +37,6 @@ const related = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
-const formattedPrice = formatCurrency(product.price);
-
 // 4. Truncado inteligente para SEO
 const seoDescription =
     product.description && product.description.length > 160

@@ -3,7 +3,7 @@
  * BeautyHome · NODO Studio
  */
 
-import { formatPrice } from "../../utils/formatters.ts";
+import { formatCurrency } from "../../utils/formatters.ts";
 
 export default function CartItem({
   id,
@@ -132,11 +132,11 @@ export default function CartItem({
       {/* Line Price */}
       <div className="text-right flex flex-col justify-between py-0.5">
         <div className="text-[15px] font-medium text-petrol font-sans">
-          {formatPrice(lineTotalValue)}
+          {formatCurrency(lineTotalValue)}
         </div>
         {itemQuantity > 1 && (
           <div className="text-[10px] text-sand-900/40">
-            {formatPrice(itemPrice)} c/u
+            {formatCurrency(itemPrice)} c/u
           </div>
         )}
       </div>

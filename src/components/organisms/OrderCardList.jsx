@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { Truck, CheckCircle2, Clock, XCircle } from 'lucide-react';
-import { formatPrice } from '../../utils/formatters';
+import { formatCurrency } from '../../utils/formatters';
 
 const StatusIcon = ({ status }) => {
   switch (status) {
@@ -58,7 +58,7 @@ export function OrderCardList({ orders = [], className = '' }) {
               {order.itemCount} {order.itemCount === 1 ? 'artículo' : 'artículos'}
             </p>
             <p className="font-sans text-[15px] font-semibold text-petrol">
-              {formatPrice(order.total)}
+              {formatCurrency(order.total)}
             </p>
           </div>
 

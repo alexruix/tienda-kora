@@ -109,12 +109,12 @@ export function Toast({ products = [] }: Props) {
       {/* Text */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 mb-0.5">
-          <span className="text-green-600">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <span className="text-success">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </span>
-          <p className="font-sans text-[11px] font-medium text-green-600 uppercase tracking-wider">Agregado al carrito</p>
+          <p className="font-sans text-[11px] font-medium text-success uppercase tracking-wider">Agregado al carrito</p>
         </div>
         <p className="font-sans text-[13px] text-sand-900 font-medium truncate">{toast.name}</p>
       </div>
